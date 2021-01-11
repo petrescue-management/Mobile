@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pet_rescue_mobile/presenter/sign_in.dart';
+import 'package:pet_rescue_mobile/src/asset.dart';
 
 //tmp screen
 class FirstScreen extends StatelessWidget {
@@ -27,8 +28,14 @@ class _LoginPageState extends State<LoginPage> {
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              FlutterLogo(size: 150),
-              SizedBox(height: 50),
+              Hero(
+                tag: 'hero',
+                child: SizedBox(
+                  height: 200,
+                  child: Image.asset(app_logo)
+                  )
+              ),
+              SizedBox(height: 100),
               _signInButton(),
             ],
           ),
