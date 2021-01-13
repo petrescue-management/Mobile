@@ -25,6 +25,9 @@ dependencies:
     sdk: flutter
 
 
+  # rxdart: ^0.21.0
+  # shared_preferences: ^0.5.8
+
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.0
@@ -44,7 +47,7 @@ dev_dependencies:
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/Logo 5_circle.png"
+  image_path: "assets/web_hi_res_512.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -61,7 +64,9 @@ flutter:
   assets:
     - assets/Logo 5_circle.png
     - assets/logo 5_square.png
+    - assets/web_hi_res_512.png
     - assets/google_logo.png
+    - assets/canva_final_logo.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

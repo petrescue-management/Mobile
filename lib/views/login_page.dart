@@ -2,17 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:pet_rescue_mobile/presenter/sign_in.dart';
 import 'package:pet_rescue_mobile/src/asset.dart';
 
-//tmp screen
-class FirstScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(color: Colors.blue[100]),
-    );
-  }
-}
+import '../navigator.dart';
 
 class LoginPage extends StatefulWidget {
+  LoginPage({Key key}) : super(key: key);
+  
   @override
   _LoginPageState createState() => _LoginPageState();
 }
@@ -31,11 +25,11 @@ class _LoginPageState extends State<LoginPage> {
               Hero(
                 tag: 'hero',
                 child: SizedBox(
-                  height: 200,
-                  child: Image.asset(app_logo)
+                  height: 400,
+                  child: Image.asset(canva_logo)
                   )
               ),
-              SizedBox(height: 100),
+              SizedBox(height: 120),
               _signInButton(),
             ],
           ),
@@ -54,7 +48,7 @@ class _LoginPageState extends State<LoginPage> {
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) {
-                  return FirstScreen();
+                  return BottomNavBar();
                 }
               )
             );
@@ -70,13 +64,13 @@ class _LoginPageState extends State<LoginPage> {
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Image(image: AssetImage("assets/google_logo.png"), height: 35.0),
+            Image(image: AssetImage("assets/google_logo.png"), height: 30.0),
             Padding(
               padding: const EdgeInsets.only(left: 10),
               child: Text(
                 'Sign in with Google',
                 style: TextStyle(
-                  fontSize: 20,
+                  fontSize: 18,
                   color: Colors.grey,
                 ),
               ),
