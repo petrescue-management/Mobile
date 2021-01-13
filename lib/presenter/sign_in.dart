@@ -17,8 +17,8 @@ Future<String> signInWithGoogle() async {
 
   //google
   final FirebaseUser user = (await _auth.signInWithCredential(credential)).user;
-  String tokenGoogle;
-  await user.getIdToken().then((value) => tokenGoogle = value.token);
+  // String tokenGoogle;
+  // await user.getIdToken().then((value) => tokenGoogle = value.token);
 
   //firebase
   final FirebaseUser currentUser = await _auth.currentUser();
@@ -26,7 +26,6 @@ Future<String> signInWithGoogle() async {
   await currentUser.getIdToken().then((value) => tokenFirebase = value.token);
 
   if (currentUser != null) {
-    print('Google:' + tokenGoogle);
     print('Firebase:' + tokenFirebase);
 
     print('signInWithGoogle succeeded: $currentUser');

@@ -7,6 +7,7 @@ import 'views/login_page.dart';
 
 void main() => runApp(
   new MaterialApp(
+    debugShowCheckedModeBanner: false,
     home: new MyApp(),
   )
 );
@@ -25,7 +26,7 @@ class _MyApp extends State<MyApp> {
       image: new Image.asset(
         app_logo,
       ),
-      photoSize: 120,
+      photoSize: 180,
       backgroundColor: common,
       loaderColor: Colors.red,
     );
