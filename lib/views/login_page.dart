@@ -6,7 +6,7 @@ import '../navigator.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key}) : super(key: key);
-  
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
@@ -25,8 +25,8 @@ class _LoginPageState extends State<LoginPage> {
               Hero(
                 tag: 'hero',
                 child: SizedBox(
-                  height: 400,
-                  child: Image.asset(canva_logo)
+                  height: 300,
+                  child: Image.asset(app_logo)
                   )
               ),
               SizedBox(height: 120),
@@ -45,13 +45,7 @@ class _LoginPageState extends State<LoginPage> {
       onPressed: () {
         signInWithGoogle().then((result) {
           if (result != null) {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) {
-                  return BottomNavBar();
-                }
-              )
-            );
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => BottomNavBar()));
           }
         });
       },
@@ -64,7 +58,7 @@ class _LoginPageState extends State<LoginPage> {
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Image(image: AssetImage("assets/google_logo.png"), height: 30.0),
+            Image(image: AssetImage(google_logo), height: 30.0),
             Padding(
               padding: const EdgeInsets.only(left: 10),
               child: Text(

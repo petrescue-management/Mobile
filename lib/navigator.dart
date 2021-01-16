@@ -56,15 +56,16 @@ class _BottomNavBar extends State<BottomNavBar> {
   final bottomItems = [
     BottomNavigationBarItem(
       icon: Icon(Icons.home),
-      title: new Text('Home'),
+      label: 'Home',
     ),
     BottomNavigationBarItem(
       icon: Icon(Icons.article),
-      title: new Text('Progress Report'),
+      label: 'Progress Report',
     ),
     BottomNavigationBarItem(
       icon: Icon(Icons.perm_identity),
-      title: new Text('Profile'),
+      label: 'Profile',
     ),
   ];
 }
+
