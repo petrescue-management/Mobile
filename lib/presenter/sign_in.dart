@@ -32,7 +32,6 @@ Future<String> signInWithGoogle() async {
 
     return '$currentUser';
   }
-
   return null;
 }
 
