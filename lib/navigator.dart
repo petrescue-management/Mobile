@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pet_rescue_mobile/src/style.dart';
 
 import 'views/home_page.dart';
-import 'views/profile.dart';
+import 'views/profile/profile.dart';
 import 'views/progress_report.dart';
 
 class BottomNavBar extends StatefulWidget {
@@ -32,6 +33,7 @@ class _BottomNavBar extends State<BottomNavBar> {
   int _selectedIndex = 0;
 
   Widget _bottomNavBar(int selectedIndex) => BottomNavigationBar(
+        selectedItemColor: color2,
         showSelectedLabels: false,
         showUnselectedLabels: false,
         onTap: (int index) => setState(() => _selectedIndex = index),
@@ -68,4 +70,3 @@ class _BottomNavBar extends State<BottomNavBar> {
     ),
   ];
 }
-

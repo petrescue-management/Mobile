@@ -3,6 +3,7 @@ import 'package:carousel_slider/carousel_options.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:pet_rescue_mobile/src/asset.dart';
 import 'package:pet_rescue_mobile/src/data.dart';
+import 'package:pet_rescue_mobile/src/style.dart';
 import 'package:pet_rescue_mobile/views/rescue.dart';
 
 class HomePage extends StatefulWidget {
@@ -25,25 +26,22 @@ class _HomePageState extends State<HomePage> {
     super.initState();
   }
 
-  Widget homePageAppBar = AppBar(
-    backgroundColor: Colors.white,
-    title: Text(
-      'RESCUE THEM',
-      style: TextStyle(
-        color: Colors.black,
-      ),
-    ),
-    automaticallyImplyLeading: false,
-  );
+  // Widget homePageAppBar = AppBar(
+  //   backgroundColor: Colors.white,
+  //   title: Text(
+  //     'RESCUE THEM',
+  //     style: TextStyle(
+  //       color: Colors.black,
+  //     ),
+  //   ),
+  //   automaticallyImplyLeading: false,
+  // );
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: homePageAppBar,
       body: Column(children: [
-        SizedBox(
-          height: 25,
-        ),
+        _buildHeader,
         CarouselSlider(
           items: imageSliders,
           options: CarouselOptions(
@@ -73,54 +71,68 @@ class _HomePageState extends State<HomePage> {
             );
           }).toList(),
         ),
-        SizedBox(
-          height: 50,
-        ),
         Container(
-          height: MediaQuery.of(context).size.height * 0.08,
-          width: MediaQuery.of(context).size.width * 0.65,
-          child: RaisedButton.icon(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10.0))),
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) {
-                    return RescueForm();
+          height: MediaQuery.of(context).size.height * 0.25,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              //* RESCUE BUTTON
+              Container(
+                height: MediaQuery.of(context).size.height * 0.07,
+                width: MediaQuery.of(context).size.width * 0.55,
+                child: RaisedButton.icon(
+                  shape: RoundedRectangleBorder(
+                    side: BorderSide(
+                      color: color2,
+                      width: 2,
+                    ),
+                    borderRadius: BorderRadius.all(Radius.circular(50.0)),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return RescueForm();
+                        },
+                      ),
+                    );
                   },
+                  icon: Image(image: AssetImage(rescue_logo), height: 30.0),
+                  label: Text(
+                    ' Rescue',
+                    style: TextStyle(
+                        color: Colors.black, fontSize: 20, letterSpacing: 2.0),
+                  ),
+                  splashColor: Colors.red[100],
+                  color: Colors.white,
                 ),
-              );
-            },
-            icon: Image(image: AssetImage(rescue_logo), height: 30.0),
-            label: Text(
-              ' Rescue',
-              style: TextStyle(color: Colors.white, fontSize: 25),
-            ),
-            textColor: Colors.white,
-            splashColor: Colors.red,
-            color: Colors.green,
-          ),
-        ),
-        SizedBox(
-          height: 30,
-        ),
-        Container(
-          height: MediaQuery.of(context).size.height * 0.08,
-          width: MediaQuery.of(context).size.width * 0.65,
-          child: RaisedButton.icon(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10.0))),
-            onPressed: () {
-              print('Button Clicked.');
-            },
-            icon: Image(image: AssetImage(adopt_logo), height: 30.0),
-            label: Text(
-              ' Adoption',
-              style: TextStyle(color: Colors.white, fontSize: 25),
-            ),
-            textColor: Colors.white,
-            splashColor: Colors.red,
-            color: Colors.blue,
+              ),
+              //* ---------------------------------
+              //* ADOPTION PICKER
+              Container(
+                height: MediaQuery.of(context).size.height * 0.07,
+                width: MediaQuery.of(context).size.width * 0.55,
+                child: RaisedButton.icon(
+                  shape: RoundedRectangleBorder(
+                      side: BorderSide(
+                        color: color2,
+                        width: 2,
+                      ),
+                      borderRadius: BorderRadius.all(Radius.circular(50.0))),
+                  onPressed: () {
+                    print('Button Clicked.');
+                  },
+                  icon: Image(image: AssetImage(adopt_logo), height: 30.0),
+                  label: Text(
+                    ' Adoption',
+                    style: TextStyle(
+                        color: Colors.black, fontSize: 20, letterSpacing: 2.0),
+                  ),
+                  splashColor: Colors.red[100],
+                  color: Colors.white,
+                ),
+              ),
+            ],
           ),
         ),
       ]),
@@ -161,3 +173,77 @@ final List<Widget> imageSliders = imgList
           ),
         ))
     .toList();
+
+Widget _buildHeader = Container(
+  height: 250,
+  width: double.infinity,
+  child: Stack(
+    children: <Widget>[
+      Positioned(
+        bottom: 0,
+        left: -90,
+        top: -170,
+        child: Container(
+          width: 350,
+          decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: LinearGradient(colors: [color1, color2]),
+              boxShadow: [
+                BoxShadow(
+                    color: color2, offset: Offset(4.0, 4.0), blurRadius: 10.0)
+              ]),
+        ),
+      ),
+      Container(
+        width: 100,
+        height: 100,
+        decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: LinearGradient(colors: [color3, color2]),
+            boxShadow: [
+              BoxShadow(
+                  color: color3, offset: Offset(1.0, 1.0), blurRadius: 4.0)
+            ]),
+      ),
+      Positioned(
+        top: 100,
+        right: 200,
+        child: Container(
+          width: 60,
+          height: 60,
+          decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: LinearGradient(colors: [color3, color2]),
+              boxShadow: [
+                BoxShadow(
+                    color: color3, offset: Offset(1.0, 1.0), blurRadius: 5.0)
+              ]),
+        ),
+      ),
+      Container(
+        margin: const EdgeInsets.only(top: 50, left: 10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              "Welcome to",
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 22.0,
+                  fontWeight: FontWeight.w500),
+            ),
+            SizedBox(height: 10.0),
+            Text(
+              "RESCUE THEM",
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 25.0,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 3.0),
+            )
+          ],
+        ),
+      )
+    ],
+  ),
+);
