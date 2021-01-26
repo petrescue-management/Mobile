@@ -1,10 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:commons/commons.dart';
+
 import 'package:carousel_slider/carousel_options.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+
 import 'package:pet_rescue_mobile/src/asset.dart';
 import 'package:pet_rescue_mobile/src/data.dart';
 import 'package:pet_rescue_mobile/src/style.dart';
-import 'package:pet_rescue_mobile/views/rescue.dart';
+
+import 'package:pet_rescue_mobile/views/rescue/rescue.dart';
+import 'package:pet_rescue_mobile/views/adoption/adopt.dart';
+
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:pet_rescue_mobile/repository/sign_in.dart';
+import 'package:pet_rescue_mobile/views/login/login_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key key}) : super(key: key);
@@ -26,22 +35,14 @@ class _HomePageState extends State<HomePage> {
     super.initState();
   }
 
-  // Widget homePageAppBar = AppBar(
-  //   backgroundColor: Colors.white,
-  //   title: Text(
-  //     'RESCUE THEM',
-  //     style: TextStyle(
-  //       color: Colors.black,
-  //     ),
-  //   ),
-  //   automaticallyImplyLeading: false,
-  // );
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(children: [
         _buildHeader,
+        SizedBox(
+          height: 20,
+        ),
         CarouselSlider(
           items: imageSliders,
           options: CarouselOptions(
@@ -80,35 +81,53 @@ class _HomePageState extends State<HomePage> {
               Container(
                 height: MediaQuery.of(context).size.height * 0.07,
                 width: MediaQuery.of(context).size.width * 0.55,
-                child: RaisedButton.icon(
-                  shape: RoundedRectangleBorder(
-                    side: BorderSide(
-                      color: color2,
-                      width: 2,
-                    ),
-                    borderRadius: BorderRadius.all(Radius.circular(50.0)),
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return RescueForm();
-                        },
+                child: FutureBuilder<FirebaseUser>(
+                  future: getCurrentUser(),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<FirebaseUser> snapshot) {
+                    return RaisedButton.icon(
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(
+                          color: color2,
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(50.0)),
                       ),
+                      onPressed: () {
+                        if (snapshot.hasError)
+                          return waitDialog(context);
+                        else if (snapshot.data == null) {
+                          return infoDialog(
+                              context, "Please log in to view this session!!",
+                              neutralAction: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => LoginPage()));
+                          });
+                        } else
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return RescueForm();
+                              },
+                            ),
+                          );
+                      },
+                      icon: Image(image: AssetImage(rescue_logo), height: 30.0),
+                      label: Text(
+                        ' Rescue',
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 20,
+                            letterSpacing: 2.0),
+                      ),
+                      splashColor: Colors.red[100],
+                      color: Colors.white,
                     );
                   },
-                  icon: Image(image: AssetImage(rescue_logo), height: 30.0),
-                  label: Text(
-                    ' Rescue',
-                    style: TextStyle(
-                        color: Colors.black, fontSize: 20, letterSpacing: 2.0),
-                  ),
-                  splashColor: Colors.red[100],
-                  color: Colors.white,
                 ),
               ),
               //* ---------------------------------
-              //* ADOPTION PICKER
+              //* ADOPT PICKER
               Container(
                 height: MediaQuery.of(context).size.height * 0.07,
                 width: MediaQuery.of(context).size.width * 0.55,
@@ -120,11 +139,17 @@ class _HomePageState extends State<HomePage> {
                       ),
                       borderRadius: BorderRadius.all(Radius.circular(50.0))),
                   onPressed: () {
-                    print('Button Clicked.');
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return AdoptionPage();
+                        },
+                      ),
+                    );
                   },
                   icon: Image(image: AssetImage(adopt_logo), height: 30.0),
                   label: Text(
-                    ' Adoption',
+                    ' Adopt',
                     style: TextStyle(
                         color: Colors.black, fontSize: 20, letterSpacing: 2.0),
                   ),
@@ -149,25 +174,6 @@ final List<Widget> imageSliders = imgList
                 child: Stack(
                   children: <Widget>[
                     Image.network(item, fit: BoxFit.cover, width: 1500.0),
-                    Positioned(
-                      bottom: 0.0,
-                      left: 0.0,
-                      right: 0.0,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              Color.fromARGB(200, 0, 0, 0),
-                              Color.fromARGB(0, 0, 0, 0)
-                            ],
-                            begin: Alignment.bottomCenter,
-                            end: Alignment.topCenter,
-                          ),
-                        ),
-                        padding: EdgeInsets.symmetric(
-                            vertical: 10.0, horizontal: 20.0),
-                      ),
-                    ),
                   ],
                 )),
           ),
