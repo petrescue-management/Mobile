@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:pet_rescue_mobile/views/adoption/pet_details.dart';
 import 'package:pet_rescue_mobile/src/style.dart';
 import 'package:flutter/material.dart';
@@ -23,21 +21,10 @@ class PetCard extends StatelessWidget {
     this.imagePath,
   });
 
-  final colors = [
-    Colors.blueGrey[200],
-    Colors.green[200],
-    Colors.pink[100],
-    Colors.brown[200],
-    Colors.lightBlue[200],
-  ];
-
-  Random _random = new Random();
-
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final cardHeight = MediaQuery.of(context).size.height * 0.24;
-    final randomColor = colors[_random.nextInt(colors.length)];
 
     return GestureDetector(
       onTap: () {
@@ -46,7 +33,7 @@ class PetCard extends StatelessWidget {
             builder: (context) {
               return DetailsScreen(
                 id: petId,
-                color: randomColor,
+                color: Colors.amber[100]
               );
             },
           ),
@@ -103,7 +90,7 @@ class PetCard extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            age + ' years',
+                            age,
                             style: TextStyle(
                               fontSize: 12,
                               color: fadedBlack,
@@ -130,7 +117,7 @@ class PetCard extends StatelessWidget {
                 children: [
                   Container(
                     decoration: BoxDecoration(
-                      color: randomColor,
+                      color: Colors.amber[100],
                       boxShadow: customShadow,
                       borderRadius: BorderRadius.circular(20),
                     ),

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:pet_rescue_mobile/repository/sign_in.dart';
+import 'package:pet_rescue_mobile/repo/account/sign_in.dart';
 import 'package:pet_rescue_mobile/src/asset.dart';
 
-import '../navigator/navigator.dart';
+import 'package:pet_rescue_mobile/main.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key}) : super(key: key);
@@ -16,19 +16,19 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        color: Colors.white,
+        decoration: BoxDecoration(
+            image: DecorationImage(
+          fit: BoxFit.cover,
+          image: AssetImage(background),
+        )),
         child: Center(
           child: Column(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Hero(
-                tag: 'hero',
-                child: SizedBox(
-                  height: 300,
-                  child: Image.asset(app_logo)
-                  )
-              ),
+                  tag: 'hero',
+                  child: SizedBox(height: 300, child: Image.asset(app_logo))),
               SizedBox(height: 120),
               _signInButton(),
             ],
@@ -45,7 +45,9 @@ class _LoginPageState extends State<LoginPage> {
       onPressed: () {
         signInWithGoogle().then((result) {
           if (result != null) {
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => BottomNavBar()));
+            Navigator.of(context).popUntil((route) => route.isFirst);
+            Navigator.pushReplacement(
+                context, MaterialPageRoute(builder: (context) => MyApp()));
           }
         });
       },
