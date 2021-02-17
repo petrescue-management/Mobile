@@ -39,14 +39,17 @@ dependencies:
   google_sign_in: ^4.5.9
 
   flutter_launcher_icons: ^0.8.1
+  flutter_form_builder: ^3.12.0
 
   splashscreen: ^1.3.5
 
   commons: ^0.7.8+3
   timeline_tile: ^0.1.0
 
-  flutter_form_builder: ^3.12.0
   intl: ^0.16.1
+  rxdart: ^0.22.0
+  http: ^0.12.0+2
+  shared_preferences: ^0.5.7+3
 
 dev_dependencies:
   flutter_test:
@@ -70,6 +73,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
+    - assets/background.jpg
     - assets/Logo 5_circle.png
     - assets/logo 5_square.png
     - assets/web_hi_res_512.png

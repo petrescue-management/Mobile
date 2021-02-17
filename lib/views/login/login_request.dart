@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:pet_rescue_mobile/repository/sign_in.dart';
+import 'package:pet_rescue_mobile/repo/account/sign_in.dart';
 import 'package:pet_rescue_mobile/src/asset.dart';
-import '../navigator/navigator.dart';
+import 'package:pet_rescue_mobile/main.dart';
 
 class LoginRequest extends StatefulWidget {
   const LoginRequest({Key key}) : super(key: key);
@@ -42,8 +42,9 @@ class _LoginRequestState extends State<LoginRequest> {
       onPressed: () {
         signInWithGoogle().then((result) {
           if (result != null) {
+            Navigator.of(context).popUntil((route) => route.isFirst);
             Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: (context) => BottomNavBar()));
+                MaterialPageRoute(builder: (context) => MyApp()));
           }
         });
       },

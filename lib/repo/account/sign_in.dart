@@ -1,17 +1,21 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:pet_rescue_mobile/repo/account/account_provider.dart';
+
+import 'dart:async';
+import 'package:commons/commons.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final GoogleSignIn googleSignIn = GoogleSignIn();
 
 Future<FirebaseUser> getCurrentUser() async {
-    FirebaseUser user = await _auth.currentUser();
-    if (user != null) {
-      return user;
-    } else {
-      return null;
-    }
+  FirebaseUser user = await _auth.currentUser();
+  if (user != null) {
+    return user;
+  } else {
+    return null;
   }
+}
 
 //use the Google sign-in data to authenticate a FirebaseUser
 //return that user
@@ -37,11 +41,19 @@ Future<String> signInWithGoogle() async {
 
   if (currentUser != null) {
     print('Firebase:' + tokenFirebase);
-
     print('signInWithGoogle succeeded: $currentUser');
 
-    return '$currentUser';
+    var jwt = AccountProvider().getJWT(tokenFirebase);
+
+    if (jwt != null) {
+      SharedPreferences sharedPreferences =
+          await SharedPreferences.getInstance();
+      print("JWT in SP:" + sharedPreferences.getString('token'));
+
+      return jwt;
+    }
   }
+
   return null;
 }
 

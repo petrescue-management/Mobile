@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:pet_rescue_mobile/views/adoption/pet_cate.dart';
-import 'package:pet_rescue_mobile/views/adoption/pet_cate_display.dart';
+//import 'package:pet_rescue_mobile/views/adoption/categories/pet_cate.dart';
+import 'package:pet_rescue_mobile/views/adoption/categories/pet_cate_display.dart';
 
 class AdoptionPage extends StatefulWidget {
   const AdoptionPage({Key key}) : super(key: key);
@@ -33,7 +33,7 @@ class _AdoptionPageState extends State<AdoptionPage> {
       body: Container(
         child: Column(
           children: [
-            PetCategories(),
+            //PetCategories(),
             PetCategoryDisplay(),
           ],
         ),

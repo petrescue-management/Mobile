@@ -12,7 +12,7 @@ import 'package:pet_rescue_mobile/views/rescue/rescue.dart';
 import 'package:pet_rescue_mobile/views/adoption/adopt.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:pet_rescue_mobile/repository/sign_in.dart';
+import 'package:pet_rescue_mobile/repo/account/sign_in.dart';
 import 'package:pet_rescue_mobile/views/login/login_page.dart';
 
 class HomePage extends StatefulWidget {

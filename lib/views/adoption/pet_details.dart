@@ -6,8 +6,16 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pet_rescue_mobile/src/data.dart';
 import 'package:pet_rescue_mobile/src/style.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:pet_rescue_mobile/repository/sign_in.dart';
+import 'package:pet_rescue_mobile/repo/account/sign_in.dart';
 import 'package:pet_rescue_mobile/views/login/login_page.dart';
+
+class PetDetails extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    throw UnimplementedError();
+  }
+}
 
 // ignore: must_be_immutable
 class DetailsScreen extends StatefulWidget {
@@ -161,7 +169,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                         ),
                       ),
                       Text(
-                        age + ' years',
+                        age,
                         style: TextStyle(
                           fontSize: 12,
                           color: Colors.black,
