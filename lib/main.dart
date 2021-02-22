@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:pet_rescue_mobile/repository/repository.dart';
 
 import 'package:pet_rescue_mobile/src/asset.dart';
 import 'package:pet_rescue_mobile/src/style.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:pet_rescue_mobile/repo/account/sign_in.dart';
 
 import 'package:splashscreen/splashscreen.dart';
 
@@ -27,6 +27,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyApp extends State<MyApp> {
+  final _repo = Repository();
+
   @override
   void initState() {
     super.initState();
@@ -38,7 +40,7 @@ class _MyApp extends State<MyApp> {
     return new SplashScreen(
       seconds: 3,
       navigateAfterSeconds: FutureBuilder<FirebaseUser>(
-          future: getCurrentUser(),
+          future: _repo.getCurrentUser(),
           builder:
               (BuildContext context, AsyncSnapshot<FirebaseUser> snapshot) {
             if (snapshot.hasError)
