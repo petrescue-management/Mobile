@@ -1,26 +1,28 @@
 import 'package:pet_rescue_mobile/models/user_model.dart';
-import 'package:pet_rescue_mobile/repo/account/account_provider.dart';
+import 'package:pet_rescue_mobile/repository/repository.dart';
 import 'package:rxdart/rxdart.dart';
 
 class AccountBloc {
-  final _userDetail = BehaviorSubject<UserModel>();
+  final _repo = Repository();
+  final _userDetails = BehaviorSubject<UserModel>();
   final _accountJWT = BehaviorSubject<String>();
 
-  Observable<UserModel> get userDetail => _userDetail.stream;
+  Observable<UserModel> get userDetail => _userDetails.stream;
   Observable<String> get accountJWT => _accountJWT.stream;
   
   getJWT(String token) async{
-    String jwt = await AccountProvider().getJWT(token);
+    String jwt = await _repo.getJWT(token);
     _accountJWT.sink.add(jwt);
   }
 
   getDetail(String jwt) async {
-    UserModel user = await AccountProvider().getUserDetail(jwt);
-    _userDetail.sink.add(user);
+    UserModel user = await _repo.getUserDetails(jwt);
+    _userDetails.sink.add(user);
   } 
 
   dispose() {
-    _userDetail.close();
+    _userDetails.close();
     _accountJWT.close();
   }
 }
+final accountBloc = AccountBloc();

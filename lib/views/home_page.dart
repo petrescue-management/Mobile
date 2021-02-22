@@ -3,6 +3,7 @@ import 'package:commons/commons.dart';
 
 import 'package:carousel_slider/carousel_options.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:pet_rescue_mobile/repository/repository.dart';
 
 import 'package:pet_rescue_mobile/src/asset.dart';
 import 'package:pet_rescue_mobile/src/data.dart';
@@ -12,7 +13,6 @@ import 'package:pet_rescue_mobile/views/rescue/rescue.dart';
 import 'package:pet_rescue_mobile/views/adoption/adopt.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:pet_rescue_mobile/repo/account/sign_in.dart';
 import 'package:pet_rescue_mobile/views/login/login_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -23,6 +23,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final _repo = Repository();
   int _current = 0;
 
   @override
@@ -82,7 +83,7 @@ class _HomePageState extends State<HomePage> {
                 height: MediaQuery.of(context).size.height * 0.07,
                 width: MediaQuery.of(context).size.width * 0.55,
                 child: FutureBuilder<FirebaseUser>(
-                  future: getCurrentUser(),
+                  future: _repo.getCurrentUser(),
                   builder: (BuildContext context,
                       AsyncSnapshot<FirebaseUser> snapshot) {
                     return RaisedButton.icon(

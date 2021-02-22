@@ -1,3 +1,4 @@
+import 'package:pet_rescue_mobile/repository/repository.dart';
 import 'package:pet_rescue_mobile/src/custom_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +7,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pet_rescue_mobile/src/data.dart';
 import 'package:pet_rescue_mobile/src/style.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:pet_rescue_mobile/repo/account/sign_in.dart';
 import 'package:pet_rescue_mobile/views/login/login_page.dart';
 
 class PetDetails extends StatelessWidget {
@@ -28,6 +28,8 @@ class DetailsScreen extends StatefulWidget {
 }
 
 class _DetailsScreenState extends State<DetailsScreen> {
+  final _repo = Repository();
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -197,7 +199,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                     width: MediaQuery.of(context).size.width * 0.7,
                     margin: EdgeInsets.all(20),
                     child: FutureBuilder<FirebaseUser>(
-                      future: getCurrentUser(),
+                      future: _repo.getCurrentUser(),
                       builder: (BuildContext context,
                           AsyncSnapshot<FirebaseUser> snapshot) {
                         return CustomButton(

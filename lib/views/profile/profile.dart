@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:commons/commons.dart';
+import 'package:pet_rescue_mobile/repository/repository.dart';
 import 'package:pet_rescue_mobile/views/profile/profile_menu.dart';
 import 'package:pet_rescue_mobile/views/profile/profile_pic.dart';
-import 'package:pet_rescue_mobile/repo/account/sign_in.dart';
 import 'package:pet_rescue_mobile/main.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -13,6 +13,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  final _repo = Repository();
   ScrollController scrollController = ScrollController();
 
   @override
@@ -32,7 +33,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     positiveText: "Yes",
                     neutralText: "No",
                     confirm: false, positiveAction: () {
-                  signOutGoogle().then((_) {
+                  _repo.signOut().then((_) {
                     Navigator.of(context).popUntil((route) => route.isFirst);
                     Navigator.pushReplacement(context,
                         MaterialPageRoute(builder: (context) => MyApp()));

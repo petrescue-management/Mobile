@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pet_rescue_mobile/repo/account/sign_in.dart';
+import 'package:pet_rescue_mobile/repository/repository.dart';
 import 'package:pet_rescue_mobile/src/asset.dart';
 
 import 'package:pet_rescue_mobile/main.dart';
@@ -38,42 +38,47 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  final _repo = Repository();
+
   // sign in button
   Widget _signInButton() {
-    return OutlineButton(
-      splashColor: Colors.grey,
-      onPressed: () {
-        signInWithGoogle().then((result) {
-          if (result != null) {
-            Navigator.of(context).popUntil((route) => route.isFirst);
-            Navigator.pushReplacement(
-                context, MaterialPageRoute(builder: (context) => MyApp()));
-          }
-        });
-      },
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
-      highlightElevation: 0,
-      borderSide: BorderSide(color: Colors.grey),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Image(image: AssetImage(google_logo), height: 30.0),
-            Padding(
-              padding: const EdgeInsets.only(left: 10),
-              child: Text(
-                'Sign in with Google',
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Colors.grey,
-                ),
+    return FutureBuilder(
+        future: _repo.signInWithGoogle(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          return OutlineButton(
+            onPressed: () {
+              if (snapshot != null) {
+                Navigator.of(context).popUntil((route) => route.isFirst);
+                Navigator.pushReplacement(
+                    context, MaterialPageRoute(builder: (context) => MyApp()));
+              }
+            },
+            splashColor: Colors.grey,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
+            highlightElevation: 0,
+            borderSide: BorderSide(color: Colors.grey),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Image(image: AssetImage(google_logo), height: 30.0),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10),
+                    child: Text(
+                      'Sign in with Google',
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  )
+                ],
               ),
-            )
-          ],
-        ),
-      ),
-    );
+            ),
+          );
+        });
   }
 }
