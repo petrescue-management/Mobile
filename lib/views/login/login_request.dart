@@ -25,7 +25,7 @@ class _LoginRequestState extends State<LoginRequest> {
                 tag: 'hero',
                 child: SizedBox(height: 250, child: Image.asset(app_logo))),
             Text(
-                "You haven't sign in to your account. \nPlease log in to see more feature!!"),
+                "You haven't sign in to your account!!"),
             _signInButton(),
           ],
         ),
@@ -40,43 +40,45 @@ class _LoginRequestState extends State<LoginRequest> {
 
   // sign in button
   Widget _signInButton() {
-    return FutureBuilder(
-        future: _repo.signInWithGoogle(),
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          return OutlineButton(
-            onPressed: () {
-              if (snapshot != null) {
-                Navigator.of(context).popUntil((route) => route.isFirst);
-                Navigator.pushReplacement(
-                    context, MaterialPageRoute(builder: (context) => MyApp()));
-              }
-            },
-            splashColor: Colors.grey,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
-            highlightElevation: 0,
-            borderSide: BorderSide(color: Colors.grey),
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Image(image: AssetImage(google_logo), height: 30.0),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 10),
-                    child: Text(
-                      'Sign in with Google',
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.grey,
-                      ),
-                    ),
-                  )
-                ],
+    return OutlineButton(
+      onPressed: () {
+        _repo.signInWithGoogle().then((value) => {
+              if (value == null)
+                print("null value")
+              else
+                {
+                  print(value.toString()),
+                  //_repo.getUserDetails(value),
+                  Navigator.of(context).popUntil((route) => route.isFirst),
+                  Navigator.pushReplacement(
+                      context, MaterialPageRoute(builder: (context) => MyApp()))
+                }
+            });
+      },
+      splashColor: Colors.grey,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
+      highlightElevation: 0,
+      borderSide: BorderSide(color: Colors.grey),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Image(image: AssetImage(google_logo), height: 30.0),
+            Padding(
+              padding: const EdgeInsets.only(left: 10),
+              child: Text(
+                'Sign in with Google',
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Colors.grey,
+                ),
               ),
-            ),
-          );
-        });
+            )
+          ],
+        ),
+      ),
+    );
   }
 }

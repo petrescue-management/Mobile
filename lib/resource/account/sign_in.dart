@@ -3,8 +3,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 import 'dart:async';
 
-import 'package:shared_preferences/shared_preferences.dart';
-
 import 'account_provider.dart';
 
 class FirebaseSignIn {
@@ -49,13 +47,10 @@ class FirebaseSignIn {
 
       var jwt = AccountProvider().getJWT(tokenFirebase);
 
-      if (jwt != null) {
-        SharedPreferences sharedPreferences =
-            await SharedPreferences.getInstance();
-        print("JWT in SP:" + sharedPreferences.getString('token'));
-
-        return jwt;
-      }
+      //   SharedPreferences sharedPreferences =
+      //       await SharedPreferences.getInstance();
+      //   print("JWT in SP:" + sharedPreferences.getString('token'));
+      return jwt;
       // return '$currentUser';
     }
     return null;
