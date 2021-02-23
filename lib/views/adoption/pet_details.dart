@@ -7,7 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pet_rescue_mobile/src/data.dart';
 import 'package:pet_rescue_mobile/src/style.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:pet_rescue_mobile/views/login/login_page.dart';
+import 'package:pet_rescue_mobile/views/login/login_request.dart';
 
 class PetDetails extends StatelessWidget {
   @override
@@ -212,7 +212,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                   "Please log in to adopt this pet!!",
                                   neutralAction: () {
                                 Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => LoginPage()));
+                                    builder: (context) => LoginRequest()));
                               });
                             } else {
                               return successDialog(context,

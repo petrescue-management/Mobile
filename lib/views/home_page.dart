@@ -13,7 +13,7 @@ import 'package:pet_rescue_mobile/views/rescue/rescue.dart';
 import 'package:pet_rescue_mobile/views/adoption/adopt.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:pet_rescue_mobile/views/login/login_page.dart';
+import 'package:pet_rescue_mobile/views/login/login_request.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key key}) : super(key: key);
@@ -102,7 +102,7 @@ class _HomePageState extends State<HomePage> {
                               context, "Please log in to view this session!!",
                               neutralAction: () {
                             Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => LoginPage()));
+                                builder: (context) => LoginRequest()));
                           });
                         } else
                           Navigator.of(context).push(
