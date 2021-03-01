@@ -27,12 +27,15 @@ class AccountProvider {
     }
   }
 
-  Future<UserModel> getUserDetail(String token) async {
+  Future<UserModel> getUserDetail() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    var jwtToken = sharedPreferences.getString('token');
+
     final response = await http.get(
       ApiUrl.getUserDetail,
-      headers: <String, String>{
+      headers: {
         "Content-Type": "application/json; charset=UTF-8",
-        "Authorization" : "Bearer " + token,
+        "Authorization" : "Bearer " + jwtToken,
       },
     );
 

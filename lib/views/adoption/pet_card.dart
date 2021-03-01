@@ -5,7 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // ignore: must_be_immutable
 class PetCard extends StatelessWidget {
-  String petId;
+  String petId = '';
   String petName = '';
   String breed = '';
   String age = '';
@@ -31,10 +31,7 @@ class PetCard extends StatelessWidget {
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) {
-              return DetailsScreen(
-                id: petId,
-                color: Colors.amber[100]
-              );
+              return DetailsScreen(id: petId);
             },
           ),
         );
@@ -81,14 +78,14 @@ class PetCard extends StatelessWidget {
                               )
                             ],
                           ),
-                          Text(
-                            breed,
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: fadedBlack,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                          // Text(
+                          //   breed,
+                          //   style: TextStyle(
+                          //     fontSize: 12,
+                          //     color: fadedBlack,
+                          //     fontWeight: FontWeight.bold,
+                          //   ),
+                          // ),
                           Text(
                             age,
                             style: TextStyle(
@@ -116,21 +113,15 @@ class PetCard extends StatelessWidget {
               child: Stack(
                 children: [
                   Container(
-                    decoration: BoxDecoration(
-                      color: Colors.amber[100],
-                      boxShadow: customShadow,
+                    child: ClipRRect(
                       borderRadius: BorderRadius.circular(20),
-                    ),
-                    margin: EdgeInsets.only(top: 50),
-                  ),
-                  Align(
-                    child: Hero(
-                      tag: petId,
-                      child: Image.asset(
-                        imagePath,
-                        height: 170,
+                      child: Image.network(
+                        'https://st3.idealista.it/cms/archivie/2019-02/media/image/pets%203%20flickr.jpg?fv=P9PHE6uf',
+                        fit: BoxFit.cover,
+                        height: 150,
                       ),
                     ),
+                    margin: EdgeInsets.only(top: 50),
                   ),
                 ],
               ),

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:pet_rescue_mobile/src/style.dart';
 
-class ProfileMenu extends StatelessWidget {
-  const ProfileMenu({
+class ConfigMenu extends StatelessWidget {
+  const ConfigMenu({
     @required this.text,
-    @required this.icon,
-    @required this.press,
+    this.icon,
+    this.press,
   });
 
   final String text;
