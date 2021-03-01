@@ -19,6 +19,7 @@ class _AdoptionPageState extends State<AdoptionPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Text('Adopt', style: TextStyle(color: Colors.black)),
         brightness: Brightness.light,
         backgroundColor: Colors.transparent,
         elevation: 0,

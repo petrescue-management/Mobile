@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-
+import 'package:commons/commons.dart';
 import 'dart:async';
 
 import 'account_provider.dart';
@@ -47,11 +47,7 @@ class FirebaseSignIn {
 
       var jwt = AccountProvider().getJWT(tokenFirebase);
 
-      //   SharedPreferences sharedPreferences =
-      //       await SharedPreferences.getInstance();
-      //   print("JWT in SP:" + sharedPreferences.getString('token'));
       return jwt;
-      // return '$currentUser';
     }
     return null;
   }
@@ -60,6 +56,9 @@ class FirebaseSignIn {
   Future<void> signOutGoogle() async {
     await _auth.signOut();
     await googleSignIn.signOut();
+
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    sharedPreferences.remove('token');
 
     print("User Signed Out");
   }

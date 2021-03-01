@@ -9,20 +9,29 @@ class AccountBloc {
 
   Observable<UserModel> get userDetail => _userDetails.stream;
   Observable<String> get accountJWT => _accountJWT.stream;
-  
+
   getJWT(String token) async{
     String jwt = await _repo.getJWT(token);
     _accountJWT.sink.add(jwt);
   }
 
-  getDetail(String jwt) async {
-    UserModel user = await _repo.getUserDetails(jwt);
+  getDetail() async {
+    UserModel user = await _repo.getUserDetails();
     _userDetails.sink.add(user);
   } 
+
+  UserModel getUser() {
+    UserModel user;
+    _repo.getUserDetails().then((value) => {
+      user = value,
+    });
+    return user;
+  }
 
   dispose() {
     _userDetails.close();
     _accountJWT.close();
   }
 }
-final accountBloc = AccountBloc();
+
+final bloc = AccountBloc();

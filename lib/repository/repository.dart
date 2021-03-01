@@ -9,7 +9,7 @@ class Repository {
   final accountProvider = AccountProvider();
   final signInProvider = FirebaseSignIn();
 
-  Future<String> signInWithGoogle() => signInProvider.signInWithGoogle();
+  Future<String> signIn() => signInProvider.signInWithGoogle();
 
   Future<FirebaseUser> getCurrentUser() => signInProvider.getCurrentUser();
 
@@ -18,6 +18,6 @@ class Repository {
   Future<String> getJWT(String firebaseToken) =>
       accountProvider.getJWT(firebaseToken);
 
-  Future<UserModel> getUserDetails(String jwtToken) =>
-      accountProvider.getUserDetail(jwtToken);
+  Future<UserModel> getUserDetails() =>
+      accountProvider.getUserDetail();
 }

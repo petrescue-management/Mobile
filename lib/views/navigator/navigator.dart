@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:pet_rescue_mobile/src/style.dart';
 import '../home_page.dart';
-import '../profile/profile.dart';
+import '../personal/personal.dart';
 import '../progress/progress_report.dart';
 
 class BottomNavBar extends StatefulWidget {
@@ -25,7 +25,7 @@ class _BottomNavBar extends State<BottomNavBar> {
   final List<Widget> pages = [
     HomePage(key: PageStorageKey('HomePage')),
     ProgressReportPage(key: PageStorageKey('ProgressReportPage')),
-    ProfilePage(key: PageStorageKey('ProfilePage')),
+    PersonalPage(key: PageStorageKey('PersonalPage')),
   ];
 
   final PageStorageBucket bucket = PageStorageBucket();

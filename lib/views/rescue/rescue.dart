@@ -24,6 +24,9 @@ class _RescueFormState extends State<RescueForm> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          title: Text('Rescue', style: TextStyle(
+            color: Colors.black
+          ),),
           brightness: Brightness.light,
           backgroundColor: Colors.transparent,
           elevation: 0,

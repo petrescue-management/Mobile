@@ -42,13 +42,11 @@ class _LoginRequestState extends State<LoginRequest> {
   Widget _signInButton() {
     return OutlineButton(
       onPressed: () {
-        _repo.signInWithGoogle().then((value) => {
+        _repo.signIn().then((value) => {
               if (value == null)
                 print("null value")
               else
                 {
-                  print(value.toString()),
-                  //_repo.getUserDetails(value),
                   Navigator.of(context).popUntil((route) => route.isFirst),
                   Navigator.pushReplacement(
                       context, MaterialPageRoute(builder: (context) => MyApp()))

@@ -9,19 +9,10 @@ import 'package:pet_rescue_mobile/src/style.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:pet_rescue_mobile/views/login/login_request.dart';
 
-class PetDetails extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    throw UnimplementedError();
-  }
-}
-
 // ignore: must_be_immutable
 class DetailsScreen extends StatefulWidget {
   String id;
-  Color color;
-  DetailsScreen({this.id, this.color});
+  DetailsScreen({this.id});
 
   @override
   _DetailsScreenState createState() => _DetailsScreenState();
@@ -32,20 +23,19 @@ class _DetailsScreenState extends State<DetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
 
     String petName = '';
     String breed = '';
     String age = '';
     String gender = '';
-    String imagePath = '';
+    //String imgUrl = '';
+
     dogs.forEach((dog) {
       if (dog['id'] == widget.id) {
         petName = dog['name'];
         breed = dog['breed'];
         age = dog['age'];
         gender = dog['gender'];
-        imagePath = dog['imagePath'];
       }
     });
     return Scaffold(
@@ -55,23 +45,14 @@ class _DetailsScreenState extends State<DetailsScreen> {
           Positioned.fill(
             child: Column(
               children: [
+                //image
                 Expanded(
                   child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 60, horizontal: 30),
-                    color: widget.color,
-                    child: Stack(
-                      children: [
-                        Align(
-                          alignment: Alignment.center,
-                          child: Hero(
-                            tag: widget.id,
-                            child: Image.asset(
-                              imagePath,
-                              width: size.width * 0.7,
-                            ),
-                          ),
-                        ),
-                      ],
+                    child: ClipRRect(
+                      child: Image.network(
+                        'https://st3.idealista.it/cms/archivie/2019-02/media/image/pets%203%20flickr.jpg?fv=P9PHE6uf',
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                 ),
@@ -83,6 +64,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                         SizedBox(
                           height: 100,
                         ),
+                        //description
                         Container(
                           margin: EdgeInsets.symmetric(
                             horizontal: 20,
