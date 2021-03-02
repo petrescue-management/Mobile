@@ -22,7 +22,7 @@ class _PersonalPageState extends State<PersonalPage> {
   @override
   void initState() {
     super.initState();
-    bloc.getDetail();
+    accountBloc.getDetail();
   }
 
   @override
@@ -54,8 +54,8 @@ class _PersonalPageState extends State<PersonalPage> {
         ),
         body: Center(
           child: StreamBuilder(
-            stream: bloc.userDetail,
-            builder: (context, snapshot) {
+            stream: accountBloc.userDetail,
+            builder: (context, AsyncSnapshot<UserModel> snapshot) {
               if (snapshot.hasData) {
                 return Column(
                   children: [profilePic(snapshot.data), configMenu()],

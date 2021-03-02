@@ -33,7 +33,7 @@ class UserModel {
       address: json['address'],
       gender: json['gender'],
       phone: json['phone'],
-      imgUrl: json['urlImg'],
+      imgUrl: json['imgUrl'],
     );
   }
 }

@@ -32,7 +32,7 @@ class _ProfileDetailsState extends State<ProfileDetails> {
         ),
         body: Center(
           child: StreamBuilder(
-            stream: bloc.userDetail,
+            stream: accountBloc.userDetail,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 return Column(
