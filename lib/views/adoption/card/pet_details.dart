@@ -1,43 +1,37 @@
-import 'package:pet_rescue_mobile/repository/repository.dart';
-import 'package:pet_rescue_mobile/src/custom_button.dart';
+import 'package:commons/commons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:commons/commons.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:pet_rescue_mobile/src/data.dart';
+// import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import 'package:pet_rescue_mobile/src/style.dart';
+import 'package:pet_rescue_mobile/src/custom_button.dart';
+
+import 'package:pet_rescue_mobile/repository/repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:pet_rescue_mobile/views/login/login_request.dart';
+import 'package:pet_rescue_mobile/models/pet/pet_model.dart';
 
 // ignore: must_be_immutable
-class DetailsScreen extends StatefulWidget {
+class DetailsScreen extends StatelessWidget {
+  List<PetModel> petList;
   String id;
-  DetailsScreen({this.id});
-
-  @override
-  _DetailsScreenState createState() => _DetailsScreenState();
-}
-
-class _DetailsScreenState extends State<DetailsScreen> {
+  String petName;
+  String petBreed;
+  String imgUrl;
   final _repo = Repository();
+
+  DetailsScreen({this.petList, this.id});
 
   @override
   Widget build(BuildContext context) {
-
-    String petName = '';
-    String breed = '';
-    String age = '';
-    String gender = '';
-    //String imgUrl = '';
-
-    dogs.forEach((dog) {
-      if (dog['id'] == widget.id) {
-        petName = dog['name'];
-        breed = dog['breed'];
-        age = dog['age'];
-        gender = dog['gender'];
+    petList.forEach((pet) {
+      if (pet.petId == id) {
+        petName = pet.petName;
+        petBreed = pet.petBreed;
+        imgUrl = pet.imgUrl;
       }
     });
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(
@@ -50,7 +44,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                   child: Container(
                     child: ClipRRect(
                       child: Image.network(
-                        'https://st3.idealista.it/cms/archivie/2019-02/media/image/pets%203%20flickr.jpg?fv=P9PHE6uf',
+                        imgUrl,
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -132,33 +126,33 @@ class _DetailsScreenState extends State<DetailsScreen> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      Icon(
-                        gender == 'female'
-                            ? FontAwesomeIcons.venus
-                            : FontAwesomeIcons.mars,
-                        size: 22,
-                        color: Colors.black54,
-                      )
+                      // Icon(
+                      //   gender == 'female'
+                      //       ? FontAwesomeIcons.venus
+                      //       : FontAwesomeIcons.mars,
+                      //   size: 22,
+                      //   color: Colors.black54,
+                      // )
                     ],
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        breed,
+                        petBreed == null ? "null" : petBreed,
                         style: TextStyle(
                           fontSize: 12,
                           color: Colors.black,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      Text(
-                        age,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.black,
-                        ),
-                      ),
+                      // Text(
+                      //   age,
+                      //   style: TextStyle(
+                      //     fontSize: 12,
+                      //     color: Colors.black,
+                      //   ),
+                      // ),
                     ],
                   ),
                 ],
@@ -190,8 +184,8 @@ class _DetailsScreenState extends State<DetailsScreen> {
                             if (snapshot.hasError) {
                               return waitDialog(context);
                             } else if (snapshot.data == null) {
-                              return infoDialog(context,
-                                  "Please log in to adopt this pet!!",
+                              return infoDialog(
+                                  context, "Please log in to adopt this pet!!",
                                   neutralAction: () {
                                 Navigator.of(context).push(MaterialPageRoute(
                                     builder: (context) => LoginRequest()));

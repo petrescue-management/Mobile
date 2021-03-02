@@ -9,7 +9,7 @@ class AccountProvider {
   Future<String> getJWT(String token) async {
     final response = await http.get(
       ApiUrl.getJWT + "?token=" + token,
-      headers: <String, String>{
+      headers: {
         "Accept": "application/json",
         "Content-Type": "application/json; charset=UTF-8",
       },

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:commons/commons.dart';
 import 'package:pet_rescue_mobile/repository/repository.dart';
 import 'package:pet_rescue_mobile/src/asset.dart';
 import 'package:pet_rescue_mobile/main.dart';
@@ -23,9 +24,9 @@ class _LoginRequestState extends State<LoginRequest> {
           children: [
             Hero(
                 tag: 'hero',
-                child: SizedBox(height: 250, child: Image.asset(app_logo))),
-            Text(
-                "You haven't sign in to your account!!"),
+                child:
+                    SizedBox(height: 250, child: Image.asset(app_logo_circle))),
+            Text("You haven't sign in to your account!!"),
             _signInButton(),
           ],
         ),
@@ -43,13 +44,13 @@ class _LoginRequestState extends State<LoginRequest> {
     return OutlineButton(
       onPressed: () {
         _repo.signIn().then((value) => {
-              if (value == null)
-                print("null value")
+              if (value == null || value.isEmpty)
+                waitDialog(context)
               else
                 {
                   Navigator.of(context).popUntil((route) => route.isFirst),
-                  Navigator.pushReplacement(
-                      context, MaterialPageRoute(builder: (context) => MyApp()))
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => MyApp())),
                 }
             });
       },

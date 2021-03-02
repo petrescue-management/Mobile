@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 //import 'package:pet_rescue_mobile/views/adoption/categories/pet_cate.dart';
 import 'package:pet_rescue_mobile/views/adoption/categories/pet_cate_display.dart';
 
+import 'package:pet_rescue_mobile/bloc/pet_bloc.dart';
+import 'package:pet_rescue_mobile/models/pet/pet_list_model.dart';
+
 class AdoptionPage extends StatefulWidget {
   const AdoptionPage({Key key}) : super(key: key);
 
@@ -16,29 +19,41 @@ class _AdoptionPageState extends State<AdoptionPage> {
   double scaleFactor = 1;
 
   @override
+  void initState() {
+    super.initState();
+    petBloc.getList();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Adopt', style: TextStyle(color: Colors.black)),
-        brightness: Brightness.light,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          color: Colors.black,
-          onPressed: () {
-            Navigator.of(context).pop();
+        appBar: AppBar(
+          title: Text('Adopt', style: TextStyle(color: Colors.black)),
+          brightness: Brightness.light,
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            color: Colors.black,
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ),
+        body: StreamBuilder(
+          stream: petBloc.getPetList,
+          builder: (context, AsyncSnapshot<PetListModel> snapshot) {
+            if (snapshot.hasData) {
+              return Container(
+                  child: Column(
+                children: [
+                  //PetCategories(),
+                  PetCategoryDisplay(petList: snapshot.data.getResult),
+                ],
+              ));
+            }
+            return Center(child: CircularProgressIndicator());
           },
-        ),
-      ),
-      body: Container(
-        child: Column(
-          children: [
-            //PetCategories(),
-            PetCategoryDisplay(),
-          ],
-        ),
-      ),
-    );
+        ));
   }
 }

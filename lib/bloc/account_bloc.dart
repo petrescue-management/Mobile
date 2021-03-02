@@ -34,4 +34,4 @@ class AccountBloc {
   }
 }
 
-final bloc = AccountBloc();
+final accountBloc = AccountBloc();

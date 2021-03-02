@@ -9,6 +9,14 @@ enum petStatus {
   Adopted
 }
 
+enum petAge {
+  Puppy,
+  Kitten,
+  Adult,
+  Senior,
+  Unknown
+}
+
 enum adoptionStatus {
   Processing,
   Adopted,

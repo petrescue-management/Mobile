@@ -1,25 +1,46 @@
-import 'package:pet_rescue_mobile/views/adoption/pet_details.dart';
-import 'package:pet_rescue_mobile/src/style.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import 'package:pet_rescue_mobile/src/style.dart';
+import 'package:pet_rescue_mobile/views/adoption/card/pet_details.dart';
+import 'package:pet_rescue_mobile/models/pet/pet_model.dart';
+
 // ignore: must_be_immutable
 class PetCard extends StatelessWidget {
-  String petId = '';
-  String petName = '';
-  String breed = '';
-  String age = '';
-  String gender = '';
-  String imagePath = '';
+  List<PetModel> petList;
+  String petId;
+  String petName;
+  String petBreed;
+  String petType;
+  String age;
+  //String gender;
+  String imagePath;
 
   PetCard({
+    this.petType,
+    this.petList,
     this.petId,
     this.petName,
-    this.breed,
+    this.petBreed,
     this.age,
-    this.gender,
+    //this.gender,
     this.imagePath,
   });
+
+  getPetAge() {
+    if (age == '0') {
+      if (petType == "Dog")
+        return "Puppy";
+      else
+        return "Kitten";
+    } else if (age == '1') {
+      return "Adult";
+    } else if (age == '2') {
+      return "Senior";
+    } else {
+      return "Unknown";
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +52,10 @@ class PetCard extends StatelessWidget {
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) {
-              return DetailsScreen(id: petId);
+              return DetailsScreen(
+                id: petId,
+                petList: petList,
+              );
             },
           ),
         );
@@ -70,24 +94,25 @@ class PetCard extends StatelessWidget {
                                 ),
                               ),
                               Icon(
-                                gender == 'female'
-                                    ? FontAwesomeIcons.venus
-                                    : FontAwesomeIcons.mars,
+                                FontAwesomeIcons.venus,
+                                // gender == 'female'
+                                //     ? FontAwesomeIcons.venus
+                                //     : FontAwesomeIcons.mars,
                                 size: 18,
                                 color: Colors.black54,
                               )
                             ],
                           ),
-                          // Text(
-                          //   breed,
-                          //   style: TextStyle(
-                          //     fontSize: 12,
-                          //     color: fadedBlack,
-                          //     fontWeight: FontWeight.bold,
-                          //   ),
-                          // ),
                           Text(
-                            age,
+                            petBreed == null ? "null" : petBreed,
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: fadedBlack,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            getPetAge(),
                             style: TextStyle(
                               fontSize: 12,
                               color: fadedBlack,
@@ -116,9 +141,10 @@ class PetCard extends StatelessWidget {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(20),
                       child: Image.network(
-                        'https://st3.idealista.it/cms/archivie/2019-02/media/image/pets%203%20flickr.jpg?fv=P9PHE6uf',
+                        imagePath,
                         fit: BoxFit.cover,
                         height: 150,
+                        width: 200,
                       ),
                     ),
                     margin: EdgeInsets.only(top: 50),
