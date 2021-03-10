@@ -5,6 +5,7 @@ import 'package:pet_rescue_mobile/src/asset.dart';
 import 'package:pet_rescue_mobile/main.dart';
 
 class LoginRequest extends StatefulWidget {
+  static const String idScreen = 'login';
   const LoginRequest({Key key}) : super(key: key);
 
   @override
@@ -23,10 +24,13 @@ class _LoginRequestState extends State<LoginRequest> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Hero(
-                tag: 'hero',
-                child:
-                    SizedBox(height: 250, child: Image.asset(app_logo_circle))),
-            Text("You haven't sign in to your account!!"),
+              tag: 'hero',
+              child: SizedBox(
+                height: 250,
+                child: Image.asset(app_logo_circle),
+              ),
+            ),
+            Text("Bạn chưa đăng nhập vào tài khoản của bạn!"),
             _signInButton(),
           ],
         ),
@@ -51,24 +55,31 @@ class _LoginRequestState extends State<LoginRequest> {
                   Navigator.of(context).popUntil((route) => route.isFirst),
                   Navigator.pushReplacement(context,
                       MaterialPageRoute(builder: (context) => MyApp())),
+                  // Navigator.pushNamedAndRemoveUntil(
+                  //     context, MyApp.idScreen, (route) => false),
                 }
             });
       },
       splashColor: Colors.grey,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(40),
+      ),
       highlightElevation: 0,
       borderSide: BorderSide(color: Colors.grey),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+        padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Image(image: AssetImage(google_logo), height: 30.0),
+            Image(
+              image: AssetImage(google_logo),
+              height: 30.0,
+            ),
             Padding(
               padding: const EdgeInsets.only(left: 10),
               child: Text(
-                'Sign in with Google',
+                'Đăng nhập với Google',
                 style: TextStyle(
                   fontSize: 18,
                   color: Colors.grey,

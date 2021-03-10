@@ -4,10 +4,11 @@ import 'package:flutter/material.dart';
 // import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:pet_rescue_mobile/src/style.dart';
-import 'package:pet_rescue_mobile/src/custom_button.dart';
+import 'package:pet_rescue_mobile/views/widget/custom_button.dart';
 
 import 'package:pet_rescue_mobile/repository/repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:pet_rescue_mobile/views/adoption/form/adoption_dorm.dart';
 import 'package:pet_rescue_mobile/views/login/login_request.dart';
 import 'package:pet_rescue_mobile/models/pet/pet_model.dart';
 
@@ -89,7 +90,10 @@ class DetailsScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   IconButton(
-                    icon: Icon(CupertinoIcons.chevron_left),
+                    icon: Icon(
+                      Icons.chevron_left,
+                      size: 35,
+                    ),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
@@ -103,9 +107,7 @@ class DetailsScreen extends StatelessWidget {
             child: Container(
               height: 100,
               padding: EdgeInsets.all(20),
-              margin: EdgeInsets.symmetric(
-                horizontal: 20,
-              ),
+              margin: EdgeInsets.symmetric(horizontal: 20),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(30),
@@ -172,33 +174,42 @@ class DetailsScreen extends StatelessWidget {
               ),
               child: Center(
                 child: Container(
-                    width: MediaQuery.of(context).size.width * 0.7,
-                    margin: EdgeInsets.all(20),
-                    child: FutureBuilder<FirebaseUser>(
-                      future: _repo.getCurrentUser(),
-                      builder: (BuildContext context,
-                          AsyncSnapshot<FirebaseUser> snapshot) {
-                        return CustomButton(
-                          label: 'Adopt',
-                          onTap: () {
-                            if (snapshot.hasError) {
-                              return waitDialog(context);
-                            } else if (snapshot.data == null) {
-                              return infoDialog(
-                                  context, "Please log in to adopt this pet!!",
-                                  neutralAction: () {
+                  width: MediaQuery.of(context).size.width * 0.7,
+                  margin: EdgeInsets.all(20),
+                  child: FutureBuilder<FirebaseUser>(
+                    future: _repo.getCurrentUser(),
+                    builder: (context, AsyncSnapshot<FirebaseUser> snapshot) {
+                      return CustomButton(
+                        label: 'Nhận nuôi',
+                        onTap: () {
+                          if (snapshot.hasError) {
+                            return waitDialog(context);
+                          } else if (snapshot.data == null) {
+                            return infoDialog(
+                              context,
+                              "Bạn chưa đăng nhập vào tài khoản của bạn!",
+                              neutralAction: () {
                                 Navigator.of(context).push(MaterialPageRoute(
                                     builder: (context) => LoginRequest()));
-                              });
-                            } else {
-                              return successDialog(context,
-                                  "Your rescue request has been sent!!",
-                                  neutralAction: () {});
-                            }
-                          },
-                        );
-                      },
-                    )),
+                              },
+                              title: "",
+                            );
+                          } else {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) {
+                                  return AdoptFormRegistrationPage(
+                                    petId: id,
+                                  );
+                                },
+                              ),
+                            );
+                          }
+                        },
+                      );
+                    },
+                  ),
+                ),
               ),
             ),
           ),
