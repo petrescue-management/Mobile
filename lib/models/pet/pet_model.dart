@@ -13,18 +13,6 @@ class PetModel {
   // bool isVaccinated;
   // bool isSterilized;
 
-  // PetModel({
-  //   this.petId,
-  //   this.centerId,
-  //   this.petName,
-  //   this.petTypeName,
-  //   this.imgUrl,
-  //   this.petStatus,
-  //   this.petGender,
-  //   this.petBreed,
-  //   this.petFurColor
-  // });
-
   PetModel(pet) {
     petId = pet['petId'];
     centerId = pet['centerId'];

@@ -27,33 +27,43 @@ class _AdoptionPageState extends State<AdoptionPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Adopt', style: TextStyle(color: Colors.black)),
-          brightness: Brightness.light,
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
+      appBar: AppBar(
+        title: Text(
+          'Nhận nuôi thú cưng',
+          style: TextStyle(
             color: Colors.black,
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
           ),
         ),
-        body: StreamBuilder(
-          stream: petBloc.getPetList,
-          builder: (context, AsyncSnapshot<PetListModel> snapshot) {
-            if (snapshot.hasData) {
-              return Container(
-                  child: Column(
-                children: [
-                  //PetCategories(),
-                  PetCategoryDisplay(petList: snapshot.data.getResult),
-                ],
-              ));
-            }
-            return Center(child: CircularProgressIndicator());
+        centerTitle: true,
+        brightness: Brightness.light,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(
+            Icons.chevron_left,
+            size: 35,
+          ),
+          color: Colors.black,
+          onPressed: () {
+            Navigator.of(context).pop();
           },
-        ));
+        ),
+      ),
+      body: StreamBuilder(
+        stream: petBloc.getPetList,
+        builder: (context, AsyncSnapshot<PetListModel> snapshot) {
+          if (snapshot.hasData) {
+            return Container(
+                child: Column(
+              children: [
+                //PetCategories(),
+                PetCategoryDisplay(petList: snapshot.data.getResult),
+              ],
+            ));
+          }
+          return Center(child: CircularProgressIndicator());
+        },
+      ),
+    );
   }
 }

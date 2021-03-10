@@ -15,32 +15,38 @@ class _ProgressReportPageState extends State<ProgressReportPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          brightness: Brightness.light,
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.wysiwyg),
-              color: Colors.black,
-              onPressed: () {
-                warningDialog(context, "Not yet");
-              },
-            )
-          ],
+      appBar: AppBar(
+        brightness: Brightness.light,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.wysiwyg),
+            color: Colors.black,
+            onPressed: () {
+              warningDialog(
+                context,
+                "Chưa có yêu cầu nào hoàn thành!",
+                title: "",
+              );
+            },
+          )
+        ],
+      ),
+      body: Container(
+        height: MediaQuery.of(context).size.height * 0.9,
+        child: SizedBox(
+          child: SingleChildScrollView(
+            controller: scrollController,
+            child: Column(
+              children: [
+                ProgressCard(),
+                ProgressCard(),
+              ],
+            ),
+          ),
         ),
-        body: Container(
-            height: MediaQuery.of(context).size.height * 0.9,
-            child: SizedBox(
-              child: SingleChildScrollView(
-                controller: scrollController,
-                child: Column(
-                  children: [
-                    ProgressCard(),
-                    ProgressCard(),
-                  ],
-                ),
-              ),
-            )));
+      ),
+    );
   }
 }

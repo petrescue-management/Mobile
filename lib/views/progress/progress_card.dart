@@ -22,8 +22,9 @@ class _ProgressCard extends State<ProgressCard> {
                   decoration: BoxDecoration(
                     color: color3,
                     borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(20),
-                        bottomLeft: Radius.circular(20)),
+                      topLeft: Radius.circular(20),
+                      bottomLeft: Radius.circular(20),
+                    ),
                   ),
                 ),
                 Expanded(
@@ -62,9 +63,13 @@ class _ProgressCard extends State<ProgressCard> {
               ],
             ),
             decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(20)),
-                border: Border.all(color: Colors.black, width: 1.2)),
+              color: Colors.white,
+              borderRadius: BorderRadius.all(Radius.circular(20)),
+              border: Border.all(
+                color: Colors.black,
+                width: 1.2,
+              ),
+            ),
           ),
         ],
       ),

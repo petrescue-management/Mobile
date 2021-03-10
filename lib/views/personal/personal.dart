@@ -37,11 +37,11 @@ class _PersonalPageState extends State<PersonalPage> {
               icon: Icon(Icons.logout),
               color: Colors.black,
               onPressed: () {
-                confirmationDialog(
-                    context, "Are you sure you want to sign out?",
-                    positiveText: "Yes",
-                    neutralText: "No",
-                    confirm: false, positiveAction: () {
+                confirmationDialog(context, "Bạn chắc chắn muốn đăng xuất ?",
+                    positiveText: "Có",
+                    neutralText: "Không",
+                    confirm: false,
+                    title: "", positiveAction: () {
                   _repo.signOut().then((_) {
                     Navigator.of(context).popUntil((route) => route.isFirst);
                     Navigator.pushReplacement(context,
@@ -58,7 +58,10 @@ class _PersonalPageState extends State<PersonalPage> {
             builder: (context, AsyncSnapshot<UserModel> snapshot) {
               if (snapshot.hasData) {
                 return Column(
-                  children: [profilePic(snapshot.data), configMenu()],
+                  children: [
+                    profilePic(snapshot.data),
+                    configMenu(),
+                  ],
                 );
               }
               return Center(child: CircularProgressIndicator());
@@ -69,52 +72,66 @@ class _PersonalPageState extends State<PersonalPage> {
 
   Widget profilePic(UserModel user) {
     return Container(
-        height: MediaQuery.of(context).size.height * 0.25,
-        alignment: Alignment.center,
-        child: Column(
-          children: [
-            SizedBox(
-              height: 130,
-              width: 130,
-              child: CircleAvatar(
-                backgroundImage: NetworkImage(user.imgUrl),
-              ),
+      height: MediaQuery.of(context).size.height * 0.25,
+      alignment: Alignment.center,
+      child: Column(
+        children: [
+          SizedBox(
+            height: 130,
+            width: 130,
+            child: CircleAvatar(
+              backgroundImage: NetworkImage(user.imgUrl),
             ),
-            SizedBox(
-              height: 15,
+          ),
+          SizedBox(
+            height: 15,
+          ),
+          Center(
+            child: Text(
+              user.firstName + " " + user.lastName,
+              style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
+                  letterSpacing: 1.5),
             ),
-            Text(user.firstName + " " + user.lastName, style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w500,
-              letterSpacing: 1.5
-            ),)
-          ],
-        ));
+          ),
+        ],
+      ),
+    );
   }
 
   Widget configMenu() {
     return Container(
-        child: Container(
-      height: MediaQuery.of(context).size.height * 0.4,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          ConfigMenu(
-              text: 'My Profile',
-              icon: Icons.account_circle,
-              press: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return ProfileDetails();
-                    },
-                  ),
-                );
-              }),
-          ConfigMenu(text: 'My Pet', icon: Icons.favorite, press: () {}),
-          ConfigMenu(text: 'Become A Center', icon: Icons.pets, press: () {}),
-        ],
+      child: Container(
+        height: MediaQuery.of(context).size.height * 0.4,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            ConfigMenu(
+                text: 'Tài khoản của tôi',
+                icon: Icons.account_circle,
+                press: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return ProfileDetails();
+                      },
+                    ),
+                  );
+                }),
+            ConfigMenu(
+              text: 'Thú cưng của tôi',
+              icon: Icons.favorite,
+              press: () {},
+            ),
+            ConfigMenu(
+              text: 'Trở thành Trung tâm cứu hộ',
+              icon: Icons.pets,
+              press: () {},
+            ),
+          ],
+        ),
       ),
-    ));
+    );
   }
 }

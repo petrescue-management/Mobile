@@ -30,15 +30,15 @@ class PetCard extends StatelessWidget {
   getPetAge() {
     if (age == '0') {
       if (petType == "Dog")
-        return "Puppy";
+        return "Chó con";
       else
-        return "Kitten";
+        return "Mèo con";
     } else if (age == '1') {
       return "Adult";
     } else if (age == '2') {
       return "Senior";
     } else {
-      return "Unknown";
+      return "Chưa biết";
     }
   }
 
@@ -77,8 +77,10 @@ class PetCard extends StatelessWidget {
                   ),
                   Expanded(
                     child: Container(
-                      margin:
-                          EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+                      margin: EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 20,
+                      ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
