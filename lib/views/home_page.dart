@@ -16,8 +16,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:pet_rescue_mobile/views/login/login_request.dart';
 
 class HomePage extends StatefulWidget {
-  static const String idScreen = 'home';
-
   const HomePage({Key key}) : super(key: key);
 
   @override

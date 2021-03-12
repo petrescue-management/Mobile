@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:commons/commons.dart';
-import 'package:pet_rescue_mobile/src/style.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:pet_rescue_mobile/views/widget/custom_button.dart';
+import 'package:pet_rescue_mobile/views/custom_widget/custom_button.dart';
+import 'package:pet_rescue_mobile/views/custom_widget/custom_field.dart';
 
 // ignore: must_be_immutable
 class AdoptFormRegistrationPage extends StatefulWidget {
