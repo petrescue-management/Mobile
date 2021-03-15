@@ -21,8 +21,7 @@ class Repository {
   Future<String> getJWT(String firebaseToken) =>
       accountProvider.getJWT(firebaseToken);
 
-  Future<UserModel> getUserDetails() =>
-      accountProvider.getUserDetail();
+  Future<UserModel> getUserDetails() => accountProvider.getUserDetail();
 
   Future<PetListModel> getPetList() => petProvider.getPetList();
 }

@@ -5,7 +5,6 @@ import 'package:pet_rescue_mobile/src/asset.dart';
 import 'package:pet_rescue_mobile/main.dart';
 
 class LoginRequest extends StatefulWidget {
-  static const String idScreen = 'login';
   const LoginRequest({Key key}) : super(key: key);
 
   @override
@@ -55,8 +54,6 @@ class _LoginRequestState extends State<LoginRequest> {
                   Navigator.of(context).popUntil((route) => route.isFirst),
                   Navigator.pushReplacement(context,
                       MaterialPageRoute(builder: (context) => MyApp())),
-                  // Navigator.pushNamedAndRemoveUntil(
-                  //     context, MyApp.idScreen, (route) => false),
                 }
             });
       },

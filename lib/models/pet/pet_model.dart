@@ -6,7 +6,7 @@ class PetModel {
   String petBreed;
   String petFurColor;
   String imgUrl;
-  String petAge;
+  //String petAge;
   int petStatus;
   int petGender;
   // int petWeight;
@@ -19,7 +19,7 @@ class PetModel {
     petName = pet['petName'];
     petTypeName = pet['petTypeName'];
     imgUrl = pet['imageUrl'];
-    petAge = pet['petAge'];
+    //petAge = pet['petAge'];
     //petStatus = pet['petStatus'];
     //petGender = pet['petGender'];
     petBreed = pet['petBreedName'];

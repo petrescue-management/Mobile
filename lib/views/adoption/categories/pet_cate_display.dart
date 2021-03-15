@@ -24,7 +24,7 @@ class PetCategoryDisplay extends StatelessWidget {
               petId: petList[index].petId,
               petName: petList[index].petName,
               petBreed: petList[index].petBreed,
-              age: petList[index].petAge,
+              //age: petList[index].petAge,
               imagePath: petList[index].imgUrl,
               petType: petList[index].petTypeName,
             ),
