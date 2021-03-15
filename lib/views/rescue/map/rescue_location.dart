@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:pet_rescue_mobile/repository/repository.dart';
-
+import 'package:pet_rescue_mobile/resource/location/assistant.dart';
+import 'package:pet_rescue_mobile/src/style.dart';
 
 class RescueLocation extends StatefulWidget {
   @override
@@ -25,7 +25,6 @@ class _RescueLocationState extends State<RescueLocation> {
   Position currentPosition;
   var geoLocator = Geolocator();
   bool _isLoading;
-  Repository _repo;
 
   locatePosition() async {
     Position position = await Geolocator.getCurrentPosition(
@@ -37,14 +36,14 @@ class _RescueLocationState extends State<RescueLocation> {
 
     CameraPosition cameraPosition = new CameraPosition(
       target: latLngPosition,
-      zoom: 14,
+      zoom: 20,
     );
 
     newGoogleMapController.animateCamera(
       CameraUpdate.newCameraPosition(cameraPosition),
     );
 
-    String address = await _repo.searchCoordinateAddress(position);
+    String address = await Assistant.searchCoordinateAddress(position);
     print('This is your Address: ' + address);
   }
 
@@ -68,6 +67,22 @@ class _RescueLocationState extends State<RescueLocation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        brightness: Brightness.light,
+        backgroundColor: color2,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(
+            Icons.chevron_left,
+            size: 35,
+          ),
+          color: Colors.white,
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+      ),
       body: _isLoading ? loadMap(context) : getLocation(context),
     );
   }
@@ -105,30 +120,6 @@ class _RescueLocationState extends State<RescueLocation> {
 
             locatePosition();
           },
-        ),
-        Align(
-          alignment: Alignment.topCenter,
-          child: Container(
-            margin: EdgeInsets.symmetric(
-              vertical: 6.0,
-              horizontal: 10,
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                IconButton(
-                  icon: Icon(
-                    Icons.chevron_left,
-                    size: 35,
-                    color: Colors.black,
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            ),
-          ),
         ),
       ],
     );

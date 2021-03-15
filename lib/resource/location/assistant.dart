@@ -20,8 +20,9 @@ class Assistant {
 
   static Future<String> searchCoordinateAddress(Position position) async {
     String placeAddress = '';
-    String url = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.latitude},${position.longitude}&key=' + mapKey;
-    
+    String url = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.latitude},${position.longitude}&key=$mapKey';
+    print('Address coordinate url: ' + url);
+     
     var response = await getRequest(url);
 
     if (response != 'Failed') {

@@ -9,7 +9,7 @@ import 'package:pet_rescue_mobile/src/asset.dart';
 import 'package:pet_rescue_mobile/src/data.dart';
 import 'package:pet_rescue_mobile/src/style.dart';
 
-import 'package:pet_rescue_mobile/views/rescue/rescue_location.dart';
+import 'package:pet_rescue_mobile/views/rescue/map/rescue_location.dart';
 import 'package:pet_rescue_mobile/views/adoption/adopt.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
