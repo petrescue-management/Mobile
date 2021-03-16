@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:commons/commons.dart';
 import 'package:pet_rescue_mobile/repository/repository.dart';
 import 'package:pet_rescue_mobile/src/asset.dart';
 import 'package:pet_rescue_mobile/main.dart';
@@ -42,13 +41,31 @@ class _LoginRequestState extends State<LoginRequest> {
 
   final _repo = Repository();
 
+  // loading
+  Widget loading(BuildContext context) {
+    return Container(
+      height: MediaQuery.of(context).size.height,
+      width: MediaQuery.of(context).size.width,
+      color: Colors.white,
+      child: Center(
+        child: Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.rectangle,
+            color: Colors.white,
+          ),
+          child: CircularProgressIndicator(),
+        ),
+      ),
+    );
+  }
+
   // sign in button
   Widget _signInButton() {
     return OutlineButton(
       onPressed: () {
         _repo.signIn().then((value) => {
               if (value == null || value.isEmpty)
-                waitDialog(context)
+                loading(context)
               else
                 {
                   Navigator.of(context).popUntil((route) => route.isFirst),

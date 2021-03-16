@@ -5,15 +5,22 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:pet_rescue_mobile/repository/repository.dart';
 import 'package:pet_rescue_mobile/views/navigator/navigator.dart';
 import 'package:pet_rescue_mobile/views/navigator/bottomnav_nologin.dart';
+import 'package:provider/provider.dart';
+import 'package:pet_rescue_mobile/resource/location/app_data.dart';
 
-void main() => runApp(new MaterialApp(
-      initialRoute: '/',
-      debugShowCheckedModeBanner: false,
-      routes: {
-        '/': (context) => MyApp(),
-      },
-      // home: new MyApp(),
-    ));
+void main() => runApp(
+      ChangeNotifierProvider(
+        create: (context) => AppData(),
+        child: MaterialApp(
+          initialRoute: '/',
+          debugShowCheckedModeBanner: false,
+          routes: {
+            '/': (context) => MyApp(),
+          },
+          // home: new MyApp(),
+        ),
+      ),
+    );
 
 class MyApp extends StatefulWidget {
   @override
