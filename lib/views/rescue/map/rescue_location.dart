@@ -2,10 +2,15 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:provider/provider.dart';
+import 'package:pet_rescue_mobile/src/style.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:pet_rescue_mobile/resource/location/assistant.dart';
-import 'package:pet_rescue_mobile/src/style.dart';
+import 'package:pet_rescue_mobile/resource/location/app_data.dart';
+import 'package:pet_rescue_mobile/views/rescue/rescue.dart';
+import 'package:pet_rescue_mobile/views/rescue/map/search_address.dart';
+
 
 class RescueLocation extends StatefulWidget {
   @override
@@ -24,6 +29,7 @@ class _RescueLocationState extends State<RescueLocation> {
 
   Position currentPosition;
   var geoLocator = Geolocator();
+  double bottomPaddingMap = 0;
   bool _isLoading;
 
   locatePosition() async {
@@ -36,14 +42,14 @@ class _RescueLocationState extends State<RescueLocation> {
 
     CameraPosition cameraPosition = new CameraPosition(
       target: latLngPosition,
-      zoom: 20,
+      zoom: 18,
     );
 
     newGoogleMapController.animateCamera(
       CameraUpdate.newCameraPosition(cameraPosition),
     );
 
-    String address = await Assistant.searchCoordinateAddress(position);
+    String address = await Assistant.searchCoordinateAddress(position, context);
     print('This is your Address: ' + address);
   }
 
@@ -67,22 +73,6 @@ class _RescueLocationState extends State<RescueLocation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        brightness: Brightness.light,
-        backgroundColor: color2,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(
-            Icons.chevron_left,
-            size: 35,
-          ),
-          color: Colors.white,
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
-      ),
       body: _isLoading ? loadMap(context) : getLocation(context),
     );
   }
@@ -107,7 +97,9 @@ class _RescueLocationState extends State<RescueLocation> {
   Widget getLocation(BuildContext context) {
     return Stack(
       children: [
+        // map
         GoogleMap(
+          padding: EdgeInsets.only(bottom: bottomPaddingMap),
           mapType: MapType.normal,
           myLocationButtonEnabled: true,
           initialCameraPosition: _kGooglePlex,
@@ -118,8 +110,157 @@ class _RescueLocationState extends State<RescueLocation> {
             _controllerGoogleMap.complete(controller);
             newGoogleMapController = controller;
 
+            setState(() {
+              bottomPaddingMap = MediaQuery.of(context).size.height * 0.13;
+            });
+
             locatePosition();
           },
+        ),
+        // search panel
+        Positioned(
+          bottom: 0.0,
+          child: Container(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height * 0.13,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(25.0),
+                topRight: Radius.circular(25.0),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black,
+                  blurRadius: 16.0,
+                  spreadRadius: 0.5,
+                  offset: Offset(0.7, 0.7),
+                )
+              ],
+            ),
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: 20.0,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // search address
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return SearchAddress();
+                            },
+                          ),
+                        );
+                    },
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.7,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10.0),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black54,
+                            blurRadius: 5.0,
+                            spreadRadius: 0.5,
+                            offset: Offset(0.5, 0.5),
+                          )
+                        ],
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(13.0),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.search,
+                              color: Colors.black,
+                            ),
+                            SizedBox(
+                              width: 10.0,
+                            ),
+                            Flexible(
+                              child: Text(
+                                Provider.of<AppData>(context).pickUpLocation !=
+                                        null
+                                    ? Provider.of<AppData>(context)
+                                        .pickUpLocation
+                                        .placeName
+                                    : 'Địa chỉ của bạn...',
+                                overflow: TextOverflow.ellipsis,
+                                softWrap: false,
+                                maxLines: 1,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 5.0,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: primaryGreen,
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black54,
+                          blurRadius: 5.0,
+                          spreadRadius: 0.5,
+                          offset: Offset(0.5, 0.5),
+                        )
+                      ],
+                    ),
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.done,
+                        size: 30.0,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return Rescue();
+                            },
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        // back to home page
+        Align(
+          alignment: Alignment.topCenter,
+          child: Container(
+            margin: EdgeInsets.symmetric(
+              vertical: 10,
+              horizontal: 10,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  icon: Icon(
+                    Icons.chevron_left,
+                    size: 35,
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            ),
+          ),
         ),
       ],
     );
