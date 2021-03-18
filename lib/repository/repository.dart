@@ -18,8 +18,8 @@ class Repository {
 
   Future<void> signOut() => signInProvider.signOutGoogle();
 
-  Future<String> getJWT(String firebaseToken) =>
-      accountProvider.getJWT(firebaseToken);
+  Future<String> getJWT(String firebaseToken, String deviceToken) =>
+      accountProvider.getJWT(firebaseToken, deviceToken);
 
   Future<UserModel> getUserDetails() => accountProvider.getUserDetail();
 

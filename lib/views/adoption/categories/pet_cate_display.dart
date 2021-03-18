@@ -21,12 +21,7 @@ class PetCategoryDisplay extends StatelessWidget {
           return Container(
             child: PetCard(
               petList: petList,
-              petId: petList[index].petId,
-              petName: petList[index].petName,
-              petBreed: petList[index].petBreed,
-              //age: petList[index].petAge,
-              imagePath: petList[index].imgUrl,
-              petType: petList[index].petTypeName,
+              pet: petList[index],
             ),
           );
         },

@@ -4,12 +4,13 @@ import 'package:commons/commons.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:pet_rescue_mobile/views/custom_widget/custom_button.dart';
 import 'package:pet_rescue_mobile/views/custom_widget/custom_field.dart';
+import 'package:pet_rescue_mobile/models/pet/pet_model.dart';
 
 // ignore: must_be_immutable
 class AdoptFormRegistrationPage extends StatefulWidget {
-  String petId;
+  PetModel pet;
 
-  AdoptFormRegistrationPage({this.petId});
+  AdoptFormRegistrationPage({this.pet});
 
   @override
   _AdoptFormRegistrationPageState createState() =>
@@ -66,6 +67,13 @@ class _AdoptFormRegistrationPageState extends State<AdoptFormRegistrationPage> {
           width: MediaQuery.of(context).size.width,
           child: Column(
             children: [
+              // Padding(
+              //   padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 10),
+              //   child: Container(
+              //     color: Colors.amberAccent,
+              //     child: petInfo(context, pet),
+              //   ),
+              // ),
               FormBuilder(
                 key: _fbKey,
                 child: Expanded(

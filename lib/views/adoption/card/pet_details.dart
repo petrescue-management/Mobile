@@ -1,6 +1,7 @@
 import 'package:commons/commons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:pet_rescue_mobile/src/style.dart';
 import 'package:pet_rescue_mobile/repository/repository.dart';
@@ -12,24 +13,13 @@ import 'package:pet_rescue_mobile/models/pet/pet_model.dart';
 // ignore: must_be_immutable
 class DetailsScreen extends StatelessWidget {
   List<PetModel> petList;
-  String id;
-  String petName;
-  String petBreed;
-  String imgUrl;
+  PetModel pet;
   final _repo = Repository();
 
-  DetailsScreen({this.petList, this.id});
+  DetailsScreen({this.petList, this.pet});
 
   @override
   Widget build(BuildContext context) {
-    petList.forEach((pet) {
-      if (pet.petId == id) {
-        petName = pet.petName;
-        petBreed = pet.petBreed;
-        imgUrl = pet.imgUrl;
-      }
-    });
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(
@@ -42,12 +32,13 @@ class DetailsScreen extends StatelessWidget {
                   child: Container(
                     child: ClipRRect(
                       child: Image.network(
-                        imgUrl,
+                        pet.imgUrl,
                         fit: BoxFit.cover,
                       ),
                     ),
                   ),
                 ),
+                //description
                 Expanded(
                   child: Container(
                     color: Colors.white,
@@ -56,7 +47,6 @@ class DetailsScreen extends StatelessWidget {
                         SizedBox(
                           height: 100,
                         ),
-                        //description
                         Container(
                           margin: EdgeInsets.symmetric(
                             horizontal: 20,
@@ -76,6 +66,7 @@ class DetailsScreen extends StatelessWidget {
               ],
             ),
           ),
+          // back button
           Align(
             alignment: Alignment.topCenter,
             child: Container(
@@ -99,6 +90,7 @@ class DetailsScreen extends StatelessWidget {
               ),
             ),
           ),
+          // pet info
           Align(
             alignment: Alignment.center,
             child: Container(
@@ -114,50 +106,53 @@ class DetailsScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  // pet name and gender
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        petName,
+                        pet.petName,
                         style: TextStyle(
                           color: fadedBlack,
-                          fontSize: 22,
+                          fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      // Icon(
-                      //   gender == 'female'
-                      //       ? FontAwesomeIcons.venus
-                      //       : FontAwesomeIcons.mars,
-                      //   size: 22,
-                      //   color: Colors.black54,
-                      // )
+                      Icon(
+                        pet.petGender == 1
+                            ? FontAwesomeIcons.venus
+                            : FontAwesomeIcons.mars,
+                        size: 18,
+                        color: Colors.black54,
+                      )
                     ],
                   ),
+                  // pet breed and age
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        petBreed == null ? "null" : petBreed,
+                        pet.petBreed == null ? "null" : pet.petBreed,
                         style: TextStyle(
                           fontSize: 12,
                           color: Colors.black,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      // Text(
-                      //   age,
-                      //   style: TextStyle(
-                      //     fontSize: 12,
-                      //     color: Colors.black,
-                      //   ),
-                      // ),
+                      Text(
+                        pet.petAge,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.black,
+                        ),
+                      ),
                     ],
                   ),
                 ],
               ),
             ),
           ),
+          //adopt button
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
@@ -171,7 +166,7 @@ class DetailsScreen extends StatelessWidget {
               ),
               child: Center(
                 child: Container(
-                  width: MediaQuery.of(context).size.width * 0.7,
+                  width: MediaQuery.of(context).size.width * 0.5,
                   margin: EdgeInsets.all(20),
                   child: FutureBuilder<FirebaseUser>(
                     future: _repo.getCurrentUser(),
@@ -196,7 +191,7 @@ class DetailsScreen extends StatelessWidget {
                               MaterialPageRoute(
                                 builder: (context) {
                                   return AdoptFormRegistrationPage(
-                                    petId: id,
+                                    pet: pet,
                                   );
                                 },
                               ),

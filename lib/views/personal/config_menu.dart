@@ -42,7 +42,10 @@ class ConfigMenu extends StatelessWidget {
             Expanded(
               child: Text(text),
             ),
-            Icon(Icons.arrow_forward_ios),
+            Icon(
+              Icons.arrow_forward_ios,
+              size: 20,
+            ),
           ],
         ),
       ),

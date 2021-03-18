@@ -10,8 +10,8 @@ class AccountBloc {
   Observable<UserModel> get userDetail => _userDetails.stream;
   Observable<String> get accountJWT => _accountJWT.stream;
 
-  getJWT(String token) async{
-    String jwt = await _repo.getJWT(token);
+  getJWT(String fbToken, String deviceToken) async{
+    String jwt = await _repo.getJWT(fbToken, deviceToken);
     _accountJWT.sink.add(jwt);
   }
 

@@ -10,8 +10,8 @@ class _ProgressCard extends State<ProgressCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      height: MediaQuery.of(context).size.height * 0.13,
+      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      height: MediaQuery.of(context).size.height * 0.12,
       child: Stack(
         children: [
           Container(
@@ -29,7 +29,7 @@ class _ProgressCard extends State<ProgressCard> {
                 ),
                 Expanded(
                   child: Container(
-                    margin: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+                    margin: EdgeInsets.symmetric(horizontal: 10, vertical: 12),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,

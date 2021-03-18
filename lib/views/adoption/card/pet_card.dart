@@ -8,44 +8,17 @@ import 'package:pet_rescue_mobile/models/pet/pet_model.dart';
 // ignore: must_be_immutable
 class PetCard extends StatelessWidget {
   List<PetModel> petList;
-  String petId;
-  String petName;
-  String petBreed;
-  String petType;
-  String age;
-  //String gender;
-  String imagePath;
+  PetModel pet;
 
   PetCard({
-    this.petType,
     this.petList,
-    this.petId,
-    this.petName,
-    this.petBreed,
-    this.age,
-    //this.gender,
-    this.imagePath,
+    this.pet,
   });
-
-  getPetAge() {
-    if (age == '0') {
-      if (petType == "Dog")
-        return "Chó con";
-      else
-        return "Mèo con";
-    } else if (age == '1') {
-      return "Adult";
-    } else if (age == '2') {
-      return "Senior";
-    } else {
-      return "Chưa biết";
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final cardHeight = MediaQuery.of(context).size.height * 0.24;
+    final cardHeight = MediaQuery.of(context).size.height * 0.22;
 
     return GestureDetector(
       onTap: () {
@@ -53,74 +26,81 @@ class PetCard extends StatelessWidget {
           MaterialPageRoute(
             builder: (context) {
               return DetailsScreen(
-                id: petId,
                 petList: petList,
+                pet: pet,
               );
             },
           ),
         );
       },
       child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 20),
+        margin: EdgeInsets.symmetric(horizontal: 15),
         height: cardHeight,
         child: Stack(
           children: [
             Container(
               margin: EdgeInsets.only(
-                top: 70,
-                bottom: 20,
+                top: 40,
+                bottom: 10,
               ),
               child: Row(
                 children: [
                   Container(
-                    width: size.width * 0.45,
+                    width: size.width * 0.4,
                   ),
                   Expanded(
                     child: Container(
-                      margin: EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 20,
+                      margin: EdgeInsets.only(
+                        right: 10,
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
+                          // pet name and gender
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Expanded(
                                 child: Text(
-                                  petName,
+                                  pet.petName,
                                   style: TextStyle(
-                                    fontSize: 16,
+                                    fontSize: 15,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
                               ),
                               Icon(
-                                FontAwesomeIcons.venus,
-                                // gender == 'female'
-                                //     ? FontAwesomeIcons.venus
-                                //     : FontAwesomeIcons.mars,
+                                pet.petGender == 1
+                                    ? FontAwesomeIcons.venus
+                                    : FontAwesomeIcons.mars,
                                 size: 18,
                                 color: Colors.black54,
                               )
                             ],
                           ),
-                          Text(
-                            petBreed == null ? "null" : petBreed,
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: fadedBlack,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            getPetAge(),
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: fadedBlack,
-                            ),
+                          // pet breed and age
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                pet.petBreed == null ? "null" : pet.petBreed,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: fadedBlack,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 5.0,
+                              ),
+                              Text(
+                                pet.petAge,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: fadedBlack,
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
@@ -137,21 +117,22 @@ class PetCard extends StatelessWidget {
                 ),
               ),
             ),
+            // pet image
             Container(
-              width: size.width * 0.45,
+              width: size.width * 0.4,
               child: Stack(
                 children: [
                   Container(
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(20),
                       child: Image.network(
-                        imagePath,
+                        pet.imgUrl,
                         fit: BoxFit.cover,
                         height: 150,
-                        width: 200,
+                        width: 150,
                       ),
                     ),
-                    margin: EdgeInsets.only(top: 50),
+                    margin: EdgeInsets.only(top: 32),
                   ),
                 ],
               ),
