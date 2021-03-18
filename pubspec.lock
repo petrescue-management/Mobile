@@ -721,13 +721,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.4.0"
-  timeline_tile:
-    dependency: "direct main"
-    description:
-      name: timeline_tile
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.2"
   typed_data:
     dependency: transitive
     description:

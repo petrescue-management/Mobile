@@ -1,3 +1,10 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:pet_rescue_mobile/views/home_page.dart';
+import 'package:pet_rescue_mobile/views/login/login_request.dart';
+import 'package:pet_rescue_mobile/views/notifications/notifications.dart';
+import 'package:pet_rescue_mobile/views/personal/personal.dart';
+
 final List<String> imgList = [
   //'https://thecatandthedog.com/wp-content/uploads/2020/11/petcare-large.jpg',
   'https://img.etimg.com/thumb/msid-76546023,width-640,resizemode-4,imgsize-918765/pet-care-tips.jpg',
@@ -10,3 +17,40 @@ final List<Map> categories = [
 ];
 
 final String mapKey = 'AIzaSyAZ4pja68qoa62hCzFdlmAu30iAb_CgmTk';
+
+final List<Widget> isLoggedInPages = [
+  HomePage(key: PageStorageKey('HomePage')),
+  NotificationsPage(key: PageStorageKey('NotificationsPage')),
+  PersonalPage(key: PageStorageKey('PersonalPage')),
+];
+
+final isLoggedInBottomNavItems = [
+  BottomNavigationBarItem(
+    icon: Icon(Icons.home),
+    label: 'Home',
+  ),
+  BottomNavigationBarItem(
+    icon: Icon(Icons.notifications),
+    label: 'Notifications',
+  ),
+  BottomNavigationBarItem(
+    icon: Icon(Icons.perm_identity),
+    label: 'Profile',
+  ),
+];
+
+final List<Widget> isNotLoggedInPages = [
+  HomePage(key: PageStorageKey('HomePage')),
+  LoginRequest(key: PageStorageKey('LoginRequest')),
+];
+
+final isNotLoggedInBottomNavItems = [
+  BottomNavigationBarItem(
+    icon: Icon(Icons.home),
+    label: 'Home',
+  ),
+  BottomNavigationBarItem(
+    icon: Icon(Icons.login),
+    label: 'Login Request',
+  ),
+];

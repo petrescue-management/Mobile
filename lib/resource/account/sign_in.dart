@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:commons/commons.dart';
 import 'dart:async';
@@ -41,11 +42,16 @@ class FirebaseSignIn {
     String tokenFirebase;
     await currentUser.getIdToken().then((value) => tokenFirebase = value.token);
 
+    final FirebaseMessaging _fbMessaging = FirebaseMessaging();
+    String deviceToken;
+    await _fbMessaging.getToken().then((token) => deviceToken = token);
+
     if (currentUser != null) {
       print('Firebase:' + tokenFirebase);
       print('signInWithGoogle succeeded: $currentUser');
+      print('Device Token:' + deviceToken);
 
-      var jwt = AccountProvider().getJWT(tokenFirebase);
+      var jwt = AccountProvider().getJWT(tokenFirebase, deviceToken);
 
       return jwt;
     }
@@ -59,6 +65,8 @@ class FirebaseSignIn {
 
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     sharedPreferences.remove('token');
+    sharedPreferences.remove('avatar');
+    sharedPreferences.remove('fullname');
 
     print("User Signed Out");
   }

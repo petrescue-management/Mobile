@@ -43,7 +43,6 @@ dependencies:
   flutter_form_builder: ^3.12.0
   
   commons: ^0.7.8+3
-  timeline_tile: ^0.1.0
   
   intl: ^0.16.1
   rxdart: ^0.22.0
@@ -58,6 +57,7 @@ dev_dependencies:
 flutter_icons:
   android: true
   ios: true
+  image_path: 'assets/ic_launcher/web_hi_res_512.png'
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -75,7 +75,8 @@ flutter:
     - assets/background.jpg
     - assets/launcher_image.png
     - assets/Logo 5_circle.png
-    - assets/logo 5_square.png
+    - assets/Logo 5_square.png
+    - assets/Logo 11_circle.jpg
     - assets/google_logo.png
     - assets/icons/animal-rescue.png
     - assets/icons/collar.png

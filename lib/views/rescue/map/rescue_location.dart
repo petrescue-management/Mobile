@@ -11,7 +11,6 @@ import 'package:pet_rescue_mobile/resource/location/app_data.dart';
 import 'package:pet_rescue_mobile/views/rescue/rescue.dart';
 import 'package:pet_rescue_mobile/views/rescue/map/search_address.dart';
 
-
 class RescueLocation extends StatefulWidget {
   @override
   _RescueLocationState createState() => _RescueLocationState();
@@ -72,8 +71,16 @@ class _RescueLocationState extends State<RescueLocation> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _isLoading ? loadMap(context) : getLocation(context),
+    return GestureDetector(
+      onTap: () {
+        FocusScopeNode currentFocus = FocusScope.of(context);
+        if (!currentFocus.hasPrimaryFocus) {
+          currentFocus.unfocus();
+        }
+      },
+      child: Scaffold(
+        body: _isLoading ? loadMap(context) : getLocation(context),
+      ),
     );
   }
 
@@ -150,12 +157,12 @@ class _RescueLocationState extends State<RescueLocation> {
                   GestureDetector(
                     onTap: () {
                       Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return SearchAddress();
-                            },
-                          ),
-                        );
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return SearchAddress();
+                          },
+                        ),
+                      );
                     },
                     child: Container(
                       width: MediaQuery.of(context).size.width * 0.7,

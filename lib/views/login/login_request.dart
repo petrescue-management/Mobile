@@ -14,18 +14,19 @@ class _LoginRequestState extends State<LoginRequest> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
         body: Center(
       child: Container(
         alignment: Alignment.center,
-        height: MediaQuery.of(context).size.height * 0.55,
+        height: MediaQuery.of(context).size.height * 0.45,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Hero(
               tag: 'hero',
               child: SizedBox(
-                height: 250,
-                child: Image.asset(app_logo_circle),
+                height: 210,
+                child: Image.asset(app_logo_square),
               ),
             ),
             Text("Bạn chưa đăng nhập vào tài khoản của bạn!"),
@@ -33,6 +34,7 @@ class _LoginRequestState extends State<LoginRequest> {
           ],
         ),
         decoration: BoxDecoration(
+          color: Colors.white,
           borderRadius: BorderRadius.all(Radius.circular(50)),
         ),
       ),
