@@ -29,7 +29,7 @@ class ProgressDialog extends StatelessWidget {
                 valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
               ),
               SizedBox(
-                width: 5.0,
+                width: 10.0,
               ),
               Text(
                 message,

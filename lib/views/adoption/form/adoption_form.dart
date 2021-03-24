@@ -126,7 +126,7 @@ class _AdoptFormRegistrationPageState extends State<AdoptFormRegistrationPage> {
                                   print(formInputs);
                                   successDialog(
                                     context,
-                                    "Đơn đăng ký nhận nuôi của bạn đã được gửi đến trạm cứu hộ!",
+                                    'Đơn đăng ký nhận nuôi của bạn đã được gửi đến trạm cứu hộ!',
                                     // neutralAction: () {
                                     //   Navigator.pushReplacement(
                                     //     context,
@@ -137,6 +137,10 @@ class _AdoptFormRegistrationPageState extends State<AdoptFormRegistrationPage> {
                                     // },
                                     title: "Thành công",
                                   );
+                                } else {
+                                  warningDialog(context,
+                                      'Bạn chưa điền đầy đủ thông tin.\nXin hãy kiểm tra lại.',
+                                      title: '');
                                 }
                               },
                             ),

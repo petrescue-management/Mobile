@@ -39,7 +39,7 @@ class Assistant {
       pickUpAddress.placeName = placeAddress;
 
       Provider.of<AppData>(context, listen: false)
-          .updatePickUpLocation(pickUpAddress);
+          .updateCurrentLocation(pickUpAddress);
     }
 
     return placeAddress;

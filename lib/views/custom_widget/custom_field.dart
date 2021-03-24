@@ -3,7 +3,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:pet_rescue_mobile/src/style.dart';
 
 customText(String label, String hintText) => Padding(
-      padding: EdgeInsets.only(bottom: 30.0),
+      padding: EdgeInsets.only(bottom: 20.0),
       child: TextField(
         decoration: InputDecoration(
           focusColor: color2,

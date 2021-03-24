@@ -12,8 +12,8 @@ final List<String> imgList = [
 ];
 
 final List<Map> categories = [
-  {"name": "Cats", "iconPath": "assets/images/cat.png"},
-  {"name": "Dogs", "iconPath": "assets/images/dog.png"},
+  {"name": "Dog", "iconPath": "assets/images/dog.png"},
+  {"name": "Cat", "iconPath": "assets/images/cat.png"},
 ];
 
 final String mapKey = 'AIzaSyAZ4pja68qoa62hCzFdlmAu30iAb_CgmTk';

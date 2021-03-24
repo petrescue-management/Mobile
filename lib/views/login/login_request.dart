@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pet_rescue_mobile/repository/repository.dart';
+import 'package:pet_rescue_mobile/views/custom_widget/custom_dialog.dart';
 import 'package:pet_rescue_mobile/src/asset.dart';
 import 'package:pet_rescue_mobile/main.dart';
 
@@ -14,31 +15,33 @@ class _LoginRequestState extends State<LoginRequest> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+        backgroundColor: Colors.white,
         body: Center(
-      child: Container(
-        alignment: Alignment.center,
-        height: MediaQuery.of(context).size.height * 0.45,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Hero(
-              tag: 'hero',
-              child: SizedBox(
-                height: 210,
-                child: Image.asset(app_logo_square),
-              ),
+          child: Container(
+            alignment: Alignment.center,
+            height: MediaQuery.of(context).size.height * 0.45,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Image(
+                  image: AssetImage(app_logo_notitle),
+                  height: 300,
+                ),
+                Container(
+                  child: Column(children: [
+                    Text("Bạn chưa đăng nhập vào tài khoản của bạn!"),
+                    SizedBox(height: 8.0),
+                    _signInButton(),
+                  ]),
+                )
+              ],
             ),
-            Text("Bạn chưa đăng nhập vào tài khoản của bạn!"),
-            _signInButton(),
-          ],
-        ),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.all(Radius.circular(50)),
-        ),
-      ),
-    ));
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.all(Radius.circular(50)),
+            ),
+          ),
+        ));
   }
 
   final _repo = Repository();
@@ -65,6 +68,11 @@ class _LoginRequestState extends State<LoginRequest> {
   Widget _signInButton() {
     return OutlineButton(
       onPressed: () {
+        showDialog(
+            context: context,
+            builder: (context) =>
+                ProgressDialog(message: 'Đang kiểm tra tài khoản...'));
+
         _repo.signIn().then((value) => {
               if (value == null || value.isEmpty)
                 loading(context)

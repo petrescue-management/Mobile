@@ -5,7 +5,6 @@ import 'package:pet_rescue_mobile/models/user_model.dart';
 import 'package:pet_rescue_mobile/repository/repository.dart';
 import 'package:pet_rescue_mobile/views/personal/config_menu.dart';
 import 'package:pet_rescue_mobile/main.dart';
-import 'package:pet_rescue_mobile/src/style.dart';
 import 'package:pet_rescue_mobile/views/personal/profile/profile_details.dart';
 import 'package:pet_rescue_mobile/views/progress/progress_report.dart';
 
@@ -47,6 +46,7 @@ class _PersonalPageState extends State<PersonalPage> {
         }
       },
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
           appBar: AppBar(
             brightness: Brightness.light,
             backgroundColor: Colors.transparent,
@@ -117,28 +117,6 @@ class _PersonalPageState extends State<PersonalPage> {
                 children: [
                   CircleAvatar(
                     backgroundImage: NetworkImage(user.imgUrl),
-                  ),
-                  Positioned(
-                    right: 0,
-                    bottom: 0,
-                    child: Container(
-                      height: 40,
-                      width: 40,
-                      decoration: BoxDecoration(
-                        color: color2,
-                        shape: BoxShape.circle,
-                      ),
-                      alignment: Alignment.center,
-                      child: Center(
-                        child: IconButton(
-                          icon: Icon(
-                            Icons.camera,
-                          ),
-                          color: Colors.white,
-                          onPressed: () {},
-                        ),
-                      ),
-                    ),
                   ),
                 ],
               ),
