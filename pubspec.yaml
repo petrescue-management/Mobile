@@ -32,6 +32,7 @@ dependencies:
 
   firebase_core: ^0.4.0+9
   firebase_auth: ^0.14.0+5
+  firebase_storage: ^3.0.6
   firebase_messaging: ^5.1.2
   google_sign_in: ^4.5.9
 
@@ -57,7 +58,7 @@ dev_dependencies:
 flutter_icons:
   android: true
   ios: true
-  image_path: 'assets/ic_launcher/web_hi_res_512.png'
+  image_path: 'assets/Logo_notitle_square.png'
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -74,12 +75,14 @@ flutter:
   assets:
     - assets/background.jpg
     - assets/launcher_image.png
-    - assets/Logo 5_circle.png
-    - assets/Logo 5_square.png
-    - assets/Logo 11_circle.jpg
+    - assets/Logo_withtitle_square.png
     - assets/google_logo.png
     - assets/icons/animal-rescue.png
     - assets/icons/collar.png
+    - assets/images/cat.png
+    - assets/images/dog.png
+    - assets/map.png
+    - assets/Logo_notitle_square.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

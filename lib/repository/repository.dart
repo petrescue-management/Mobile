@@ -3,6 +3,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:pet_rescue_mobile/models/user_model.dart';
 import 'package:pet_rescue_mobile/models/pet/pet_list_model.dart';
+import 'package:pet_rescue_mobile/models/pet/pet_type_list.dart';
 import 'package:pet_rescue_mobile/resource/account/account_provider.dart';
 import 'package:pet_rescue_mobile/resource/pet/pet_provider.dart';
 import 'package:pet_rescue_mobile/resource/account/sign_in.dart';
@@ -24,4 +25,8 @@ class Repository {
   Future<UserModel> getUserDetails() => accountProvider.getUserDetail();
 
   Future<PetListModel> getPetList() => petProvider.getPetList();
+
+  Future<PetTypeList> getPetTypeList() => petProvider.getPetTypeList();
+
+  Future<PetListModel> getPetListByType(String petTypeName) => petProvider.getPetListByType(petTypeName);
 }

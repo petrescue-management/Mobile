@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../main.dart';
+
 // ignore: must_be_immutable
 class RescueDetail extends StatelessWidget {
   ScrollController scrollController = ScrollController();
@@ -24,7 +26,9 @@ class RescueDetail extends StatelessWidget {
           ),
           color: Colors.black,
           onPressed: () {
-            Navigator.of(context).pop();
+            Navigator.of(context).popUntil((route) => route.isFirst);
+            Navigator.pushReplacement(
+                context, MaterialPageRoute(builder: (context) => MyApp()));
           },
         ),
       ),

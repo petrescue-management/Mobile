@@ -11,7 +11,17 @@ import 'package:pet_rescue_mobile/resource/location/app_data.dart';
 import 'package:pet_rescue_mobile/views/rescue/rescue.dart';
 import 'package:pet_rescue_mobile/views/rescue/map/search_address.dart';
 
+// ignore: must_be_immutable
 class RescueLocation extends StatefulWidget {
+  double latitude, longitude;
+
+  RescueLocation({Key key, this.latitude, this.longitude}) : super(key: key);
+
+  static final CameraPosition _kGooglePlex = CameraPosition(
+    target: LatLng(37.42796133580664, -122.085749655962),
+    zoom: 14.4746,
+  );
+
   @override
   _RescueLocationState createState() => _RescueLocationState();
 }
@@ -21,34 +31,44 @@ class _RescueLocationState extends State<RescueLocation> {
 
   Completer<GoogleMapController> _controllerGoogleMap = Completer();
 
-  static final CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
-    zoom: 14.4746,
-  );
-
   Position currentPosition;
+
+  String address;
+
   var geoLocator = Geolocator();
+
   double bottomPaddingMap = 0;
+
   bool _isLoading;
 
   locatePosition() async {
     Position position = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
+      desiredAccuracy: LocationAccuracy.best,
     );
-    currentPosition = position;
+    print('position: $position');
 
-    LatLng latLngPosition = LatLng(position.latitude, position.longitude);
+    if (widget.latitude == null || widget.longitude == null) {
+      currentPosition = position;
+      print('0 nè $currentPosition');
+    } else {
+      currentPosition =
+          Position(latitude: widget.latitude, longitude: widget.longitude);
+      print('có nè $currentPosition');
+    }
+
+    LatLng latLngPosition =
+        LatLng(currentPosition.latitude, currentPosition.longitude);
 
     CameraPosition cameraPosition = new CameraPosition(
       target: latLngPosition,
-      zoom: 18,
+      zoom: 20,
     );
 
     newGoogleMapController.animateCamera(
       CameraUpdate.newCameraPosition(cameraPosition),
     );
 
-    String address = await Assistant.searchCoordinateAddress(position, context);
+    address = await Assistant.searchCoordinateAddress(currentPosition, context);
     print('This is your Address: ' + address);
   }
 
@@ -102,6 +122,9 @@ class _RescueLocationState extends State<RescueLocation> {
   }
 
   Widget getLocation(BuildContext context) {
+    var contextWidth = MediaQuery.of(context).size.width;
+    var contextHeight = MediaQuery.of(context).size.height;
+
     return Stack(
       children: [
         // map
@@ -109,7 +132,7 @@ class _RescueLocationState extends State<RescueLocation> {
           padding: EdgeInsets.only(bottom: bottomPaddingMap),
           mapType: MapType.normal,
           myLocationButtonEnabled: true,
-          initialCameraPosition: _kGooglePlex,
+          initialCameraPosition: RescueLocation._kGooglePlex,
           myLocationEnabled: true,
           zoomGesturesEnabled: true,
           zoomControlsEnabled: true,
@@ -118,7 +141,7 @@ class _RescueLocationState extends State<RescueLocation> {
             newGoogleMapController = controller;
 
             setState(() {
-              bottomPaddingMap = MediaQuery.of(context).size.height * 0.13;
+              bottomPaddingMap = contextHeight * 0.18;
             });
 
             locatePosition();
@@ -128,117 +151,144 @@ class _RescueLocationState extends State<RescueLocation> {
         Positioned(
           bottom: 0.0,
           child: Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height * 0.13,
+            width: contextWidth,
+            height: contextHeight * 0.18,
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(25.0),
-                topRight: Radius.circular(25.0),
+                topLeft: Radius.circular(18.0),
+                topRight: Radius.circular(18.0),
               ),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black,
-                  blurRadius: 16.0,
-                  spreadRadius: 0.5,
-                  offset: Offset(0.7, 0.7),
+                  blurRadius: 10.0,
+                  spreadRadius: 0.3,
+                  offset: Offset(0.5, 0.5),
                 )
               ],
             ),
             child: Padding(
               padding: EdgeInsets.symmetric(
+                vertical: 10.0,
                 horizontal: 20.0,
               ),
-              child: Row(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // search address
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return SearchAddress();
-                          },
-                        ),
-                      );
-                    },
-                    child: Container(
-                      width: MediaQuery.of(context).size.width * 0.7,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10.0),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black54,
-                            blurRadius: 5.0,
-                            spreadRadius: 0.5,
-                            offset: Offset(0.5, 0.5),
-                          )
-                        ],
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(13.0),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.search,
-                              color: Colors.black,
-                            ),
-                            SizedBox(
-                              width: 10.0,
-                            ),
-                            Flexible(
-                              child: Text(
-                                Provider.of<AppData>(context).pickUpLocation !=
-                                        null
-                                    ? Provider.of<AppData>(context)
-                                        .pickUpLocation
-                                        .placeName
-                                    : 'Địa chỉ của bạn...',
-                                overflow: TextOverflow.ellipsis,
-                                softWrap: false,
-                                maxLines: 1,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 5.0,
-                  ),
                   Container(
-                    decoration: BoxDecoration(
-                      color: primaryGreen,
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black54,
-                          blurRadius: 5.0,
-                          spreadRadius: 0.5,
-                          offset: Offset(0.5, 0.5),
-                        )
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Xin chào, ',
+                            style: TextStyle(
+                                fontSize: 14.0, fontWeight: FontWeight.bold)),
+                        SizedBox(height: 3.0),
+                        Text('Địa chỉ của bạn là:',
+                            style: TextStyle(fontSize: 18.0)),
                       ],
                     ),
-                    child: IconButton(
-                      icon: Icon(
-                        Icons.done,
-                        size: 30.0,
-                        color: Colors.white,
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return Rescue();
-                            },
+                  ),
+                  SizedBox(height: 3.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      // search address
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return SearchAddress();
+                              },
+                            ),
+                          );
+                        },
+                        child: Container(
+                          width: contextWidth * 0.7,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10.0),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black54,
+                                blurRadius: 5.0,
+                                spreadRadius: 0.5,
+                                offset: Offset(0.5, 0.5),
+                              )
+                            ],
                           ),
-                        );
-                      },
-                    ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.search,
+                                  color: Colors.blueAccent,
+                                ),
+                                SizedBox(
+                                  width: 8.0,
+                                ),
+                                Flexible(
+                                  child: Text(
+                                    Provider.of<AppData>(context)
+                                                .currentLocation !=
+                                            null
+                                        ? Provider.of<AppData>(context)
+                                            .currentLocation
+                                            .placeName
+                                        : '',
+                                    overflow: TextOverflow.ellipsis,
+                                    softWrap: false,
+                                    maxLines: 1,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 5.0,
+                      ),
+                      // confirm address button
+                      Container(
+                        decoration: BoxDecoration(
+                          color: primaryGreen,
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black54,
+                              blurRadius: 5.0,
+                              spreadRadius: 0.5,
+                              offset: Offset(0.5, 0.5),
+                            )
+                          ],
+                        ),
+                        child: IconButton(
+                          icon: Icon(
+                            Icons.done,
+                            size: 30.0,
+                            color: Colors.white,
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) {
+                                  return Rescue(
+                                    latitude: currentPosition.latitude,
+                                    longitude: currentPosition.longitude,
+                                    address: address,
+                                  );
+                                },
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),

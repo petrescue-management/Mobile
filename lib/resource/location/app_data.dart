@@ -2,10 +2,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:pet_rescue_mobile/models/map/address.dart';
 
 class AppData extends ChangeNotifier {
-  Address pickUpLocation;
+  Address currentLocation, userLocation;
 
-  void updatePickUpLocation(Address pickUpAddress) {
-    pickUpLocation = pickUpAddress;
+  void updateCurrentLocation(Address currentAddress) {
+    currentLocation = currentAddress;
+    notifyListeners();
+  }
+
+  void updateUserLocation(Address userAddress) {
+    userLocation = userAddress;
     notifyListeners();
   }
 }
