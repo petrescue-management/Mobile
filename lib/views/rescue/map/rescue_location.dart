@@ -3,7 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
+import 'package:commons/commons.dart';
 import 'package:pet_rescue_mobile/src/style.dart';
+import 'package:pet_rescue_mobile/main.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:pet_rescue_mobile/resource/location/assistant.dart';
@@ -14,8 +16,10 @@ import 'package:pet_rescue_mobile/views/rescue/map/search_address.dart';
 // ignore: must_be_immutable
 class RescueLocation extends StatefulWidget {
   double latitude, longitude;
+  String placeName;
 
-  RescueLocation({Key key, this.latitude, this.longitude}) : super(key: key);
+  RescueLocation({Key key, this.latitude, this.longitude, this.placeName})
+      : super(key: key);
 
   static final CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(37.42796133580664, -122.085749655962),
@@ -30,6 +34,8 @@ class _RescueLocationState extends State<RescueLocation> {
   GoogleMapController newGoogleMapController;
 
   Completer<GoogleMapController> _controllerGoogleMap = Completer();
+
+  Set<Marker> _markers = {};
 
   Position currentPosition;
 
@@ -61,7 +67,7 @@ class _RescueLocationState extends State<RescueLocation> {
 
     CameraPosition cameraPosition = new CameraPosition(
       target: latLngPosition,
-      zoom: 20,
+      zoom: 18,
     );
 
     newGoogleMapController.animateCamera(
@@ -70,10 +76,26 @@ class _RescueLocationState extends State<RescueLocation> {
 
     address = await Assistant.searchCoordinateAddress(currentPosition, context);
     print('This is your Address: ' + address);
+
+    Marker locateMarker = Marker(
+      markerId: MarkerId('locate'),
+      position: latLngPosition,
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+      infoWindow: InfoWindow(
+        title: widget.placeName,
+        snippet: address,
+      ),
+    );
+
+    setState(() {
+      _markers.add(locateMarker);
+    });
   }
 
   @override
   void initState() {
+    widget.latitude = null;
+    widget.longitude = null;
     super.initState();
     setState(() {
       this._isLoading = true;
@@ -89,15 +111,22 @@ class _RescueLocationState extends State<RescueLocation> {
     });
   }
 
+  Future<bool> _confirmPop() {
+    return confirmationDialog(context, "Bạn muốn hủy yêu cầu cứu hộ ?",
+        positiveText: "Có",
+        neutralText: "Không",
+        confirm: false,
+        title: "", positiveAction: () {
+      Navigator.of(context).popUntil((route) => route.isFirst);
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => MyApp()));
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        FocusScopeNode currentFocus = FocusScope.of(context);
-        if (!currentFocus.hasPrimaryFocus) {
-          currentFocus.unfocus();
-        }
-      },
+    return WillPopScope(
+      onWillPop: _confirmPop,
       child: Scaffold(
         body: _isLoading ? loadMap(context) : getLocation(context),
       ),
@@ -125,6 +154,15 @@ class _RescueLocationState extends State<RescueLocation> {
     var contextWidth = MediaQuery.of(context).size.width;
     var contextHeight = MediaQuery.of(context).size.height;
 
+    var fullAddress = (Provider.of<AppData>(context).currentLocation != null &&
+            widget.placeName == null)
+        ? Provider.of<AppData>(context).currentLocation.placeName
+        : (widget.placeName == null
+            ? ''
+            : widget.placeName +
+                ' ' +
+                Provider.of<AppData>(context).currentLocation.placeName);
+
     return Stack(
       children: [
         // map
@@ -136,6 +174,7 @@ class _RescueLocationState extends State<RescueLocation> {
           myLocationEnabled: true,
           zoomGesturesEnabled: true,
           zoomControlsEnabled: true,
+          markers: _markers,
           onMapCreated: (GoogleMapController controller) {
             _controllerGoogleMap.complete(controller);
             newGoogleMapController = controller;
@@ -233,13 +272,7 @@ class _RescueLocationState extends State<RescueLocation> {
                                 ),
                                 Flexible(
                                   child: Text(
-                                    Provider.of<AppData>(context)
-                                                .currentLocation !=
-                                            null
-                                        ? Provider.of<AppData>(context)
-                                            .currentLocation
-                                            .placeName
-                                        : '',
+                                    fullAddress,
                                     overflow: TextOverflow.ellipsis,
                                     softWrap: false,
                                     maxLines: 1,
@@ -312,7 +345,15 @@ class _RescueLocationState extends State<RescueLocation> {
                     size: 35,
                   ),
                   onPressed: () {
-                    Navigator.of(context).pop();
+                    confirmationDialog(context, "Bạn muốn hủy yêu cầu cứu hộ ?",
+                        positiveText: "Có",
+                        neutralText: "Không",
+                        confirm: false,
+                        title: "", positiveAction: () {
+                      Navigator.of(context).popUntil((route) => route.isFirst);
+                      Navigator.pushReplacement(context,
+                          MaterialPageRoute(builder: (context) => MyApp()));
+                    });
                   },
                 ),
               ],

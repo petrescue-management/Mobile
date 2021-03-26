@@ -174,11 +174,13 @@ class _SearchAddressState extends State<SearchAddress> {
                               Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => RescueLocation(
-                                            latitude: latitude,
-                                            longitude: longitude,
-                                          )));
-                              print('lat: $latitude and long: $longitude');
+                                      builder: (context) =>  new RescueLocation(
+                                          latitude: latitude,
+                                          longitude: longitude,
+                                          placeName: placeName)));
+
+                              print(
+                                  'lat: $latitude : long: $longitude - place: $placeName');
                             },
                           ),
                         ),
@@ -235,6 +237,7 @@ class _SearchAddressState extends State<SearchAddress> {
   }
 
   double latitude, longitude;
+  String placeName;
 
   getPlaceAddressDetails(String placeId, context) async {
     showDialog(
@@ -259,9 +262,9 @@ class _SearchAddressState extends State<SearchAddress> {
 
       Provider.of<AppData>(context, listen: false).updateUserLocation(address);
 
-      print('result: ' + address.placeName);
       latitude = address.latitude;
       longitude = address.longitude;
+      placeName = address.placeName;
 
       Navigator.pop(context);
     }

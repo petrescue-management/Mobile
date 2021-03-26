@@ -10,3 +10,6 @@ const String adopt_logo = 'assets/icons/collar.png';
 
 const String background = 'assets/background.jpg';
 const String launcher = 'assets/launcher_image.png';
+
+const String iconDog = 'assets/images/dog.png';
+const String iconCat = 'assets/images/cat.png';

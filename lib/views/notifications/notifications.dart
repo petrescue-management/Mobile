@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:pet_rescue_mobile/views/progress/progress_card.dart';
+// import 'package:pet_rescue_mobile/views/progress/progress_card.dart';
+// import 'package:pet_rescue_mobile/views/notifications/notifications_badge.dart';
 
+// ignore: must_be_immutable
 class NotificationsPage extends StatefulWidget {
-  const NotificationsPage({Key key}) : super(key: key);
+
+  NotificationsPage({Key key})
+      : super(key: key);
 
   @override
   _NotificationsPageState createState() => _NotificationsPageState();
@@ -25,6 +29,9 @@ class _NotificationsPageState extends State<NotificationsPage> {
         brightness: Brightness.light,
         backgroundColor: Colors.transparent,
         elevation: 0,
+        actions: [
+          // NotificationBadge(totalNotifications: widget.totalNotifications)
+        ],
       ),
       body: Container(
         height: MediaQuery.of(context).size.height * 0.87,
@@ -33,8 +40,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
             controller: scrollController,
             child: Column(
               children: [
-                ProgressCard(),
-                ProgressCard(),
+                // NotificationBadge(totalNotifications: widget.totalNotifications)
               ],
             ),
           ),

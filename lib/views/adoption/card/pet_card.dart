@@ -46,7 +46,7 @@ class PetCard extends StatelessWidget {
               child: Row(
                 children: [
                   Container(
-                    width: size.width * 0.4,
+                    width: size.width * 0.42,
                   ),
                   Expanded(
                     child: Container(

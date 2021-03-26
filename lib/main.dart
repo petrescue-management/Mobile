@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:pet_rescue_mobile/src/data.dart';
-import 'package:pet_rescue_mobile/views/navigator/bottom_navigation.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+
+import 'package:pet_rescue_mobile/src/data.dart';
+import 'package:pet_rescue_mobile/views/home_page.dart';
+import 'package:pet_rescue_mobile/views/navigator/bottom_navigation.dart';
+
+import 'package:pet_rescue_mobile/views/notifications/notifications.dart';
+import 'package:pet_rescue_mobile/views/personal/personal.dart';
 import 'package:pet_rescue_mobile/repository/repository.dart';
 import 'package:pet_rescue_mobile/resource/location/app_data.dart';
+import 'package:pet_rescue_mobile/models/push_notification.dart';
 
 void main() => runApp(
       ChangeNotifierProvider(
@@ -31,34 +38,80 @@ class MyApp extends StatefulWidget {
 class _MyApp extends State<MyApp> {
   final _repo = Repository();
 
-  // final Firestore _db = Firestore.instance;
-  final FirebaseMessaging _fcm = FirebaseMessaging();
+  FirebaseMessaging _fcm = FirebaseMessaging();
+
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+
+  Future onSelectNotification(String payload) async {}
+
+  showNotification(String title, String body) async {
+    var android = AndroidNotificationDetails(
+      'id',
+      'channel ',
+      'description',
+      priority: Priority.High,
+      importance: Importance.Max,
+    );
+    var platform = new NotificationDetails(android, null);
+    await flutterLocalNotificationsPlugin.show(
+      0,
+      title,
+      body,
+      platform,
+      payload: 'Welcome to the Local Notification demo',
+    );
+  }
 
   @override
   void initState() {
     super.initState();
     SystemChrome.setEnabledSystemUIOverlays([]);
-    _fcm.configure(
-      onMessage: (Map<String, dynamic> message) async {
-        print('onMessage: $message');
 
-        final snackBar = SnackBar(
-          content: Text(message['notification']['title']),
-          action: SnackBarAction(
-            label: 'OK',
-            onPressed: () => null,
-          ),
-        );
+    PushNotification _notificationInfo;
 
-        Scaffold.of(context).showSnackBar(snackBar);
-      },
-      onResume: (Map<String, dynamic> message) async {
-        print('onResume: $message');
-      },
-      onLaunch: (Map<String, dynamic> message) async {
-        print('onLaunch: $message');
-      },
-    );
+    var initializationSettingsAndroid =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
+    var initSetttings =
+        InitializationSettings(initializationSettingsAndroid, null);
+
+    flutterLocalNotificationsPlugin.initialize(initSetttings,
+        onSelectNotification: onSelectNotification);
+
+    Future.delayed(Duration(seconds: 1), () {
+      _fcm.configure(
+        // app in the foreground
+        onMessage: (Map<String, dynamic> message) async {
+          print('onMessage: $message');
+
+          PushNotification notification = PushNotification.fromJson(message);
+
+          setState(() {
+            _notificationInfo = notification;
+            //_totalNotifications++;
+          });
+
+          showNotification(_notificationInfo.title, _notificationInfo.body);
+        },
+
+        // app in the background
+        onResume: (Map<String, dynamic> message) async {
+          print('onResume: $message');
+        },
+
+        // app terminated
+        onLaunch: (Map<String, dynamic> message) async {
+          print('onLaunch: $message');
+        },
+      );
+    });
+
+    // Used to get the current FCM token
+    _fcm.getToken().then((token) {
+      print('Token: $token');
+    }).catchError((e) {
+      print(e);
+    });
   }
 
   @override
@@ -83,8 +136,25 @@ class _MyApp extends State<MyApp> {
             } else {
               _repo.getUserDetails();
               return BottomNaviBar(
-                bottomNaviItems: isLoggedInBottomNavItems,
-                pages: isLoggedInPages,
+                bottomNaviItems: [
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.home),
+                    label: 'Home',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.notifications),
+                    label: 'Notifications',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.perm_identity),
+                    label: 'Profile',
+                  ),
+                ],
+                pages: [
+                  HomePage(key: PageStorageKey('HomePage')),
+                  NotificationsPage(key: PageStorageKey('NotificationsPage')),
+                  PersonalPage(key: PageStorageKey('PersonalPage')),
+                ],
               );
             }
           }),

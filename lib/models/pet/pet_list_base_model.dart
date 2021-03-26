@@ -1,13 +1,13 @@
 import 'package:pet_rescue_mobile/models/pet/pet_type.dart';
 
-class PetTypeList {
+class PetListBaseModel {
   List<PetType> result;
 
-  PetTypeList({
+  PetListBaseModel({
     this.result,
   });
 
-  PetTypeList.fromJson(List<dynamic> json) {
+  PetListBaseModel.fromJson(List<dynamic> json) {
     List<PetType> tmpList = [];
 
     for (var i = 0; i < json.length; i++) {
