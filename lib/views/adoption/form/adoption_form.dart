@@ -29,6 +29,16 @@ class _AdoptFormRegistrationPageState extends State<AdoptFormRegistrationPage> {
     super.initState();
   }
 
+  Future<bool> _confirmPop() {
+    return confirmationDialog(context, "Bạn muốn hủy đăng ký nhận nuôi ?",
+        positiveText: "Có",
+        neutralText: "Không",
+        confirm: false,
+        title: "", positiveAction: () {
+      Navigator.of(context).pop();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -38,120 +48,130 @@ class _AdoptFormRegistrationPageState extends State<AdoptFormRegistrationPage> {
           currentFocus.unfocus();
         }
       },
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-          title: Text(
-            'Đăng ký nhận nuôi',
-            style: TextStyle(
+      child: WillPopScope(
+        onWillPop: _confirmPop,
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          appBar: AppBar(
+            title: Text(
+              'Đăng ký nhận nuôi',
+              style: TextStyle(
+                color: Colors.black,
+              ),
+            ),
+            centerTitle: true,
+            brightness: Brightness.light,
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            leading: IconButton(
+              icon: Icon(
+                Icons.chevron_left,
+                size: 35,
+              ),
               color: Colors.black,
+              onPressed: () {
+                confirmationDialog(context, "Bạn muốn hủy đăng ký nhận nuôi ?",
+                    positiveText: "Có",
+                    neutralText: "Không",
+                    confirm: false,
+                    title: "", positiveAction: () {
+                  Navigator.of(context).pop();
+                });
+              },
             ),
           ),
-          centerTitle: true,
-          brightness: Brightness.light,
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          leading: IconButton(
-            icon: Icon(
-              Icons.chevron_left,
-              size: 35,
-            ),
-            color: Colors.black,
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ),
-        body: Container(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          child: Column(
-            children: [
-              // Padding(
-              //   padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 10),
-              //   child: Container(
-              //     color: Colors.amberAccent,
-              //     child: petInfo(context, pet),
-              //   ),
-              // ),
-              FormBuilder(
-                key: _fbKey,
-                child: Expanded(
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: SingleChildScrollView(
-                          controller: scrollController,
-                          child: Stepper(
-                            steps: _stepper(),
-                            physics: ClampingScrollPhysics(),
-                            currentStep: this._currentStep,
-                            onStepTapped: (step) {
-                              setState(() {
-                                this._currentStep = step;
-                              });
-                            },
-                            onStepContinue: () {
-                              setState(() {
-                                if (this._currentStep <
-                                    this._stepper().length - 1) {
-                                  this._currentStep = this._currentStep + 1;
-                                } else {
-                                  _currentStep = 0;
-                                }
-                              });
-                            },
-                            onStepCancel: () {
-                              setState(() {
-                                if (this._currentStep > 0) {
-                                  this._currentStep = this._currentStep - 1;
-                                } else {
-                                  this._currentStep = 0;
-                                }
-                              });
-                            },
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(vertical: 20),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            CustomButton(
-                              label: 'Gửi yêu cầu',
-                              onTap: () {
-                                if (_fbKey.currentState.saveAndValidate()) {
-                                  final formInputs = _fbKey.currentState.value;
-                                  print(formInputs);
-                                  successDialog(
-                                    context,
-                                    'Đơn đăng ký nhận nuôi của bạn đã được gửi đến trạm cứu hộ!',
-                                    // neutralAction: () {
-                                    //   Navigator.pushReplacement(
-                                    //     context,
-                                    //     MaterialPageRoute(
-                                    //       builder: (context) => RescueDetail(),
-                                    //     ),
-                                    //   );
-                                    // },
-                                    title: "Thành công",
-                                  );
-                                } else {
-                                  warningDialog(context,
-                                      'Bạn chưa điền đầy đủ thông tin.\nXin hãy kiểm tra lại.',
-                                      title: '');
-                                }
+          body: Container(
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            child: Column(
+              children: [
+                // Padding(
+                //   padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 10),
+                //   child: Container(
+                //     color: Colors.amberAccent,
+                //     child: petInfo(context, pet),
+                //   ),
+                // ),
+                FormBuilder(
+                  key: _fbKey,
+                  child: Expanded(
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: SingleChildScrollView(
+                            controller: scrollController,
+                            child: Stepper(
+                              steps: _stepper(),
+                              physics: ClampingScrollPhysics(),
+                              currentStep: this._currentStep,
+                              onStepTapped: (step) {
+                                setState(() {
+                                  this._currentStep = step;
+                                });
+                              },
+                              onStepContinue: () {
+                                setState(() {
+                                  if (this._currentStep <
+                                      this._stepper().length - 1) {
+                                    this._currentStep = this._currentStep + 1;
+                                  } else {
+                                    _currentStep = 0;
+                                  }
+                                });
+                              },
+                              onStepCancel: () {
+                                setState(() {
+                                  if (this._currentStep > 0) {
+                                    this._currentStep = this._currentStep - 1;
+                                  } else {
+                                    this._currentStep = 0;
+                                  }
+                                });
                               },
                             ),
-                          ],
+                          ),
                         ),
-                      ),
-                    ],
+                        Padding(
+                          padding: EdgeInsets.symmetric(vertical: 20),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              CustomButton(
+                                label: 'Gửi yêu cầu',
+                                onTap: () {
+                                  if (_fbKey.currentState.saveAndValidate()) {
+                                    final formInputs =
+                                        _fbKey.currentState.value;
+                                    print(formInputs);
+                                    successDialog(
+                                      context,
+                                      'Đơn đăng ký nhận nuôi của bạn đã được gửi đến trạm cứu hộ!',
+                                      // neutralAction: () {
+                                      //   Navigator.pushReplacement(
+                                      //     context,
+                                      //     MaterialPageRoute(
+                                      //       builder: (context) => RescueDetail(),
+                                      //     ),
+                                      //   );
+                                      // },
+                                      title: "Thành công",
+                                    );
+                                  } else {
+                                    warningDialog(context,
+                                        'Bạn chưa điền đầy đủ thông tin.\nXin hãy kiểm tra lại.',
+                                        title: '');
+                                  }
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              )
-            ],
+                )
+              ],
+            ),
           ),
         ),
       ),

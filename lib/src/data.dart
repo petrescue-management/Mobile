@@ -2,8 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pet_rescue_mobile/views/home_page.dart';
 import 'package:pet_rescue_mobile/views/login/login_request.dart';
-import 'package:pet_rescue_mobile/views/notifications/notifications.dart';
-import 'package:pet_rescue_mobile/views/personal/personal.dart';
 
 final List<String> imgList = [
   //'https://thecatandthedog.com/wp-content/uploads/2020/11/petcare-large.jpg',
@@ -11,33 +9,7 @@ final List<String> imgList = [
   'https://cdn.corporate.walmart.com/dims4/WMT/6cb59be/2147483647/strip/true/crop/2000x1304+0+13/resize/920x600!/quality/90/?url=https%3A%2F%2Fcdn.corporate.walmart.com%2Fd7%2F66%2Fad4a88bd4a09bfffe44b1f604ecf%2Fwalmart-pet-care-lead-image.jpg',
 ];
 
-final List<Map> categories = [
-  {"name": "Dog", "iconPath": "assets/images/dog.png"},
-  {"name": "Cat", "iconPath": "assets/images/cat.png"},
-];
-
 final String mapKey = 'AIzaSyAZ4pja68qoa62hCzFdlmAu30iAb_CgmTk';
-
-final List<Widget> isLoggedInPages = [
-  HomePage(key: PageStorageKey('HomePage')),
-  NotificationsPage(key: PageStorageKey('NotificationsPage')),
-  PersonalPage(key: PageStorageKey('PersonalPage')),
-];
-
-final isLoggedInBottomNavItems = [
-  BottomNavigationBarItem(
-    icon: Icon(Icons.home),
-    label: 'Home',
-  ),
-  BottomNavigationBarItem(
-    icon: Icon(Icons.notifications),
-    label: 'Notifications',
-  ),
-  BottomNavigationBarItem(
-    icon: Icon(Icons.perm_identity),
-    label: 'Profile',
-  ),
-];
 
 final List<Widget> isNotLoggedInPages = [
   HomePage(key: PageStorageKey('HomePage')),

@@ -7,7 +7,6 @@ import 'package:pet_rescue_mobile/views/custom_widget/custom_button.dart';
 import 'package:pet_rescue_mobile/views/custom_widget/custom_field.dart';
 import 'package:pet_rescue_mobile/views/rescue/rescue_detail.dart';
 
-import '../../main.dart';
 // import 'package:intl/intl.dart';
 // import 'package:pet_rescue_mobile/models/example/temp.dart';
 // import 'package:pet_rescue_mobile/models/example/temp_data.dart';
@@ -15,7 +14,7 @@ import '../../main.dart';
 // ignore: must_be_immutable
 class Rescue extends StatefulWidget {
   double latitude, longitude;
-  String address;
+  String address = '';
 
   Rescue({this.latitude, this.longitude, this.address});
 
@@ -55,15 +54,7 @@ class _RescueState extends State<Rescue> {
             ),
             color: Colors.black,
             onPressed: () {
-              confirmationDialog(context, "Hủy yêu cầu cứu hộ ?",
-                  positiveText: "Có",
-                  neutralText: "Không",
-                  confirm: false,
-                  title: "", positiveAction: () {
-                Navigator.of(context).popUntil((route) => route.isFirst);
-                Navigator.pushReplacement(
-                    context, MaterialPageRoute(builder: (context) => MyApp()));
-              });
+              Navigator.pop(context);
             },
           ),
           centerTitle: true,
@@ -93,7 +84,7 @@ class _RescueState extends State<Rescue> {
                           color: color2,
                         ),
                         enabled: false,
-                        hintText: widget.address != null || widget.address != ''
+                        hintText: (widget.address != null || widget.address != '')
                             ? '${widget.address}'
                             : 'Chưa cập nhật địa chỉ',
                         hintStyle: TextStyle(

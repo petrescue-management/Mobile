@@ -39,7 +39,6 @@ class AccountProvider {
     );
 
     if (response.statusCode == 200) {
-      print(response.body);
       var result = UserModel.fromJson(json.decode(response.body));
 
       SharedPreferences sharedPreferences = await SharedPreferences.getInstance();

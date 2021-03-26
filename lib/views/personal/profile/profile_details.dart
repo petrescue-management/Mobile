@@ -7,12 +7,27 @@ import 'package:pet_rescue_mobile/src/style.dart';
 import 'package:pet_rescue_mobile/views/custom_widget/custom_field.dart';
 
 // ignore: must_be_immutable
-class ProfileDetails extends StatelessWidget {
+class ProfileDetails extends StatefulWidget {
   UserModel user;
 
   ProfileDetails({this.user});
 
+  @override
+  _ProfileDetailsState createState() => _ProfileDetailsState();
+}
+
+class _ProfileDetailsState extends State<ProfileDetails> {
   ScrollController scrollController = ScrollController();
+
+  Future<bool> _confirmPop() {
+    return confirmationDialog(context, "Hủy chỉnh sửa thông tin ?",
+        positiveText: "Có",
+        neutralText: "Không",
+        confirm: false,
+        title: "", positiveAction: () {
+      Navigator.of(context).pop();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,42 +39,28 @@ class ProfileDetails extends StatelessWidget {
           currentFocus.unfocus();
         }
       },
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-          title: Text(
-            'Chỉnh sửa thông tin',
-            style: TextStyle(
-              color: Colors.black,
+      child: WillPopScope(
+        onWillPop: _confirmPop,
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          appBar: AppBar(
+            title: Text(
+              'Chỉnh sửa thông tin',
+              style: TextStyle(
+                color: Colors.black,
+              ),
             ),
-          ),
-          brightness: Brightness.light,
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          leading: IconButton(
-            icon: Icon(
-              Icons.chevron_left,
-              size: 35,
-            ),
-            color: Colors.black,
-            onPressed: () {
-              confirmationDialog(context, "Hủy chỉnh sửa thông tin ?",
-                  positiveText: "Có",
-                  neutralText: "Không",
-                  confirm: false,
-                  title: "", positiveAction: () {
-                Navigator.of(context).pop();
-              });
-            },
-          ),
-          actions: [
-            IconButton(
+            brightness: Brightness.light,
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            leading: IconButton(
               icon: Icon(
-                Icons.save,
+                Icons.chevron_left,
+                size: 35,
               ),
               color: Colors.black,
               onPressed: () {
-                confirmationDialog(context, "Lưu chỉnh sửa thông tin ?",
+                confirmationDialog(context, "Hủy chỉnh sửa thông tin ?",
                     positiveText: "Có",
                     neutralText: "Không",
                     confirm: false,
@@ -68,14 +69,31 @@ class ProfileDetails extends StatelessWidget {
                 });
               },
             ),
-          ],
-        ),
-        body: Container(
-          child: Column(
-            children: [
-              profilePic(context, user),
-              profileInfo(context, user),
+            actions: [
+              IconButton(
+                icon: Icon(
+                  Icons.save,
+                ),
+                color: Colors.black,
+                onPressed: () {
+                  confirmationDialog(context, "Lưu chỉnh sửa thông tin ?",
+                      positiveText: "Có",
+                      neutralText: "Không",
+                      confirm: false,
+                      title: "", positiveAction: () {
+                    Navigator.of(context).pop();
+                  });
+                },
+              ),
             ],
+          ),
+          body: Container(
+            child: Column(
+              children: [
+                profilePic(context, widget.user),
+                profileInfo(context, widget.user),
+              ],
+            ),
           ),
         ),
       ),
