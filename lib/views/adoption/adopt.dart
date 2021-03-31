@@ -51,34 +51,53 @@ class _AdoptionPageState extends State<AdoptionPage> {
           },
         ),
       ),
-      body: StreamBuilder(
-        stream: petBloc.getPetListByType,
-        builder: (context, AsyncSnapshot<PetListBaseModel> snapshot) {
-          if (snapshot.hasError || snapshot.data == null) {
-            return loading(context);
-          } else {
-            return Container(
-              height: MediaQuery.of(context).size.height -
-                  AppBar().preferredSize.height,
-              child: Column(
-                children: [
-                  Container(
-                    height: MediaQuery.of(context).size.height * 0.08,
-                    child: ListView.builder(
-                      physics: BouncingScrollPhysics(),
-                      scrollDirection: Axis.horizontal,
-                      itemCount: snapshot.data.result.length,
-                      itemBuilder: (context, index) {
-                        return petList(index, snapshot);
-                      },
-                    ),
-                  ),
-                  PetCategoryDisplay(petList: snapshot.data.result[selectedCategory].listPet),
-                ],
+      body: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(bgz6),
+                fit: BoxFit.cover,
               ),
-            );
-          }
-        },
+            ),
+          ),
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.7),
+            ),
+          ),
+          StreamBuilder(
+            stream: petBloc.getPetListByType,
+            builder: (context, AsyncSnapshot<PetListBaseModel> snapshot) {
+              if (snapshot.hasError || snapshot.data == null) {
+                return loading(context);
+              } else {
+                return Container(
+                  height: MediaQuery.of(context).size.height -
+                      AppBar().preferredSize.height,
+                  child: Column(
+                    children: [
+                      Container(
+                        height: MediaQuery.of(context).size.height * 0.08,
+                        child: ListView.builder(
+                          physics: BouncingScrollPhysics(),
+                          scrollDirection: Axis.horizontal,
+                          itemCount: snapshot.data.result.length,
+                          itemBuilder: (context, index) {
+                            return petList(index, snapshot);
+                          },
+                        ),
+                      ),
+                      PetCategoryDisplay(
+                          petList:
+                              snapshot.data.result[selectedCategory].listPet),
+                    ],
+                  ),
+                );
+              }
+            },
+          ),
+        ],
       ),
     );
   }
@@ -88,7 +107,6 @@ class _AdoptionPageState extends State<AdoptionPage> {
     return Container(
       height: MediaQuery.of(context).size.height,
       width: MediaQuery.of(context).size.width,
-      color: Colors.white,
       child: Center(
         child: Container(
           decoration: BoxDecoration(

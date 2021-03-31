@@ -1,25 +1,41 @@
 class PetModel {
   String petId;
-  String centerId;
   String petName;
-  String petBreed;
-  String petFurColor;
-  String imgUrl;
-  String petAge;
-  //int petStatus;
   int petGender;
-  // int petWeight;
-  // bool isVaccinated;
-  // bool isSterilized;
+  String petAge;
+  double petWeight;
+  String petDescription;
+  String petBreedName;
+  String petFurColorName;
+  bool isVaccinated;
+  bool isSterilized;
+  String centerId;
+  String imgUrl;
 
   PetModel(pet) {
     petId = pet['petId'];
-    centerId = pet['centerId'];
     petName = pet['petName'];
-    imgUrl = pet['imgUrl'];
-    petAge = pet['petAge'].toString();
     petGender = pet['petGender'];
-    petBreed = pet['petBreedName'];
-    petFurColor = pet['petFurColorName'];
+    petAge = convertPetAge(pet['petAge']);
+    petWeight = pet['weight'];
+    petDescription = pet['description'];
+    petBreedName = pet['petBreedName'];
+    petFurColorName = pet['petFurColorName'];
+    isVaccinated = pet['isVaccinated'];
+    isSterilized = pet['isSterilized'];
+    centerId = pet['centerId'];
+    imgUrl = pet['imgUrl'];
+  }
+
+  convertPetAge(int age) {
+    if (age == 1) {
+      return 'Chó con/Mèo con';
+    } else if (age == 2) {
+      return 'Thiếu niên';
+    } else if (age == 3) {
+      return 'Trưởng thành';
+    } else {
+      return 'Có tuổi';
+    }
   }
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:commons/commons.dart';
+import 'package:pet_rescue_mobile/src/asset.dart';
+import 'package:pet_rescue_mobile/src/style.dart';
 import 'package:pet_rescue_mobile/bloc/account_bloc.dart';
 import 'package:pet_rescue_mobile/models/user_model.dart';
 import 'package:pet_rescue_mobile/repository/repository.dart';
@@ -46,47 +48,43 @@ class _PersonalPageState extends State<PersonalPage> {
         }
       },
       child: Scaffold(
-        resizeToAvoidBottomInset: false,
-          appBar: AppBar(
-            brightness: Brightness.light,
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            actions: <Widget>[
-              IconButton(
-                icon: Icon(Icons.logout),
-                color: Colors.black,
-                onPressed: () {
-                  confirmationDialog(context, "Bạn chắc chắn muốn đăng xuất ?",
-                      positiveText: "Có",
-                      neutralText: "Không",
-                      confirm: false,
-                      title: "", positiveAction: () {
-                    _repo.signOut().then((_) {
-                      Navigator.of(context).popUntil((route) => route.isFirst);
-                      Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (context) => MyApp()));
-                    });
-                  });
-                },
-              )
+          resizeToAvoidBottomInset: false,
+          body: Stack(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(background),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.8),
+                ),
+              ),
+              Center(
+                child: StreamBuilder(
+                  stream: accountBloc.userDetail,
+                  builder: (context, AsyncSnapshot<UserModel> snapshot) {
+                    if (snapshot.hasError || snapshot.data == null) {
+                      return Center(child: CircularProgressIndicator());
+                    } else {
+                      return Container(
+                        padding: EdgeInsets.symmetric(vertical: 50),
+                        child: Column(
+                          children: [
+                            profilePic(snapshot.data),
+                            configMenu(snapshot.data),
+                          ],
+                        ),
+                      );
+                    }
+                  },
+                ),
+              ),
             ],
-          ),
-          body: Center(
-            child: StreamBuilder(
-              stream: accountBloc.userDetail,
-              builder: (context, AsyncSnapshot<UserModel> snapshot) {
-                if (snapshot.hasError || snapshot.data == null) {
-                  return Center(child: CircularProgressIndicator());
-                } else {
-                  return Column(
-                    children: [
-                      profilePic(snapshot.data),
-                      configMenu(snapshot.data),
-                    ],
-                  );
-                }
-              },
-            ),
           )),
     );
   }
@@ -108,17 +106,16 @@ class _PersonalPageState extends State<PersonalPage> {
         alignment: Alignment.center,
         child: Column(
           children: [
-            SizedBox(
-              height: 125,
+            Container(
               width: 125,
-              child: Stack(
-                fit: StackFit.expand,
-                overflow: Overflow.visible,
-                children: [
-                  CircleAvatar(
-                    backgroundImage: NetworkImage(user.imgUrl),
-                  ),
-                ],
+              height: 125,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: color2, width: 2),
+                image: DecorationImage(
+                  image: NetworkImage(user.imgUrl),
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
             SizedBox(
@@ -128,8 +125,8 @@ class _PersonalPageState extends State<PersonalPage> {
               child: Text(
                 '${user.lastName} ${user.firstName}',
                 style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
                     letterSpacing: 1.5),
               ),
             ),
@@ -180,9 +177,21 @@ class _PersonalPageState extends State<PersonalPage> {
               },
             ),
             ConfigMenu(
-              text: 'Trở thành Trung tâm cứu hộ',
-              icon: Icons.pets,
-              press: () {},
+              text: 'Đăng xuất',
+              icon: Icons.logout,
+              press: () {
+                confirmationDialog(context, "Bạn chắc chắn muốn đăng xuất ?",
+                    positiveText: "Có",
+                    neutralText: "Không",
+                    confirm: false,
+                    title: "", positiveAction: () {
+                  _repo.signOut().then((_) {
+                    Navigator.of(context).popUntil((route) => route.isFirst);
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (context) => MyApp()));
+                  });
+                });
+              },
             ),
           ],
         ),

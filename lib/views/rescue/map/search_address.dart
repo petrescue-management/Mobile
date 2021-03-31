@@ -98,8 +98,11 @@ class _SearchAddressState extends State<SearchAddress> {
                         ),
                         Center(
                           child: Text(
-                            'Chọn địa điểm',
-                            style: TextStyle(fontSize: 18.0),
+                            'CHỌN ĐỊA ĐIỂM',
+                            style: TextStyle(
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ],
@@ -174,7 +177,7 @@ class _SearchAddressState extends State<SearchAddress> {
                               Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>  new RescueLocation(
+                                      builder: (context) => new RescueLocation(
                                           latitude: latitude,
                                           longitude: longitude,
                                           placeName: placeName)));

@@ -15,7 +15,7 @@ import 'package:pet_rescue_mobile/views/rescue/map/search_address.dart';
 
 // ignore: must_be_immutable
 class RescueLocation extends StatefulWidget {
-  double latitude, longitude;
+  double latitude = 0, longitude = 0;
   String placeName;
 
   RescueLocation({Key key, this.latitude, this.longitude, this.placeName})
@@ -53,7 +53,9 @@ class _RescueLocationState extends State<RescueLocation> {
     );
     print('position: $position');
 
-    if (widget.latitude == null || widget.longitude == null) {
+    if (widget.latitude == null && widget.longitude == null ||
+        widget.latitude == 0 ||
+        widget.longitude == 0) {
       currentPosition = position;
       print('0 nè $currentPosition');
     } else {
@@ -94,8 +96,6 @@ class _RescueLocationState extends State<RescueLocation> {
 
   @override
   void initState() {
-    widget.latitude = null;
-    widget.longitude = null;
     super.initState();
     setState(() {
       this._isLoading = true;
@@ -157,11 +157,7 @@ class _RescueLocationState extends State<RescueLocation> {
     var fullAddress = (Provider.of<AppData>(context).currentLocation != null &&
             widget.placeName == null)
         ? Provider.of<AppData>(context).currentLocation.placeName
-        : (widget.placeName == null
-            ? ''
-            : widget.placeName +
-                ' ' +
-                Provider.of<AppData>(context).currentLocation.placeName);
+        : (widget.placeName == null ? '' : widget.placeName);
 
     return Stack(
       children: [
@@ -195,8 +191,8 @@ class _RescueLocationState extends State<RescueLocation> {
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(18.0),
-                topRight: Radius.circular(18.0),
+                topLeft: Radius.circular(25.0),
+                topRight: Radius.circular(25.0),
               ),
               boxShadow: [
                 BoxShadow(
@@ -220,10 +216,13 @@ class _RescueLocationState extends State<RescueLocation> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Xin chào, ',
-                            style: TextStyle(
-                                fontSize: 14.0, fontWeight: FontWeight.bold)),
-                        SizedBox(height: 3.0),
+                        Text(
+                          'Xin chào, ',
+                          style: TextStyle(
+                            fontSize: 14.0,
+                          ),
+                        ),
+                        SizedBox(height: 4.0),
                         Text('Địa chỉ của bạn là:',
                             style: TextStyle(fontSize: 18.0)),
                       ],

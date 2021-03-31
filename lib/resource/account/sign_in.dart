@@ -68,6 +68,7 @@ class FirebaseSignIn {
 
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     sharedPreferences.remove('token');
+    sharedPreferences.remove('userId');
     sharedPreferences.remove('avatar');
     sharedPreferences.remove('fullname');
 

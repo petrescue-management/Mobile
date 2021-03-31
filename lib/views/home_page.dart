@@ -39,54 +39,129 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
+      body: Stack(
         children: [
-          _buildHeader,
-          SizedBox(
-            height: 20,
-          ),
-          CarouselSlider(
-            items: imageSliders,
-            options: CarouselOptions(
-                autoPlay: true,
-                enlargeCenterPage: true,
-                aspectRatio: 2.0,
-                onPageChanged: (index, reason) {
-                  setState(() {
-                    _current = index;
-                  });
-                }),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: imgList.map((url) {
-              int index = imgList.indexOf(url);
-              return Container(
-                width: 8.0,
-                height: 8.0,
-                margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: _current == index
-                      ? Color.fromRGBO(0, 0, 0, 0.9)
-                      : Color.fromRGBO(0, 0, 0, 0.4),
-                ),
-              );
-            }).toList(),
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(background),
+                fit: BoxFit.cover,
+              ),
+            ),
           ),
           Container(
-            height: MediaQuery.of(context).size.height * 0.25,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                //* RESCUE BUTTON
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.07,
-                  width: MediaQuery.of(context).size.width * 0.55,
-                  child: FutureBuilder<FirebaseUser>(
-                    future: _repo.getCurrentUser(),
-                    builder: (context, AsyncSnapshot<FirebaseUser> snapshot) {
-                      return RaisedButton.icon(
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.8),
+            ),
+          ),
+          Column(
+            children: [
+              _buildHeader,
+              SizedBox(
+                height: 20,
+              ),
+              CarouselSlider(
+                items: imageSliders,
+                options: CarouselOptions(
+                    autoPlay: true,
+                    enlargeCenterPage: true,
+                    aspectRatio: 2.0,
+                    onPageChanged: (index, reason) {
+                      setState(() {
+                        _current = index;
+                      });
+                    }),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: imgList.map((url) {
+                  int index = imgList.indexOf(url);
+                  return Container(
+                    width: 8.0,
+                    height: 8.0,
+                    margin:
+                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: _current == index
+                          ? Color.fromRGBO(0, 0, 0, 0.9)
+                          : Color.fromRGBO(0, 0, 0, 0.4),
+                    ),
+                  );
+                }).toList(),
+              ),
+              Container(
+                height: MediaQuery.of(context).size.height * 0.25,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    //* RESCUE BUTTON
+                    Container(
+                      height: MediaQuery.of(context).size.height * 0.07,
+                      width: MediaQuery.of(context).size.width * 0.7,
+                      child: FutureBuilder<FirebaseUser>(
+                        future: _repo.getCurrentUser(),
+                        builder:
+                            (context, AsyncSnapshot<FirebaseUser> snapshot) {
+                          return RaisedButton.icon(
+                            shape: RoundedRectangleBorder(
+                              side: BorderSide(
+                                color: color2,
+                                width: 2,
+                              ),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(50.0)),
+                            ),
+                            onPressed: () {
+                              if (snapshot.hasError)
+                                return waitDialog(context);
+                              else if (snapshot.data == null) {
+                                return infoDialog(
+                                  context,
+                                  "Hãy đăng nhập vào tài khoản của bạn",
+                                  neutralAction: () {
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                LoginRequest()));
+                                    // Navigator.pushNamed(
+                                    //     context, LoginRequest.idScreen);
+                                  },
+                                );
+                              } else
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) {
+                                      return RescueLocation();
+                                    },
+                                  ),
+                                );
+                            },
+                            icon: Image(
+                              image: AssetImage(rescue_logo),
+                              height: 30.0,
+                            ),
+                            label: Text(
+                              ' Yêu cầu cứu hộ',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 1.2,
+                              ),
+                            ),
+                            splashColor: Colors.red[100],
+                            color: Colors.white,
+                          );
+                        },
+                      ),
+                    ),
+                    //* ---------------------------------
+                    //* ADOPT PICKER
+                    Container(
+                      height: MediaQuery.of(context).size.height * 0.07,
+                      width: MediaQuery.of(context).size.width * 0.7,
+                      child: RaisedButton.icon(
                         shape: RoundedRectangleBorder(
                           side: BorderSide(
                             color: color2,
@@ -95,85 +170,35 @@ class _HomePageState extends State<HomePage> {
                           borderRadius: BorderRadius.all(Radius.circular(50.0)),
                         ),
                         onPressed: () {
-                          if (snapshot.hasError)
-                            return waitDialog(context);
-                          else if (snapshot.data == null) {
-                            return infoDialog(
-                              context,
-                              "Hãy đăng nhập vào tài khoản của bạn",
-                              neutralAction: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => LoginRequest()));
-                                // Navigator.pushNamed(
-                                //     context, LoginRequest.idScreen);
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return AdoptionPage();
                               },
-                            );
-                          } else
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  return RescueLocation();
-                                },
-                              ),
-                            );
+                            ),
+                          );
                         },
                         icon: Image(
-                          image: AssetImage(rescue_logo),
+                          image: AssetImage(adopt_logo),
                           height: 30.0,
                         ),
                         label: Text(
-                          ' Cứu hộ',
+                          ' Nhận nuôi',
                           style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 20,
-                              letterSpacing: 1.2),
+                            color: Colors.black,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1.2,
+                          ),
                         ),
                         splashColor: Colors.red[100],
                         color: Colors.white,
-                      );
-                    },
-                  ),
-                ),
-                //* ---------------------------------
-                //* ADOPT PICKER
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.07,
-                  width: MediaQuery.of(context).size.width * 0.55,
-                  child: RaisedButton.icon(
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(
-                        color: color2,
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.all(Radius.circular(50.0)),
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return AdoptionPage();
-                          },
-                        ),
-                      );
-                    },
-                    icon: Image(
-                      image: AssetImage(adopt_logo),
-                      height: 30.0,
-                    ),
-                    label: Text(
-                      ' Nhận nuôi',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 20,
-                        letterSpacing: 1.2,
                       ),
                     ),
-                    splashColor: Colors.red[100],
-                    color: Colors.white,
-                  ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ],
       ),
@@ -275,12 +300,13 @@ Widget _buildHeader = Container(
             ),
             SizedBox(height: 10.0),
             Text(
-              "RESCUE THEM",
+              "RESCUE ME",
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 25.0,
+                fontSize: 30.0,
+                fontFamily: 'Salsa',
                 fontWeight: FontWeight.w700,
-                letterSpacing: 3.0,
+                letterSpacing: 4.0,
               ),
             )
           ],

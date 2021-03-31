@@ -60,17 +60,29 @@ customRadioGroup(String label, String attribute, String error,
     Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label),
         FormBuilderRadioGroup(
           decoration: InputDecoration(
-            border: InputBorder.none,
+            labelText: label,
+            labelStyle: TextStyle(
+              color: color2,
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: color2,
+                width: 2,
+              ),
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            fillColor: Colors.white,
+            filled: true,
           ),
           attribute: attribute,
           validators: [
             FormBuilderValidators.required(errorText: error),
           ],
           options: options,
-          wrapSpacing: 60,
         ),
         SizedBox(
           height: 20,

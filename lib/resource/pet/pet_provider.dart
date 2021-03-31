@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:pet_rescue_mobile/models/pet/pet_list_base_model.dart';
 import 'package:pet_rescue_mobile/src/api_url.dart';
@@ -20,5 +22,16 @@ class PetProvider {
       print('Failed to load post');
     }
     return null;
+  }
+
+  // trước là tên thư mục, sau là tên file
+  Future<String> uploadAvatar(File image, String uid) async {
+    FirebaseStorage storage = FirebaseStorage.instance;
+    StorageReference storageReference = storage.ref().child('petRescueImg/$uid');
+    StorageUploadTask uploadTask = storageReference.putFile(image);
+    StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
+    String url = await taskSnapshot.ref.getDownloadURL();
+    print(url);
+    return url;
   }
 }

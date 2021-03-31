@@ -4,6 +4,7 @@ import 'package:commons/commons.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:pet_rescue_mobile/views/custom_widget/custom_button.dart';
 import 'package:pet_rescue_mobile/views/custom_widget/custom_field.dart';
+import 'package:pet_rescue_mobile/views/custom_widget/custom_divider.dart';
 import 'package:pet_rescue_mobile/models/pet/pet_model.dart';
 
 // ignore: must_be_immutable
@@ -41,6 +42,9 @@ class _AdoptFormRegistrationPageState extends State<AdoptFormRegistrationPage> {
 
   @override
   Widget build(BuildContext context) {
+    var height = MediaQuery.of(context).size.height;
+    var width = MediaQuery.of(context).size.width;
+
     return GestureDetector(
       onTap: () {
         FocusScopeNode currentFocus = FocusScope.of(context);
@@ -81,17 +85,35 @@ class _AdoptFormRegistrationPageState extends State<AdoptFormRegistrationPage> {
             ),
           ),
           body: Container(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
+            height: height,
+            width: width,
             child: Column(
               children: [
-                // Padding(
-                //   padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 10),
-                //   child: Container(
-                //     color: Colors.amberAccent,
-                //     child: petInfo(context, pet),
-                //   ),
-                // ),
+                Padding(
+                  padding:
+                      EdgeInsets.only(top: 10, right: 20, left: 20, bottom: 20),
+                  child: Container(
+                    height: height * 0.16,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SizedBox(
+                          height: 200,
+                          width: width * 0.34,
+                          child: Image.network(
+                            widget.pet.imgUrl,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        Container(
+                          width: width * 0.54,
+                          color: Colors.amberAccent,
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                CustomDivider(),
                 FormBuilder(
                   key: _fbKey,
                   child: Expanded(
@@ -187,7 +209,24 @@ class _AdoptFormRegistrationPageState extends State<AdoptFormRegistrationPage> {
           children: [
             customTextField('Họ tên', 'Bạn chưa điền họ tên.'),
             customTextField('Năm sinh', 'Bạn chưa điền năm sinh.'),
-            customTextField('Số điện thoại', 'Bạn chưa điền số điện thoại.'),
+            Container(
+              child: FormBuilderPhoneField(
+                attribute: 'phone_number',
+                decoration: InputDecoration(
+                  labelText: 'Số điện thoại',
+                  labelStyle: TextStyle(
+                    fontSize: 14,
+                    color: Colors.black,
+                  ),
+                ),
+                priorityListByIsoCode: ['KE'],
+                validators: [
+                  FormBuilderValidators.numeric(),
+                  FormBuilderValidators.required(
+                      errorText: 'Hãy nhập số điện thoại của bạn'),
+                ],
+              ),
+            ),
             customTextField('Email', 'Bạn chưa điền email.'),
             customTextField('Nghề nghiệp', 'Bạn chưa điền nghề nghiệp.'),
             customTextField('Địa chỉ', 'Bạn chưa điền địa chỉ.'),
