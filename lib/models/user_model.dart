@@ -3,7 +3,6 @@ class UserModel {
   String id;
   String lastName;
   String firstName;
-  String address;
   int gender;
   String phone;
   String imgUrl;
@@ -14,7 +13,6 @@ class UserModel {
     this.id,
     this.lastName,
     this.firstName,
-    this.address,
     this.gender,
     this.phone,
     this.imgUrl,
@@ -27,7 +25,6 @@ class UserModel {
       id: json['id'],
       lastName: json['lastName'],
       firstName: json['firstName'],
-      address: json['address'],
       gender: json['gender'],
       phone: json['phone'],
       imgUrl: json['imgUrl'],

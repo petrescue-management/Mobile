@@ -26,7 +26,6 @@ class PetCard extends StatelessWidget {
           MaterialPageRoute(
             builder: (context) {
               return DetailsScreen(
-                petList: petList,
                 pet: pet,
               );
             },
@@ -83,7 +82,7 @@ class PetCard extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                pet.petBreed == null ? "null" : pet.petBreed,
+                                pet.petBreedName == null ? "null" : pet.petBreedName,
                                 style: TextStyle(
                                   fontSize: 12,
                                   color: fadedBlack,

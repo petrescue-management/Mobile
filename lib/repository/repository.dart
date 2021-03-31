@@ -1,5 +1,7 @@
 // Repository <----- the central point from where the data will flow to the BLOC
 
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:pet_rescue_mobile/models/pet/pet_list_base_model.dart';
 import 'package:pet_rescue_mobile/models/user_model.dart';
@@ -27,6 +29,9 @@ class Repository {
   Future<UserModel> getUserDetails() => accountProvider.getUserDetail();
 
   Future<PetListBaseModel> getPetListByType() => petProvider.getPetListByType();
+
+  Future<String> uploadAvatar(File image, String uid) =>
+      petProvider.uploadAvatar(image, uid);
 
   Future<bool> createRescueRequest(RescueReport rescueReport) =>
       formProvider.createRescueRequest(rescueReport);

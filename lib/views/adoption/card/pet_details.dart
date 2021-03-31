@@ -12,14 +12,17 @@ import 'package:pet_rescue_mobile/models/pet/pet_model.dart';
 
 // ignore: must_be_immutable
 class DetailsScreen extends StatelessWidget {
-  List<PetModel> petList;
   PetModel pet;
   final _repo = Repository();
 
-  DetailsScreen({this.petList, this.pet});
+  DetailsScreen({this.pet});
 
   @override
   Widget build(BuildContext context) {
+    var vaccine =
+        pet.isVaccinated ? 'Đã chích ngừa vaccine' : 'Chưa chích ngừa vaccine';
+    var ster = pet.isSterilized ? 'Đã triệt sản' : 'Chưa triệt sản';
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(
@@ -45,17 +48,19 @@ class DetailsScreen extends StatelessWidget {
                     child: Column(
                       children: [
                         SizedBox(
-                          height: 100,
+                          height: 80,
                         ),
                         Container(
+                          alignment: Alignment.centerLeft,
                           margin: EdgeInsets.symmetric(
                             horizontal: 20,
                           ),
                           child: Text(
-                            'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.',
+                            'Một số thông tin của bé: \n  Mô tả: \n   - ${pet.petDescription}\n   - Màu lông: ${pet.petFurColorName} \n  Tình trạng sức khỏe: \n   - Cân nặng: ${pet.petWeight} kg\n   - $vaccine\n   - $ster',
                             style: TextStyle(
                               color: fadedBlack,
-                              height: 1.7,
+                              height: 1.5,
+                              fontSize: 15,
                             ),
                           ),
                         ),
@@ -132,7 +137,7 @@ class DetailsScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        pet.petBreed == null ? "null" : pet.petBreed,
+                        pet.petBreedName == null ? "null" : pet.petBreedName,
                         style: TextStyle(
                           fontSize: 12,
                           color: Colors.black,
@@ -172,7 +177,7 @@ class DetailsScreen extends StatelessWidget {
                     future: _repo.getCurrentUser(),
                     builder: (context, AsyncSnapshot<FirebaseUser> snapshot) {
                       return CustomButton(
-                        label: 'Nhận nuôi',
+                        label: 'ĐĂNG KÝ NHẬN NUÔI',
                         onTap: () {
                           if (snapshot.hasError) {
                             return waitDialog(context);
@@ -182,7 +187,9 @@ class DetailsScreen extends StatelessWidget {
                               "Bạn chưa đăng nhập vào tài khoản của bạn!",
                               neutralAction: () {
                                 Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => LoginRequest()));
+                                    builder: (context) => LoginRequest(
+                                          pet: pet,
+                                        )));
                               },
                               title: "",
                             );

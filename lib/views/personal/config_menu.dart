@@ -25,7 +25,7 @@ class ConfigMenu extends StatelessWidget {
           borderRadius: BorderRadius.circular(25),
           side: BorderSide(
             color: color2,
-            width: 0.5,
+            width: 2,
           ),
         ),
         color: Color(0xFFF5F6F9),
@@ -40,7 +40,13 @@ class ConfigMenu extends StatelessWidget {
             SizedBox(width: 20),
             // menu title
             Expanded(
-              child: Text(text),
+              child: Text(
+                text,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
             ),
             Icon(
               Icons.arrow_forward_ios,

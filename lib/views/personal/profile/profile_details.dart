@@ -106,40 +106,43 @@ class _ProfileDetailsState extends State<ProfileDetails> {
     return Container(
       height: height,
       alignment: Alignment.center,
-      child: SizedBox(
-        height: 125,
-        width: 125,
-        child: Stack(
-          fit: StackFit.expand,
-          overflow: Overflow.visible,
-          children: [
-            CircleAvatar(
-              backgroundImage: NetworkImage(user.imgUrl),
+      child: Stack(
+        children: [
+          Container(
+            width: 125,
+            height: 125,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(color: color2, width: 2),
+              image: DecorationImage(
+                image: NetworkImage(user.imgUrl),
+                fit: BoxFit.cover,
+              ),
             ),
-            Positioned(
-              right: 0,
-              bottom: 0,
-              child: Container(
-                height: 40,
-                width: 40,
-                decoration: BoxDecoration(
-                  color: color2,
-                  shape: BoxShape.circle,
-                ),
-                alignment: Alignment.center,
-                child: Center(
-                  child: IconButton(
-                    icon: Icon(
-                      Icons.camera,
-                    ),
-                    color: Colors.white,
-                    onPressed: () {},
+          ),
+          Positioned(
+            right: 0,
+            bottom: 0,
+            child: Container(
+              height: 40,
+              width: 40,
+              decoration: BoxDecoration(
+                color: color2,
+                shape: BoxShape.circle,
+              ),
+              alignment: Alignment.center,
+              child: Center(
+                child: IconButton(
+                  icon: Icon(
+                    Icons.camera,
                   ),
+                  color: Colors.white,
+                  onPressed: () {},
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -174,8 +177,12 @@ class _ProfileDetailsState extends State<ProfileDetails> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 customText(
-                  'Họ tên',
-                  '${user.lastName} ${user.firstName}',
+                  'Họ',
+                  '${user.lastName}',
+                ),
+                customText(
+                  'Tên',
+                  '${user.firstName}',
                 ),
                 customText(
                   'Giới tính',
@@ -194,12 +201,6 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                   (user.phone == null || user.phone == '')
                       ? 'Chưa có'
                       : '${user.phone}',
-                ),
-                customText(
-                  'Địa chỉ',
-                  (user.address == null || user.address == '')
-                      ? 'Chưa có'
-                      : '${user.address}',
                 ),
               ],
             ),

@@ -1,5 +1,6 @@
 class RescueReport {
   int petAttribute;
+  String phone;
   String imgReportUrl;
   String reportDescription;
   String reportLocation;
@@ -12,6 +13,7 @@ class RescueReport {
     this.petAttribute,
     this.reportDescription,
     this.reportLocation,
+    this.phone,
   });
 
   factory RescueReport.fromJson(Map<String, dynamic> json) {
@@ -22,6 +24,7 @@ class RescueReport {
       reportDescription: json['reportDescription'],
       latitude: json['latitude'],
       longitude: json['longitude'],
+      phone: json['phone'],
     );
   }
 }

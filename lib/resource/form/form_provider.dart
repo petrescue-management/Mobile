@@ -17,6 +17,7 @@ class FormProvider {
     resBody['reportDescription'] = rescueReport.reportDescription;
     resBody['latitude'] = rescueReport.latitude;
     resBody['longitude'] = rescueReport.longitude;
+    resBody['phone'] = rescueReport.phone;
 
     String str = json.encode(resBody);
 
