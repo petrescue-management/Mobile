@@ -164,20 +164,15 @@ class _MyApp extends State<MyApp> {
                 pages: isNotLoggedInPages,
               );
             } else {
+              _repo.getUserDetails();
               return BottomNaviBar(
                 bottomNaviItems: [
                   BottomNavigationBarItem(
-                    icon: Icon(Icons.home),
-                    label: 'Home',
-                  ),
+                      icon: Icon(Icons.home), label: 'Home'),
                   BottomNavigationBarItem(
-                    icon: Icon(Icons.notifications),
-                    label: 'Notifications',
-                  ),
+                      icon: Icon(Icons.notifications), label: 'Notifications'),
                   BottomNavigationBarItem(
-                    icon: Icon(Icons.perm_identity),
-                    label: 'Profile',
-                  ),
+                      icon: Icon(Icons.perm_identity), label: 'Profile'),
                 ],
                 pages: [
                   HomePage(key: PageStorageKey('HomePage')),

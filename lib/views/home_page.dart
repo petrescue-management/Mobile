@@ -11,9 +11,10 @@ import 'package:pet_rescue_mobile/src/style.dart';
 
 import 'package:pet_rescue_mobile/views/rescue/map/rescue_location.dart';
 import 'package:pet_rescue_mobile/views/adoption/adopt.dart';
+import 'package:pet_rescue_mobile/views/login/login_request.dart';
+import 'custom_widget/custom_button.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:pet_rescue_mobile/views/login/login_request.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key key}) : super(key: key);
@@ -44,22 +45,16 @@ class _HomePageState extends State<HomePage> {
           Container(
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage(background),
-                fit: BoxFit.cover,
-              ),
+                  image: AssetImage(background), fit: BoxFit.cover),
             ),
           ),
           Container(
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.8),
-            ),
+            decoration: BoxDecoration(color: Colors.white.withOpacity(0.8)),
           ),
           Column(
             children: [
               _buildHeader,
-              SizedBox(
-                height: 20,
-              ),
+              SizedBox(height: 20),
               CarouselSlider(
                 items: imageSliders,
                 options: CarouselOptions(
@@ -103,15 +98,9 @@ class _HomePageState extends State<HomePage> {
                         future: _repo.getCurrentUser(),
                         builder:
                             (context, AsyncSnapshot<FirebaseUser> snapshot) {
-                          return RaisedButton.icon(
-                            shape: RoundedRectangleBorder(
-                              side: BorderSide(
-                                color: color2,
-                                width: 2,
-                              ),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(50.0)),
-                            ),
+                          return CustomRaiseButtonIcon(
+                            labelText: ' Yêu cầu cứu hộ',
+                            assetName: rescue_logo,
                             onPressed: () {
                               if (snapshot.hasError)
                                 return waitDialog(context);
@@ -124,8 +113,6 @@ class _HomePageState extends State<HomePage> {
                                         MaterialPageRoute(
                                             builder: (context) =>
                                                 LoginRequest()));
-                                    // Navigator.pushNamed(
-                                    //     context, LoginRequest.idScreen);
                                   },
                                 );
                               } else
@@ -137,21 +124,6 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 );
                             },
-                            icon: Image(
-                              image: AssetImage(rescue_logo),
-                              height: 30.0,
-                            ),
-                            label: Text(
-                              ' Yêu cầu cứu hộ',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 1.2,
-                              ),
-                            ),
-                            splashColor: Colors.red[100],
-                            color: Colors.white,
                           );
                         },
                       ),
@@ -161,14 +133,9 @@ class _HomePageState extends State<HomePage> {
                     Container(
                       height: MediaQuery.of(context).size.height * 0.07,
                       width: MediaQuery.of(context).size.width * 0.7,
-                      child: RaisedButton.icon(
-                        shape: RoundedRectangleBorder(
-                          side: BorderSide(
-                            color: color2,
-                            width: 2,
-                          ),
-                          borderRadius: BorderRadius.all(Radius.circular(50.0)),
-                        ),
+                      child: CustomRaiseButtonIcon(
+                        labelText: ' Nhận nuôi',
+                        assetName: adopt_logo,
                         onPressed: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
@@ -178,21 +145,6 @@ class _HomePageState extends State<HomePage> {
                             ),
                           );
                         },
-                        icon: Image(
-                          image: AssetImage(adopt_logo),
-                          height: 30.0,
-                        ),
-                        label: Text(
-                          ' Nhận nuôi',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 1.2,
-                          ),
-                        ),
-                        splashColor: Colors.red[100],
-                        color: Colors.white,
                       ),
                     ),
                   ],

@@ -1,6 +1,9 @@
-enum postStatus {
-  Approved,
-  Rejected
+enum PetAttribute {
+  Lost,
+  Abandoned,
+  Injured,
+  Giveaway,
+  Returned
 }
 
 enum petStatus {

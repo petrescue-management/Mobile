@@ -6,6 +6,7 @@ import 'package:pet_rescue_mobile/views/custom_widget/custom_button.dart';
 import 'package:pet_rescue_mobile/views/custom_widget/custom_field.dart';
 import 'package:pet_rescue_mobile/views/custom_widget/custom_divider.dart';
 import 'package:pet_rescue_mobile/models/pet/pet_model.dart';
+import 'package:pet_rescue_mobile/src/style.dart';
 
 // ignore: must_be_immutable
 class AdoptFormRegistrationPage extends StatefulWidget {
@@ -90,25 +91,45 @@ class _AdoptFormRegistrationPageState extends State<AdoptFormRegistrationPage> {
             child: Column(
               children: [
                 Padding(
-                  padding:
-                      EdgeInsets.only(top: 10, right: 20, left: 20, bottom: 20),
+                  padding: EdgeInsets.only(right: 20, left: 20, bottom: 10),
                   child: Container(
                     height: height * 0.16,
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        SizedBox(
-                          height: 200,
-                          width: width * 0.34,
-                          child: Image.network(
-                            widget.pet.imgUrl,
-                            fit: BoxFit.cover,
+                        Container(
+                          width: 150,
+                          height: 150,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(color: color2, width: 2),
+                            image: DecorationImage(
+                              image: NetworkImage(widget.pet.petImgUrl),
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
                         Container(
-                          width: width * 0.54,
-                          color: Colors.amberAccent,
-                        )
+                          margin: EdgeInsets.only(top: 20, left: 20),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                widget.pet.petName,
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(height: 20),
+                              Text(
+                                'Tuổi: ' + widget.pet.petAge,
+                                style: TextStyle(fontSize: 16),
+                              ),
+                              Text(
+                                'Giống: ' + widget.pet.petBreedName,
+                                style: TextStyle(fontSize: 16),
+                              ),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -120,37 +141,35 @@ class _AdoptFormRegistrationPageState extends State<AdoptFormRegistrationPage> {
                     child: Column(
                       children: [
                         Expanded(
-                          child: SingleChildScrollView(
-                            controller: scrollController,
-                            child: Stepper(
-                              steps: _stepper(),
-                              physics: ClampingScrollPhysics(),
-                              currentStep: this._currentStep,
-                              onStepTapped: (step) {
-                                setState(() {
-                                  this._currentStep = step;
-                                });
-                              },
-                              onStepContinue: () {
-                                setState(() {
-                                  if (this._currentStep <
-                                      this._stepper().length - 1) {
-                                    this._currentStep = this._currentStep + 1;
-                                  } else {
-                                    _currentStep = 0;
-                                  }
-                                });
-                              },
-                              onStepCancel: () {
-                                setState(() {
-                                  if (this._currentStep > 0) {
-                                    this._currentStep = this._currentStep - 1;
-                                  } else {
-                                    this._currentStep = 0;
-                                  }
-                                });
-                              },
-                            ),
+                          child: Stepper(
+                            steps: _stepper(),
+                            type: StepperType.horizontal,
+                            physics: ClampingScrollPhysics(),
+                            currentStep: this._currentStep,
+                            onStepTapped: (step) {
+                              setState(() {
+                                this._currentStep = step;
+                              });
+                            },
+                            onStepContinue: () {
+                              setState(() {
+                                if (this._currentStep <
+                                    this._stepper().length - 1) {
+                                  this._currentStep = this._currentStep + 1;
+                                } else {
+                                  _currentStep = 0;
+                                }
+                              });
+                            },
+                            onStepCancel: () {
+                              setState(() {
+                                if (this._currentStep > 0) {
+                                  this._currentStep = this._currentStep - 1;
+                                } else {
+                                  this._currentStep = 0;
+                                }
+                              });
+                            },
                           ),
                         ),
                         Padding(

@@ -1,30 +1,29 @@
 class RescueReport {
   int petAttribute;
   String phone;
-  String imgReportUrl;
-  String reportDescription;
-  String reportLocation;
+  String finderFormImgUrl;
+  String finderDescription;
   double latitude, longitude;
 
   RescueReport({
-    this.imgReportUrl,
+    this.finderFormImgUrl,
     this.latitude,
     this.longitude,
     this.petAttribute,
-    this.reportDescription,
-    this.reportLocation,
+    this.finderDescription,
     this.phone,
   });
 
   factory RescueReport.fromJson(Map<String, dynamic> json) {
     return RescueReport(
-      reportLocation: json['reportLocation'],
-      imgReportUrl: json['imgReportUrl'],
+      finderFormImgUrl: json['finderFormImgUrl'],
       petAttribute: json['petAttribute'],
-      reportDescription: json['reportDescription'],
-      latitude: json['latitude'],
-      longitude: json['longitude'],
+      finderDescription: json['finderDescription'],
+      latitude: json['lat'],
+      longitude: json['lng'],
       phone: json['phone'],
     );
   }
+
+  String get getImageUrl => finderFormImgUrl;
 }

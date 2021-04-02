@@ -8,7 +8,8 @@ import 'package:pet_rescue_mobile/repository/repository.dart';
 import 'package:pet_rescue_mobile/views/personal/config_menu.dart';
 import 'package:pet_rescue_mobile/main.dart';
 import 'package:pet_rescue_mobile/views/personal/profile/profile_details.dart';
-import 'package:pet_rescue_mobile/views/progress/progress_report.dart';
+import 'package:pet_rescue_mobile/views/personal/volunteer/volunteer_registration.dart';
+import 'package:pet_rescue_mobile/views/personal/progress/progress_report.dart';
 
 class PersonalPage extends StatefulWidget {
   const PersonalPage({Key key}) : super(key: key);
@@ -48,50 +49,49 @@ class _PersonalPageState extends State<PersonalPage> {
         }
       },
       child: Scaffold(
-          resizeToAvoidBottomInset: false,
-          body: Stack(
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage(background),
-                    fit: BoxFit.cover,
-                  ),
+        resizeToAvoidBottomInset: false,
+        body: Stack(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage(background),
+                  fit: BoxFit.cover,
                 ),
               ),
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.8),
-                ),
+            ),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.8),
               ),
-              Center(
-                child: StreamBuilder(
-                  stream: accountBloc.userDetail,
-                  builder: (context, AsyncSnapshot<UserModel> snapshot) {
-                    if (snapshot.hasError || snapshot.data == null) {
-                      return Center(child: CircularProgressIndicator());
-                    } else {
-                      return Container(
-                        padding: EdgeInsets.symmetric(vertical: 50),
-                        child: Column(
-                          children: [
-                            profilePic(snapshot.data),
-                            configMenu(snapshot.data),
-                          ],
-                        ),
-                      );
-                    }
-                  },
-                ),
+            ),
+            Center(
+              child: StreamBuilder(
+                stream: accountBloc.userDetail,
+                builder: (context, AsyncSnapshot<UserModel> snapshot) {
+                  if (snapshot.hasError || snapshot.data == null) {
+                    return Center(child: CircularProgressIndicator());
+                  } else {
+                    return Container(
+                      child: Column(
+                        children: [
+                          profilePic(snapshot.data),
+                          configMenu(snapshot.data),
+                        ],
+                      ),
+                    );
+                  }
+                },
               ),
-            ],
-          )),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
   Widget profilePic(UserModel user) {
-    var height = MediaQuery.of(context).size.height * 0.25;
-
+    var height = MediaQuery.of(context).size.height * 0.28;
     if (avatar != user.imgUrl ||
         fullname != '${user.lastName} ${user.firstName}') {
       return Container(
@@ -103,15 +103,21 @@ class _PersonalPageState extends State<PersonalPage> {
     } else {
       return Container(
         height: height,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [color3, color2, color1],
+          ),
+        ),
         alignment: Alignment.center,
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
               width: 125,
               height: 125,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(color: color2, width: 2),
+                border: Border.all(color: Colors.white, width: 2),
                 image: DecorationImage(
                   image: NetworkImage(user.imgUrl),
                   fit: BoxFit.cover,
@@ -125,9 +131,10 @@ class _PersonalPageState extends State<PersonalPage> {
               child: Text(
                 '${user.lastName} ${user.firstName}',
                 style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1.5),
+                  fontSize: 21,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
               ),
             ),
           ],
@@ -139,9 +146,10 @@ class _PersonalPageState extends State<PersonalPage> {
   Widget configMenu(UserModel user) {
     return Container(
       child: Container(
-        height: MediaQuery.of(context).size.height * 0.5,
+        margin: EdgeInsets.only(top: 25),
+        height: MediaQuery.of(context).size.height * 0.55,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             ConfigMenu(
               text: 'Chỉnh sửa thông tin',
@@ -164,13 +172,26 @@ class _PersonalPageState extends State<PersonalPage> {
               press: () {},
             ),
             ConfigMenu(
-              text: 'Yêu cầu của tôi',
-              icon: Icons.article,
+              text: 'Yêu cầu cứu hộ',
+              icon: Icons.add_box,
               press: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) {
                       return ProgressReportPage();
+                    },
+                  ),
+                );
+              },
+            ),
+            ConfigMenu(
+              text: 'Trở thành tình nguyện viên',
+              icon: Icons.volunteer_activism,
+              press: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return VolunteerForm();
                     },
                   ),
                 );

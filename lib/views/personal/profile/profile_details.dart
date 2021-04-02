@@ -1,10 +1,20 @@
+import 'dart:io';
 import 'package:commons/commons.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:path/path.dart';
+import 'package:pet_rescue_mobile/repository/repository.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:pet_rescue_mobile/bloc/account_bloc.dart';
 import 'package:pet_rescue_mobile/models/user_model.dart';
 import 'package:pet_rescue_mobile/src/style.dart';
-import 'package:pet_rescue_mobile/views/custom_widget/custom_field.dart';
+import 'package:pet_rescue_mobile/src/asset.dart';
+import 'package:pet_rescue_mobile/views/custom_widget/custom_dialog.dart';
+import 'package:pet_rescue_mobile/views/custom_widget/custom_button.dart';
+import 'package:pet_rescue_mobile/views/custom_widget/custom_divider.dart';
+
+import '../../../main.dart';
 
 // ignore: must_be_immutable
 class ProfileDetails extends StatefulWidget {
@@ -19,14 +29,78 @@ class ProfileDetails extends StatefulWidget {
 class _ProfileDetailsState extends State<ProfileDetails> {
   ScrollController scrollController = ScrollController();
 
-  Future<bool> _confirmPop() {
-    return confirmationDialog(context, "Hủy chỉnh sửa thông tin ?",
-        positiveText: "Có",
-        neutralText: "Không",
-        confirm: false,
-        title: "", positiveAction: () {
-      Navigator.of(context).pop();
+  TextEditingController lastNameController = TextEditingController();
+  TextEditingController firstNameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
+  TextEditingController dobController = TextEditingController();
+
+  final _repo = Repository();
+  @override
+  void initState() {
+    super.initState();
+    getUser();
+  }
+
+  getUser() async {
+    setState(() {
+      lastNameController.text = widget.user.lastName;
+      firstNameController.text = widget.user.firstName;
+      emailController.text = widget.user.email;
+      phoneController.text = widget.user.phone;
+      dobController.text = widget.user.dob;
     });
+  }
+
+  File _image;
+
+  _imgFromGallery() async {
+    // ignore: deprecated_member_use
+    File image = await ImagePicker.pickImage(
+        source: ImageSource.gallery, imageQuality: 50);
+    setState(() {
+      _image = image;
+    });
+  }
+
+  _imgFromCamera() async {
+    // ignore: deprecated_member_use
+    File image = await ImagePicker.pickImage(
+        source: ImageSource.camera, imageQuality: 50);
+
+    setState(() {
+      _image = image;
+    });
+  }
+
+  void _showPicker(context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext bc) {
+          return SafeArea(
+            child: Container(
+              child: new Wrap(
+                children: <Widget>[
+                  new ListTile(
+                      leading: new Icon(Icons.photo_library),
+                      title: new Text('Gallery'),
+                      onTap: () {
+                        _imgFromGallery();
+                        Navigator.of(context).pop();
+                      }),
+                  new ListTile(
+                    leading: new Icon(Icons.photo_camera),
+                    title: new Text('Camera'),
+                    onTap: () {
+                      _imgFromCamera();
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
   }
 
   @override
@@ -40,9 +114,17 @@ class _ProfileDetailsState extends State<ProfileDetails> {
         }
       },
       child: WillPopScope(
-        onWillPop: _confirmPop,
+        onWillPop: () {
+          return confirmationDialog(context, "Hủy chỉnh sửa thông tin ?",
+              positiveText: "Có",
+              neutralText: "Không",
+              confirm: false,
+              title: "", positiveAction: () {
+            Navigator.of(context).pop();
+          });
+        },
         child: Scaffold(
-          resizeToAvoidBottomInset: false,
+          resizeToAvoidBottomInset: true,
           appBar: AppBar(
             title: Text(
               'Chỉnh sửa thông tin',
@@ -69,40 +151,153 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                 });
               },
             ),
-            actions: [
-              IconButton(
-                icon: Icon(
-                  Icons.save,
-                ),
-                color: Colors.black,
-                onPressed: () {
-                  confirmationDialog(context, "Lưu chỉnh sửa thông tin ?",
-                      positiveText: "Có",
-                      neutralText: "Không",
-                      confirm: false,
-                      title: "", positiveAction: () {
-                    Navigator.of(context).pop();
-                  });
-                },
-              ),
-            ],
           ),
-          body: Container(
-            child: Column(
-              children: [
-                profilePic(context, widget.user),
-                profileInfo(context, widget.user),
-              ],
-            ),
+          body: Stack(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(bgsh),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              Container(
+                decoration: BoxDecoration(color: Colors.white.withOpacity(0.7)),
+              ),
+              Container(
+                height: MediaQuery.of(context).size.height,
+                child: Column(
+                  children: [
+                    profilePic(context, widget.user),
+                    Padding(
+                      padding: EdgeInsets.only(
+                        top: 10,
+                        right: 40,
+                        left: 40,
+                      ),
+                      child: CustomDivider(),
+                    ),
+                    Expanded(
+                      child: Column(
+                        children: [
+                          Expanded(
+                            child: profileInfo(context),
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(bottom: 10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                CustomButton(
+                                  label: 'LƯU CHỈNH SỬA',
+                                  onTap: () {
+                                    confirmationDialog(context,
+                                        'Bạn muốn lưu thông tin chỉnh sửa?',
+                                        title: '',
+                                        confirm: false,
+                                        negativeText: 'Không',
+                                        positiveText: 'Có', positiveAction: () {
+                                      showDialog(
+                                          context: context,
+                                          builder: (context) => ProgressDialog(
+                                              message: 'Đang gửi...'));
+
+                                      UserModel tmpUser = new UserModel();
+                                      tmpUser.id = widget.user.id;
+                                      tmpUser.lastName =
+                                          lastNameController.text;
+                                      tmpUser.firstName =
+                                          firstNameController.text;
+                                      tmpUser.email = emailController.text;
+                                      tmpUser.phone = phoneController.text;
+                                      tmpUser.gender = widget.user.gender;
+                                      tmpUser.dob = widget.user.dob;
+
+                                      if (_image == null) {
+                                        tmpUser.imgUrl = widget.user.imgUrl;
+
+                                        accountBloc.updateUserDetail(tmpUser);
+                                        successDialog(context,
+                                            'Đã cập nhật thông tin cá nhân',
+                                            title: 'Thành công',
+                                            neutralAction: () {
+                                          Navigator.of(context).popUntil(
+                                              (route) => route.isFirst);
+                                          Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      MyApp()));
+                                        });
+                                      } else {
+                                        String url = '';
+                                        String baseName = basename(_image.path);
+                                        if (baseName != null) {
+                                          _repo
+                                              .uploadAvatar(_image, baseName)
+                                              .then((value) {
+                                            setState(() {
+                                              url = value;
+                                              tmpUser.imgUrl = url;
+
+                                              accountBloc
+                                                  .updateUserDetail(tmpUser);
+                                              successDialog(context,
+                                                  'Đã cập nhật thông tin cá nhân',
+                                                  title: 'Thành công',
+                                                  neutralAction: () {
+                                                Navigator.of(context).popUntil(
+                                                    (route) => route.isFirst);
+                                                Navigator.pushReplacement(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            MyApp()));
+                                              });
+                                            });
+                                          });
+                                        }
+                                      }
+                                    });
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            ],
           ),
         ),
       ),
     );
   }
 
-  Widget profilePic(BuildContext context, UserModel user) {
-    var height = MediaQuery.of(context).size.height * 0.2;
+  // loading
+  Widget loading(BuildContext context) {
+    return Container(
+      height: MediaQuery.of(context).size.height,
+      width: MediaQuery.of(context).size.width,
+      color: Colors.white,
+      child: Center(
+        child: Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.rectangle,
+            color: Colors.white,
+          ),
+          child: CircularProgressIndicator(),
+        ),
+      ),
+    );
+  }
 
+  Widget profilePic(BuildContext context, UserModel user) {
+    var height = MediaQuery.of(context).size.height * 0.16;
     return Container(
       height: height,
       alignment: Alignment.center,
@@ -115,7 +310,9 @@ class _ProfileDetailsState extends State<ProfileDetails> {
               shape: BoxShape.circle,
               border: Border.all(color: color2, width: 2),
               image: DecorationImage(
-                image: NetworkImage(user.imgUrl),
+                image: _image == null
+                    ? NetworkImage(user.imgUrl)
+                    : FileImage(_image),
                 fit: BoxFit.cover,
               ),
             ),
@@ -137,7 +334,9 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                     Icons.camera,
                   ),
                   color: Colors.white,
-                  onPressed: () {},
+                  onPressed: () {
+                    _showPicker(context);
+                  },
                 ),
               ),
             ),
@@ -162,49 +361,138 @@ class _ProfileDetailsState extends State<ProfileDetails> {
       return 'Khác';
   }
 
-  Widget profileInfo(BuildContext context, UserModel user) {
-    var userDob = convertStringtoDateTime(user.dob);
-    var userGender = getUserGender(user.gender);
-    return GestureDetector(
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 40),
-        height: MediaQuery.of(context).size.height * 0.7,
-        child: SizedBox(
-          child: SingleChildScrollView(
-            controller: scrollController,
-            scrollDirection: Axis.vertical,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                customText(
-                  'Họ',
-                  '${user.lastName}',
+  Widget profileInfo(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 40),
+      child: SingleChildScrollView(
+        controller: scrollController,
+        child: Column(
+          children: <Widget>[
+            //* EMAIL
+            TextFormField(
+              controller: emailController,
+              decoration: InputDecoration(
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+                labelText: 'Email',
+                labelStyle: TextStyle(
+                  color: color2,
                 ),
-                customText(
-                  'Tên',
-                  '${user.firstName}',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                customText(
-                  'Giới tính',
-                  userGender,
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: color2,
+                    width: 2,
+                  ),
                 ),
-                customText(
-                  'Ngày sinh',
-                  userDob == null ? 'Chưa có' : userDob,
+                fillColor: Colors.white,
+                filled: true,
+                enabled: false,
+                prefixIcon: Icon(
+                  Icons.mail,
+                  color: color2,
                 ),
-                customText(
-                  'Email',
-                  '${user.email}',
-                ),
-                customText(
-                  'Số điện thoại',
-                  (user.phone == null || user.phone == '')
-                      ? 'Chưa có'
-                      : '${user.phone}',
-                ),
-              ],
+              ),
             ),
-          ),
+            SizedBox(
+              height: 20,
+            ),
+            //* LASTNAME
+            TextFormField(
+              controller: lastNameController,
+              decoration: InputDecoration(
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+                labelText: 'Họ',
+                labelStyle: TextStyle(
+                  color: color2,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: color2,
+                    width: 2,
+                  ),
+                ),
+                fillColor: Colors.white,
+                filled: true,
+                counterText: '',
+                prefixIcon: Icon(
+                  Icons.edit_outlined,
+                  color: color2,
+                ),
+              ),
+              maxLength: 10,
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            //* FIRSTNAME
+            TextFormField(
+              controller: firstNameController,
+              decoration: InputDecoration(
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+                labelText: 'Tên',
+                labelStyle: TextStyle(
+                  color: color2,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: color2,
+                    width: 2,
+                  ),
+                ),
+                fillColor: Colors.white,
+                filled: true,
+                counterText: '',
+                prefixIcon: Icon(
+                  Icons.edit_outlined,
+                  color: color2,
+                ),
+              ),
+              maxLength: 10,
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            //* PHONE
+            TextFormField(
+              controller: phoneController,
+              decoration: InputDecoration(
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+                labelText: 'Số điện thoại',
+                labelStyle: TextStyle(
+                  color: color2,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: color2,
+                    width: 2,
+                  ),
+                ),
+                fillColor: Colors.white,
+                filled: true,
+                counterText: '',
+                prefixIcon: Icon(
+                  Icons.phone_iphone,
+                  color: color2,
+                ),
+              ),
+              keyboardType: TextInputType.number,
+              maxLength: 10,
+            ),
+            SizedBox(
+              height: 20,
+            ),
+          ],
         ),
       ),
     );

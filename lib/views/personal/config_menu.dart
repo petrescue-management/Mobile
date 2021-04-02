@@ -16,13 +16,13 @@ class ConfigMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(
-        horizontal: 32,
+        horizontal: 35,
         vertical: 10,
       ),
       child: FlatButton(
         padding: EdgeInsets.all(20),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(25),
+          borderRadius: BorderRadius.circular(30),
           side: BorderSide(
             color: color2,
             width: 2,
@@ -37,20 +37,20 @@ class ConfigMenu extends StatelessWidget {
               icon,
               color: color1,
             ),
-            SizedBox(width: 20),
+            SizedBox(width: 10),
             // menu title
             Expanded(
               child: Text(
                 text,
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 14,
                   fontWeight: FontWeight.w700,
                 ),
               ),
             ),
             Icon(
               Icons.arrow_forward_ios,
-              size: 20,
+              size: 16,
             ),
           ],
         ),

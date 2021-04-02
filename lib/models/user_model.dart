@@ -19,7 +19,8 @@ class UserModel {
     this.dob,
   });
 
-  factory UserModel.fromJson(Map<String, dynamic> json) {
+  factory UserModel.fromJson(Map<dynamic, dynamic> json) {
+    print(json['dob']);
     return UserModel(
       email: json['email'],
       id: json['id'],
@@ -28,7 +29,9 @@ class UserModel {
       gender: json['gender'],
       phone: json['phone'],
       imgUrl: json['imgUrl'],
-      dob: json['dob'].toString(),
+      dob: json['dob'],
     );
   }
+
+  String get getImgUrl => imgUrl;
 }

@@ -3,10 +3,12 @@ import 'package:pet_rescue_mobile/models/pet/pet_model.dart';
 import 'package:pet_rescue_mobile/repository/repository.dart';
 import 'package:pet_rescue_mobile/views/adoption/card/pet_details.dart';
 import 'package:pet_rescue_mobile/views/custom_widget/custom_dialog.dart';
+import 'package:pet_rescue_mobile/views/custom_widget/custom_button.dart';
 import 'package:pet_rescue_mobile/src/asset.dart';
 import 'package:pet_rescue_mobile/src/style.dart';
 import 'package:pet_rescue_mobile/main.dart';
 
+// ignore: must_be_immutable
 class LoginRequest extends StatefulWidget {
   PetModel pet;
 
@@ -48,7 +50,7 @@ class _LoginRequestState extends State<LoginRequest> {
                   height: 300,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    border: Border.all(color: color2, width: 5),
+                    border: Border.all(color: color2, width: 3),
                     image: DecorationImage(
                       image: AssetImage(app_logo_notitle),
                     ),
@@ -94,6 +96,7 @@ class _LoginRequestState extends State<LoginRequest> {
     );
   }
 
+  // ignore: missing_return
   Future<bool> _confirmPop() {
     Navigator.of(context).pop();
   }
@@ -104,53 +107,40 @@ class _LoginRequestState extends State<LoginRequest> {
       onWillPop: _confirmPop,
       child: Container(
         height: MediaQuery.of(context).size.height * 0.07,
-        width: MediaQuery.of(context).size.width * 0.7,
-        child: RaisedButton.icon(
-          shape: RoundedRectangleBorder(
-            side: BorderSide(
-              color: color2,
-              width: 2,
-            ),
-            borderRadius: BorderRadius.all(Radius.circular(50.0)),
-          ),
+        padding: EdgeInsets.symmetric(horizontal: 30.0),
+        child: CustomRaiseButtonIcon(
+          labelText: ' Đăng nhập với Google',
+          assetName: google_logo,
           onPressed: () {
             showDialog(
                 context: context,
                 builder: (context) =>
                     ProgressDialog(message: 'Đang kiểm tra tài khoản...'));
 
-            _repo.signIn().then((value) => {
-                  if (value == null || value.isEmpty)
-                    loading(context)
-                  else if (value != null && widget.pet != null)
-                    {
-                      Navigator.of(context).popUntil((route) => route.isFirst),
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => DetailsScreen(
-                                    pet: widget.pet,
-                                  ))),
-                    }
-                  else
-                    {
-                      Navigator.of(context).popUntil((route) => route.isFirst),
-                      Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (context) => MyApp())),
-                    }
-                });
+            _repo.signIn().then(
+                  (value) => {
+                    if (value == null || value.isEmpty)
+                      loading(context)
+                    else if (value != null && widget.pet != null)
+                      {
+                        Navigator.of(context)
+                            .popUntil((route) => route.isFirst),
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    DetailsScreen(pet: widget.pet))),
+                      }
+                    else
+                      {
+                        Navigator.of(context)
+                            .popUntil((route) => route.isFirst),
+                        Navigator.pushReplacement(context,
+                            MaterialPageRoute(builder: (context) => MyApp())),
+                      }
+                  },
+                );
           },
-          icon: Image(
-            image: AssetImage(google_logo),
-            height: 26.0,
-          ),
-          label: Text(
-            ' Đăng nhập với Google',
-            style: TextStyle(
-                color: Colors.black, fontSize: 16, letterSpacing: 1.2),
-          ),
-          splashColor: Colors.red[100],
-          color: Colors.white,
         ),
       ),
     );

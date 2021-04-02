@@ -25,13 +25,15 @@ class PetProvider {
   }
 
   // trước là tên thư mục, sau là tên file
-  Future<String> uploadAvatar(File image, String uid) async {
+  Future<String> uploadRescueImage(File image, String uid) async {
+    String result;
     FirebaseStorage storage = FirebaseStorage.instance;
     StorageReference storageReference = storage.ref().child('petRescueImg/$uid');
     StorageUploadTask uploadTask = storageReference.putFile(image);
     StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
     String url = await taskSnapshot.ref.getDownloadURL();
-    print(url);
-    return url;
+    result = url;
+    print(result + ' result');
+    return result;
   }
 }

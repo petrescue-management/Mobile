@@ -19,9 +19,9 @@ class DetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var vaccine =
-        pet.isVaccinated ? 'Đã chích ngừa vaccine' : 'Chưa chích ngừa vaccine';
-    var ster = pet.isSterilized ? 'Đã triệt sản' : 'Chưa triệt sản';
+    // var vaccine =
+    //     pet.isVaccinated ? 'Đã chích ngừa vaccine' : 'Chưa chích ngừa vaccine';
+    // var ster = pet.isSterilized ? 'Đã triệt sản' : 'Chưa triệt sản';
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -35,7 +35,7 @@ class DetailsScreen extends StatelessWidget {
                   child: Container(
                     child: ClipRRect(
                       child: Image.network(
-                        pet.imgUrl,
+                        pet.petImgUrl,
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -55,14 +55,14 @@ class DetailsScreen extends StatelessWidget {
                           margin: EdgeInsets.symmetric(
                             horizontal: 20,
                           ),
-                          child: Text(
-                            'Một số thông tin của bé: \n  Mô tả: \n   - ${pet.petDescription}\n   - Màu lông: ${pet.petFurColorName} \n  Tình trạng sức khỏe: \n   - Cân nặng: ${pet.petWeight} kg\n   - $vaccine\n   - $ster',
-                            style: TextStyle(
-                              color: fadedBlack,
-                              height: 1.5,
-                              fontSize: 15,
-                            ),
-                          ),
+                          // child: Text(
+                          //   //'Một số thông tin của bé: \nMô tả: \n   - ${pet.petProfileDescription}\n  Tình trạng sức khỏe: \n   - $vaccine\n   - $ster',
+                          //   style: TextStyle(
+                          //     color: fadedBlack,
+                          //     height: 1.5,
+                          //     fontSize: 15,
+                          //   ),
+                          // ),
                         ),
                       ],
                     ),
@@ -171,7 +171,7 @@ class DetailsScreen extends StatelessWidget {
               ),
               child: Center(
                 child: Container(
-                  width: MediaQuery.of(context).size.width * 0.5,
+                  width: MediaQuery.of(context).size.width * 0.7,
                   margin: EdgeInsets.all(20),
                   child: FutureBuilder<FirebaseUser>(
                     future: _repo.getCurrentUser(),

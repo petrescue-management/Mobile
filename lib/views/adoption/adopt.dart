@@ -73,6 +73,7 @@ class _AdoptionPageState extends State<AdoptionPage> {
                 return loading(context);
               } else {
                 return Container(
+                  margin: EdgeInsets.only(top: 10),
                   height: MediaQuery.of(context).size.height -
                       AppBar().preferredSize.height,
                   child: Column(
@@ -119,7 +120,7 @@ class _AdoptionPageState extends State<AdoptionPage> {
     );
   }
 
-  // pet list by
+  // pet list by name
   // ignore: missing_return
   Widget petList(int index, AsyncSnapshot<PetListBaseModel> snapshot) {
     var tmp = snapshot.data.result;
@@ -151,7 +152,7 @@ class _AdoptionPageState extends State<AdoptionPage> {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Image.asset(
-                  tmp[i].typeName == 'Dog' ? iconDog : iconCat,
+                  tmp[i].typeName == 'Chó' ? iconDog : iconCat,
                   scale: 1.5,
                 ),
               ),

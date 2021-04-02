@@ -1,30 +1,30 @@
 class PetModel {
-  String petId;
+  String petDocumentId;
   String petName;
   int petGender;
   String petAge;
-  double petWeight;
-  String petDescription;
+  //double petWeight;
+  String petProfileDescription;
   String petBreedName;
-  String petFurColorName;
+  //String petFurColorName;
   bool isVaccinated;
   bool isSterilized;
   String centerId;
-  String imgUrl;
+  String petImgUrl;
 
   PetModel(pet) {
-    petId = pet['petId'];
+    petDocumentId = pet['petDocumentId'];
     petName = pet['petName'];
     petGender = pet['petGender'];
     petAge = convertPetAge(pet['petAge']);
-    petWeight = pet['weight'];
-    petDescription = pet['description'];
+    //petWeight = pet['weight'];
+    petProfileDescription = pet['petProfileDescription'];
     petBreedName = pet['petBreedName'];
-    petFurColorName = pet['petFurColorName'];
+    //petFurColorName = pet['petFurColorName'];
     isVaccinated = pet['isVaccinated'];
     isSterilized = pet['isSterilized'];
     centerId = pet['centerId'];
-    imgUrl = pet['imgUrl'];
+    petImgUrl = pet['petImgUrl'];
   }
 
   convertPetAge(int age) {
