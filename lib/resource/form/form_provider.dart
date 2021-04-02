@@ -6,17 +6,17 @@ import 'package:pet_rescue_mobile/src/api_url.dart';
 import 'package:pet_rescue_mobile/models/registrationform/rescue_report_model.dart';
 
 class FormProvider {
+  
   Future<bool> createRescueRequest(RescueReport rescueReport) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     var jwtToken = sharedPreferences.getString('token');
 
     var resBody = {};
-    resBody['reportLocation'] = rescueReport.reportLocation;
-    resBody['imgReportUrl'] = rescueReport.imgReportUrl;
+    resBody['finderDescription'] = rescueReport.finderDescription;
     resBody['petAttribute'] = rescueReport.petAttribute;
-    resBody['reportDescription'] = rescueReport.reportDescription;
-    resBody['latitude'] = rescueReport.latitude;
-    resBody['longitude'] = rescueReport.longitude;
+    resBody['finderFormImgUrl'] = rescueReport.finderFormImgUrl;
+    resBody['lat'] = rescueReport.latitude;
+    resBody['lng'] = rescueReport.longitude;
     resBody['phone'] = rescueReport.phone;
 
     String str = json.encode(resBody);
@@ -30,8 +30,13 @@ class FormProvider {
       body: str,
     );
 
+    print(str);
+
     if (response.statusCode == 200) {
+      print('200 nha');
       return true;
+    } else {
+      print(response.statusCode);
     }
     return null;
   }

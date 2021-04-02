@@ -1,11 +1,10 @@
-import 'dart:convert';
 import 'dart:io';
-import 'package:path/path.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:commons/commons.dart';
-import 'package:pet_rescue_mobile/repository/repository.dart';
+import 'package:pet_rescue_mobile/models/image_upload.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:pet_rescue_mobile/src/asset.dart';
 import 'package:pet_rescue_mobile/src/style.dart';
 import 'package:pet_rescue_mobile/views/custom_widget/custom_button.dart';
@@ -33,7 +32,170 @@ class _RescueState extends State<Rescue> {
 
   final GlobalKey<FormBuilderState> _fbKey = GlobalKey();
 
-  final _repo = Repository();
+  List<Object> images = List<Object>();
+
+  File _imageFile;
+
+  bool hasImage = false;
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      images.add('');
+      images.add('');
+      images.add('');
+    });
+  }
+
+  Widget buildGridView() {
+    return GridView.count(
+      shrinkWrap: true,
+      crossAxisCount: 3,
+      childAspectRatio: 1,
+      children: List.generate(images.length, (index) {
+        if (images[index] is ImageUploadModel) {
+          ImageUploadModel uploadModel = images[index];
+          return Card(
+            clipBehavior: Clip.antiAlias,
+            child: Stack(
+              children: <Widget>[
+                Image.file(
+                  uploadModel.imageFile,
+                  width: 300,
+                  height: 300,
+                  fit: BoxFit.fill,
+                ),
+                Positioned(
+                  right: 5,
+                  top: 5,
+                  child: InkWell(
+                    child: Icon(
+                      Icons.remove_circle,
+                      size: 20,
+                      color: Colors.red,
+                    ),
+                    onTap: () {
+                      setState(() {
+                        images.replaceRange(index, index + 1, ['']);
+                        hasImage = false;
+                      });
+                    },
+                  ),
+                ),
+              ],
+            ),
+          );
+        } else {
+          return Card(
+            child: IconButton(
+              icon: Icon(Icons.add),
+              onPressed: () {
+                // _onAddImageClick(index);
+                _showPicker(context, index);
+              },
+            ),
+          );
+        }
+      }),
+    );
+  }
+
+  _showPicker(context, int index) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext bc) {
+        return SafeArea(
+          child: Container(
+            child: new Wrap(
+              children: <Widget>[
+                new ListTile(
+                    leading: new Icon(Icons.photo_library),
+                    title: new Text('Gallery'),
+                    onTap: () {
+                      _imgFromGallery(index);
+                      Navigator.of(context).pop();
+                    }),
+                new ListTile(
+                  leading: new Icon(Icons.photo_camera),
+                  title: new Text('Camera'),
+                  onTap: () {
+                    _imgFromCamera(index);
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  _imgFromGallery(int index) async {
+    // ignore: deprecated_member_use
+    _imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      getFileImage(index);
+    });
+  }
+
+  _imgFromCamera(int index) async {
+    // ignore: deprecated_member_use
+    _imageFile = await ImagePicker.pickImage(source: ImageSource.camera);
+
+    setState(() {
+      getFileImage(index);
+    });
+  }
+
+  void getFileImage(int index) async {
+    setState(() {
+      ImageUploadModel imageUpload = new ImageUploadModel();
+      imageUpload.imageFile = _imageFile;
+      imageUpload.imageUrl = _imageFile.path;
+      images.replaceRange(index, index + 1, [imageUpload]);
+
+      hasImage = true;
+    });
+  }
+
+  _btnSubmitInformation(bool hasImage, BuildContext context) {
+    if (hasImage == true) {
+      return CustomButton(
+        label: 'XÁC NHẬN THÔNG TIN',
+        onTap: () {
+          if (_fbKey.currentState.saveAndValidate()) {
+            final formInputs = _fbKey.currentState.value;
+            print(formInputs);
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => RescueDetail(
+                  formInput: formInputs,
+                  address: widget.address,
+                  imageList: images,
+                  longitude: widget.longitude,
+                  latitude: widget.latitude,
+                ),
+              ),
+            );
+          } else {
+            warningDialog(
+              context,
+              'Bạn chưa điền đầy đủ thông tin.\nXin hãy kiểm tra lại.',
+              title: '',
+            );
+          }
+        },
+      );
+    } else {
+      return CustomDisableButton(
+        label: 'XÁC NHẬN THÔNG TIN',
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -144,34 +306,7 @@ class _RescueState extends State<Rescue> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                CustomButton(
-                                  label: 'XÁC NHẬN THÔNG TIN',
-                                  onTap: () {
-                                    if (_fbKey.currentState.saveAndValidate()) {
-                                      final formInputs =
-                                          _fbKey.currentState.value;
-                                      print(formInputs);
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => RescueDetail(
-                                            formInput: formInputs,
-                                            address: widget.address,
-                                            imageList: _imageList,
-                                            longitude: widget.longitude,
-                                            latitude: widget.latitude,
-                                          ),
-                                        ),
-                                      );
-                                    } else {
-                                      warningDialog(
-                                        context,
-                                        'Bạn chưa điền đầy đủ thông tin.\nXin hãy kiểm tra lại.',
-                                        title: '',
-                                      );
-                                    }
-                                  },
-                                ),
+                                _btnSubmitInformation(hasImage, context),
                               ],
                             ),
                           ),
@@ -188,7 +323,6 @@ class _RescueState extends State<Rescue> {
     );
   }
 
-  List _imageList;
   Widget _rescueForm(BuildContext context) {
     return Container(
       height: MediaQuery.of(context).size.height,
@@ -198,32 +332,65 @@ class _RescueState extends State<Rescue> {
           controller: scrollController,
           child: Column(
             children: <Widget>[
-              //* PHONE NUMBER
+              //* IMAGE PICKER
               Container(
                 margin: EdgeInsets.only(top: 20),
+                padding: EdgeInsets.all(5),
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    width: 1,
+                    color: Colors.red,
+                  ),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      ' Chọn hình ảnh mô tả (Tối đa 3 hình)*',
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 3,
+                    ),
+                    buildGridView(),
+                  ],
+                ),
+              ),
+              SizedBox(height: 20),
+              //* PHONE NUMBER
+              Container(
                 child: FormBuilderPhoneField(
                   attribute: 'phoneNumber',
                   decoration: InputDecoration(
                     floatingLabelBehavior: FloatingLabelBehavior.always,
                     labelText: 'Số điện thoại *',
                     labelStyle: TextStyle(
-                      color: color2,
+                      color: primaryGreen,
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(
-                        color: color2,
-                        width: 2,
+                        color: primaryGreen,
+                        width: 1.5,
                       ),
                     ),
                     border: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: primaryGreen,
+                        width: 1.5,
+                      ),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     prefixIcon: Icon(
                       Icons.phone,
-                      color: color2,
+                      color: primaryGreen,
                     ),
                     fillColor: Colors.white,
                     filled: true,
+                    counterText: '',
                   ),
                   defaultSelectedCountryIsoCode: 'vn',
                   validators: [
@@ -231,51 +398,8 @@ class _RescueState extends State<Rescue> {
                         errorText: 'Hãy nhập số điện thoại của bạn'),
                   ],
                   maxLengthEnforced: true,
-                  maxLength: 10,
+                  maxLength: 9,
                   keyboardType: TextInputType.number,
-                ),
-              ),
-              SizedBox(height: 10),
-              //* IMAGE PICKER
-              Container(
-                alignment: Alignment.center,
-                child: FormBuilderImagePicker(
-                  decoration: InputDecoration(
-                    labelText: 'Chọn ảnh * (Tối đa 3 hình)',
-                    labelStyle: TextStyle(
-                      fontSize: 16,
-                      color: color2,
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    fillColor: Colors.white,
-                    filled: true,
-                  ),
-                  attribute: 'imagePicker',
-                  validators: [
-                    FormBuilderValidators.required(
-                        errorText: "Bạn chưa upload ảnh !"),
-                  ],
-                  initialValue: _imageList,
-                  valueTransformer: (value) {
-                    return jsonEncode(_imageList.toString());
-                  },
-                  onChanged: (value) => {
-                    value.forEach((item) {
-                      File file = new File(item.path.toString());
-                      List tmp = [];
-                      _repo
-                          .uploadAvatar(file, basename(file.path.toString()))
-                          .then((value) {
-                        setState(() {
-                          tmp.add(value);
-                          _imageList = tmp;
-                        });
-                      });
-                    }),
-                  },
-                  maxImages: 3,
                 ),
               ),
               SizedBox(height: 20),
@@ -286,11 +410,10 @@ class _RescueState extends State<Rescue> {
                   'radioPetStatus',
                   'Bạn chưa chọn tình trạng của vật nuôi',
                   [
+                    FormBuilderFieldOption(value: 'Bị thương'),
                     FormBuilderFieldOption(value: 'Đi lạc'),
                     FormBuilderFieldOption(value: 'Bị bỏ rơi'),
-                    FormBuilderFieldOption(value: 'Bị thương'),
                     FormBuilderFieldOption(value: 'Cho đi'),
-                    FormBuilderFieldOption(value: 'Trả về'),
                   ],
                 ),
               ),
@@ -302,7 +425,7 @@ class _RescueState extends State<Rescue> {
                   decoration: InputDecoration(
                     labelText: 'Hãy mô tả thêm',
                     labelStyle: TextStyle(
-                      color: color2,
+                      color: primaryGreen,
                     ),
                     hintText: '',
                     floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -311,18 +434,20 @@ class _RescueState extends State<Rescue> {
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(
-                        color: color2,
+                        color: primaryGreen,
                         width: 2,
                       ),
                     ),
                     fillColor: Colors.white,
                     filled: true,
+                    counterText: '',
                   ),
                   validators: [
                     FormBuilderValidators.required(
                         errorText: 'Hãy thêm mô tả về tình trạng của bé.'),
                   ],
-                  maxLines: 5,
+                  maxLines: 6,
+                  maxLength: 250,
                 ),
               ),
             ],

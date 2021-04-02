@@ -1,18 +1,25 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:commons/commons.dart';
+import 'package:path/path.dart';
+import 'package:pet_rescue_mobile/models/image_upload.dart';
+import 'package:pet_rescue_mobile/repository/repository.dart';
+import 'package:pet_rescue_mobile/bloc/form_bloc.dart';
+import 'package:pet_rescue_mobile/src/status.dart';
 import 'package:pet_rescue_mobile/src/asset.dart';
 import 'package:pet_rescue_mobile/src/style.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:pet_rescue_mobile/views/custom_widget/custom_dialog.dart';
 import 'package:pet_rescue_mobile/views/custom_widget/custom_button.dart';
 import 'package:pet_rescue_mobile/views/custom_widget/custom_divider.dart';
-import 'package:pet_rescue_mobile/views/progress/progress_report.dart';
+import 'package:pet_rescue_mobile/views/personal/progress/progress_report.dart';
+import 'package:pet_rescue_mobile/models/registrationform/rescue_report_model.dart';
 
 // ignore: must_be_immutable
 class RescueDetail extends StatefulWidget {
   Map<String, dynamic> formInput;
   double latitude, longitude;
-  List imageList;
+  List<Object> imageList;
   String address = '';
 
   RescueDetail(
@@ -30,6 +37,8 @@ class _RescueDetailState extends State<RescueDetail> {
   ScrollController scrollController = ScrollController();
 
   final GlobalKey<FormBuilderState> _fbKey = GlobalKey();
+
+  final _repo = Repository();
 
   @override
   Widget build(BuildContext context) {
@@ -135,17 +144,72 @@ class _RescueDetailState extends State<RescueDetail> {
                             label: 'GỬI YÊU CẦU',
                             onTap: () {
                               if (_fbKey.currentState.saveAndValidate()) {
-                                successDialog(context,
-                                    'Yêu cầu của bạn đã được gửi tới\ncác trung tâm cứu hộ.',
-                                    title: 'Thành công', neutralAction: () {
-                                  Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          ProgressReportPage(),
-                                    ),
-                                  );
-                                });
+                                showDialog(
+                                    context: context,
+                                    builder: (context) =>
+                                        ProgressDialog(message: 'Đang gửi...'));
+
+                                RescueReport tmpReport = new RescueReport();
+                                tmpReport.finderDescription =
+                                    widget.formInput['description'];
+                                tmpReport.latitude = widget.latitude;
+                                tmpReport.longitude = widget.longitude;
+                                tmpReport.phone =
+                                    widget.formInput['phoneNumber'];
+
+                                if (widget.formInput['radioPetStatus'] ==
+                                    'Đi lạc')
+                                  tmpReport.petAttribute =
+                                      PetAttribute.Lost.index + 1;
+                                else if (widget.formInput['radioPetStatus'] ==
+                                    'Bị bỏ rơi')
+                                  tmpReport.petAttribute =
+                                      PetAttribute.Abandoned.index + 1;
+                                else if (widget.formInput['radioPetStatus'] ==
+                                    'Bị thương')
+                                  tmpReport.petAttribute =
+                                      PetAttribute.Injured.index + 1;
+                                else
+                                  tmpReport.petAttribute =
+                                      PetAttribute.Giveaway.index + 1;
+
+                                String url = '';
+                                for (var item in widget.imageList) {
+                                  if (item is ImageUploadModel) {
+                                    print(item.getImageFile);
+                                    String baseName =
+                                        basename(item.getImageFile.path);
+
+                                    if (baseName != null) {
+                                      _repo
+                                          .uploadRescueImage(
+                                              item.getImageFile, baseName)
+                                          .then((value) {
+                                        setState(() {
+                                          url += '$value;';
+                                          tmpReport.finderFormImgUrl = url;
+
+                                          formBloc
+                                              .createRescueRequest(tmpReport);
+                                          successDialog(context,
+                                              'Yêu cầu của bạn đã được gửi tới\ncác trung tâm cứu hộ.',
+                                              title: 'Thành công',
+                                              neutralAction: () {
+                                            Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    ProgressReportPage(),
+                                              ),
+                                            );
+                                          });
+                                        });
+                                      });
+                                    } else {
+                                      print('error');
+                                    }
+                                  }
+                                }
                               }
                             },
                           ),
@@ -172,7 +236,7 @@ class _RescueDetailState extends State<RescueDetail> {
               //* IMAGE PICKER
               Container(
                 margin: EdgeInsets.only(top: 20),
-                height: MediaQuery.of(context).size.height * 0.14,
+                height: MediaQuery.of(context).size.height * 0.15,
                 child: GridView.builder(
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 3,
@@ -181,12 +245,19 @@ class _RescueDetailState extends State<RescueDetail> {
                   ),
                   itemCount: widget.imageList.length,
                   itemBuilder: (context, i) {
-                    return SizedBox(
-                      child: Image.network(
-                        widget.imageList[i],
-                        fit: BoxFit.cover,
-                      ),
-                    );
+                    if (widget.imageList[i] is ImageUploadModel) {
+                      ImageUploadModel tmpImageModel = widget.imageList[i];
+                      return SizedBox(
+                        child: Image.file(
+                          tmpImageModel.imageFile,
+                          fit: BoxFit.cover,
+                        ),
+                      );
+                    } else {
+                      return Container(
+                        color: Colors.white.withOpacity(0.1),
+                      );
+                    }
                   },
                 ),
               ),
@@ -245,7 +316,7 @@ class _RescueDetailState extends State<RescueDetail> {
                 ),
               ),
               SizedBox(
-                height: 20,
+                height: 10,
               ),
               //* DESCRIPTION
               Container(

@@ -7,8 +7,8 @@ class PetType {
   PetType(petType) {
     typeName = petType['typeName'];
     List<PetModel> tempList = [];
-    for (var i = 0; i < petType['listPet'].length; i++) {
-      PetModel tmp = PetModel(petType['listPet'][i]);
+    for (var i = 0; i < petType['result'].length; i++) {
+      PetModel tmp = PetModel(petType['result'][i]);
       tempList.add(tmp);
     }
     listPet = tempList.cast<PetModel>();

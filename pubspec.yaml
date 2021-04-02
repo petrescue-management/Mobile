@@ -45,6 +45,7 @@ dependencies:
   flutter_form_builder: ^3.12.0
   flutter_local_notifications: ^1.4.4+1
   
+  image_picker: ^0.6.7+2
   commons: ^0.7.8+3
   
   intl: ^0.16.1
@@ -79,6 +80,7 @@ flutter:
     - assets/p8.png
     - assets/bgz6.jpg
     - assets/xp.jpg
+    - assets/shyam.jpg
     - assets/launcher_image.png
     - assets/Logo_withtitle_square.png
     - assets/google_logo.png

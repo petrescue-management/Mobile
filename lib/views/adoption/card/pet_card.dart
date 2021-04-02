@@ -82,7 +82,9 @@ class PetCard extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                pet.petBreedName == null ? "null" : pet.petBreedName,
+                                pet.petBreedName == null
+                                    ? "null"
+                                    : pet.petBreedName,
                                 style: TextStyle(
                                   fontSize: 12,
                                   color: fadedBlack,
@@ -125,7 +127,7 @@ class PetCard extends StatelessWidget {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(20),
                       child: Image.network(
-                        pet.imgUrl,
+                        pet.petImgUrl,
                         fit: BoxFit.cover,
                         height: 150,
                         width: 150,

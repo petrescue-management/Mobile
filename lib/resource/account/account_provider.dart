@@ -49,6 +49,7 @@ class AccountProvider {
       sharedPreferences.setString('avatar', result.imgUrl);
       sharedPreferences.remove('userId');
       sharedPreferences.setString('userId', result.id);
+      print(sharedPreferences.getString('userId'));
       sharedPreferences.remove('fullname');
       sharedPreferences.setString(
           'fullname', '${result.lastName} ${result.firstName}');
@@ -63,13 +64,16 @@ class AccountProvider {
     var jwtToken = sharedPreferences.getString('token');
 
     var resBody = {};
+    resBody['userId'] = user.id;
     resBody['lastName'] = user.lastName;
     resBody['firstName'] = user.firstName;
+    resBody['dob'] = user.dob;
     resBody['phone'] = user.phone;
     resBody['gender'] = user.gender;
-    resBody['dob'] = user.dob;
+    resBody['imgUrl'] = user.imgUrl;
 
     String str = json.encode(resBody);
+    print(str);
 
     final response = await http.post(
       ApiUrl.updateUserDetail,
@@ -82,7 +86,35 @@ class AccountProvider {
 
     if (response.statusCode == 200) {
       return true;
+    } else {
+      print(response.statusCode);
     }
     return null;
+  }
+
+  Future<String> registrationVolunteer(UserModel user) async {
+    var resBody = {};
+    resBody['lastName'] = user.lastName;
+    resBody['firstName'] = user.firstName;
+    resBody['dob'] = user.dob;
+    resBody['phone'] = user.phone;
+    resBody['gender'] = user.gender;
+    resBody['email'] = user.email;
+
+    String str = json.encode(resBody);
+    print(str);
+
+    final response = await http.post(
+      ApiUrl.createVolunteerRegistrationFrom,
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: str,
+    );
+
+    if (response.statusCode == 200) {
+      return 'Success';
+    }
+    return 'Failed';
   }
 }
