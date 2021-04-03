@@ -1,11 +1,15 @@
+import 'package:commons/commons.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:commons/commons.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+
 import 'package:pet_rescue_mobile/views/custom_widget/custom_button.dart';
 import 'package:pet_rescue_mobile/views/custom_widget/custom_field.dart';
 import 'package:pet_rescue_mobile/views/custom_widget/custom_divider.dart';
+
 import 'package:pet_rescue_mobile/models/pet/pet_model.dart';
+
 import 'package:pet_rescue_mobile/src/style.dart';
 
 // ignore: must_be_immutable

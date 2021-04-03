@@ -1,22 +1,23 @@
 import 'package:commons/commons.dart';
+import 'package:provider/provider.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 import 'package:pet_rescue_mobile/src/data.dart';
-import 'package:pet_rescue_mobile/views/home_page.dart';
-import 'package:pet_rescue_mobile/views/navigator/bottom_navigation.dart';
-
-import 'package:pet_rescue_mobile/views/notifications/notifications.dart';
-import 'package:pet_rescue_mobile/views/personal/personal.dart';
 import 'package:pet_rescue_mobile/repository/repository.dart';
 import 'package:pet_rescue_mobile/resource/location/app_data.dart';
 import 'package:pet_rescue_mobile/models/push_notification.dart';
+
+import 'package:pet_rescue_mobile/views/home_page.dart';
+import 'package:pet_rescue_mobile/views/navigator/bottom_navigation.dart';
+import 'package:pet_rescue_mobile/views/notifications/notifications.dart';
+import 'package:pet_rescue_mobile/views/personal/personal.dart';
 
 void main() => runApp(
       ChangeNotifierProvider(
@@ -28,7 +29,6 @@ void main() => runApp(
           routes: {
             '/': (context) => MyApp(),
           },
-          // home: new MyApp(),
         ),
       ),
     );

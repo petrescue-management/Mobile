@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:pet_rescue_mobile/src/style.dart';
+
 import 'package:pet_rescue_mobile/views/adoption/card/pet_details.dart';
+
 import 'package:pet_rescue_mobile/models/pet/pet_model.dart';
 
 // ignore: must_be_immutable

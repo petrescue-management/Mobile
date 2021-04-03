@@ -1,17 +1,21 @@
 import 'dart:async';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 import 'package:commons/commons.dart';
-import 'package:pet_rescue_mobile/src/style.dart';
-import 'package:pet_rescue_mobile/main.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:geolocator/geolocator.dart';
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
+import 'package:pet_rescue_mobile/src/style.dart';
+
 import 'package:pet_rescue_mobile/resource/location/assistant.dart';
 import 'package:pet_rescue_mobile/resource/location/app_data.dart';
+
 import 'package:pet_rescue_mobile/views/rescue/rescue.dart';
 import 'package:pet_rescue_mobile/views/rescue/map/search_address.dart';
+import 'package:pet_rescue_mobile/main.dart';
 
 // ignore: must_be_immutable
 class RescueLocation extends StatefulWidget {

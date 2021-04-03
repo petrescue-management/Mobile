@@ -1,10 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 import 'package:pet_rescue_mobile/models/pet/pet_list_base_model.dart';
+
 import 'package:pet_rescue_mobile/src/asset.dart';
-import 'package:pet_rescue_mobile/views/adoption/categories/pet_cate_display.dart';
-import 'package:pet_rescue_mobile/bloc/pet_bloc.dart';
 import 'package:pet_rescue_mobile/src/style.dart';
+
+import 'package:pet_rescue_mobile/views/adoption/categories/pet_cate_display.dart';
+
+import 'package:pet_rescue_mobile/bloc/pet_bloc.dart';
 
 class AdoptionPage extends StatefulWidget {
   const AdoptionPage({Key key}) : super(key: key);

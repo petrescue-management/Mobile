@@ -33,7 +33,6 @@ class FormProvider {
     print(str);
 
     if (response.statusCode == 200) {
-      print('200 nha');
       return true;
     } else {
       print(response.statusCode);

@@ -1,25 +1,29 @@
+import 'package:path/path.dart';
+import 'package:commons/commons.dart';
+import 'package:multi_image_picker/multi_image_picker.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:commons/commons.dart';
-import 'package:path/path.dart';
-import 'package:pet_rescue_mobile/models/image_upload.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
+
 import 'package:pet_rescue_mobile/repository/repository.dart';
 import 'package:pet_rescue_mobile/bloc/form_bloc.dart';
+import 'package:pet_rescue_mobile/models/registrationform/rescue_report_model.dart';
 import 'package:pet_rescue_mobile/src/status.dart';
 import 'package:pet_rescue_mobile/src/asset.dart';
 import 'package:pet_rescue_mobile/src/style.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
+
 import 'package:pet_rescue_mobile/views/custom_widget/custom_dialog.dart';
 import 'package:pet_rescue_mobile/views/custom_widget/custom_button.dart';
 import 'package:pet_rescue_mobile/views/custom_widget/custom_divider.dart';
 import 'package:pet_rescue_mobile/views/personal/progress/progress_report.dart';
-import 'package:pet_rescue_mobile/models/registrationform/rescue_report_model.dart';
+
 
 // ignore: must_be_immutable
 class RescueDetail extends StatefulWidget {
   Map<String, dynamic> formInput;
   double latitude, longitude;
-  List<Object> imageList;
+  List<Asset> imageList;
   String address = '';
 
   RescueDetail(
@@ -174,42 +178,43 @@ class _RescueDetailState extends State<RescueDetail> {
                                       PetAttribute.Giveaway.index + 1;
 
                                 String url = '';
-                                for (var item in widget.imageList) {
-                                  if (item is ImageUploadModel) {
-                                    print(item.getImageFile);
-                                    String baseName =
-                                        basename(item.getImageFile.path);
+                                int count = 0;
+                                widget.imageList.forEach((item) {
+                                  Asset asset = item;
 
-                                    if (baseName != null) {
-                                      _repo
-                                          .uploadRescueImage(
-                                              item.getImageFile, baseName)
-                                          .then((value) {
-                                        setState(() {
-                                          url += '$value;';
-                                          tmpReport.finderFormImgUrl = url;
+                                  _repo
+                                      .getImageFileFromAssets(asset)
+                                      .then((result) {
+                                    String baseName = basename(result.path);
 
-                                          formBloc
-                                              .createRescueRequest(tmpReport);
-                                          successDialog(context,
-                                              'Yêu cầu của bạn đã được gửi tới\ncác trung tâm cứu hộ.',
-                                              title: 'Thành công',
-                                              neutralAction: () {
-                                            Navigator.pushReplacement(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    ProgressReportPage(),
-                                              ),
-                                            );
-                                          });
-                                        });
+                                    _repo
+                                        .uploadRescueImage(result, baseName)
+                                        .then((value) {
+                                      setState(() {
+                                        url += '$value;';
+                                        count++;
                                       });
-                                    } else {
-                                      print('error');
-                                    }
-                                  }
-                                }
+
+                                      if (count == widget.imageList.length) {
+                                        tmpReport.finderFormImgUrl = url;
+
+                                        formBloc.createRescueRequest(tmpReport);
+                                        successDialog(context,
+                                            'Yêu cầu của bạn đã được gửi tới\ncác trung tâm cứu hộ.',
+                                            title: 'Thành công',
+                                            neutralAction: () {
+                                          Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  ProgressReportPage(),
+                                            ),
+                                          );
+                                        });
+                                      }
+                                    });
+                                  });
+                                });
                               }
                             },
                           ),
@@ -237,28 +242,21 @@ class _RescueDetailState extends State<RescueDetail> {
               Container(
                 margin: EdgeInsets.only(top: 20),
                 height: MediaQuery.of(context).size.height * 0.15,
-                child: GridView.builder(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    mainAxisSpacing: 4,
-                    crossAxisSpacing: 4,
+                child: GridView.count(
+                  shrinkWrap: true,
+                  crossAxisCount: 3,
+                  childAspectRatio: 1,
+                  children: List.generate(
+                    widget.imageList.length,
+                    (index) {
+                      Asset asset = widget.imageList[index];
+                      return AssetThumb(
+                        asset: asset,
+                        width: 300,
+                        height: 300,
+                      );
+                    },
                   ),
-                  itemCount: widget.imageList.length,
-                  itemBuilder: (context, i) {
-                    if (widget.imageList[i] is ImageUploadModel) {
-                      ImageUploadModel tmpImageModel = widget.imageList[i];
-                      return SizedBox(
-                        child: Image.file(
-                          tmpImageModel.imageFile,
-                          fit: BoxFit.cover,
-                        ),
-                      );
-                    } else {
-                      return Container(
-                        color: Colors.white.withOpacity(0.1),
-                      );
-                    }
-                  },
                 ),
               ),
               SizedBox(height: 10),

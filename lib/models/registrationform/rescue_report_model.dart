@@ -25,5 +25,5 @@ class RescueReport {
     );
   }
 
-  String get getImageUrl => finderFormImgUrl;
+  String get getImageUrl => finderFormImgUrl.toString();
 }

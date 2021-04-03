@@ -1,13 +1,18 @@
-import 'package:flutter/material.dart';
-import 'package:pet_rescue_mobile/views/rescue/map/rescue_location.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/material.dart';
+
+import 'package:pet_rescue_mobile/views/rescue/map/rescue_location.dart';
+
 import 'package:pet_rescue_mobile/src/style.dart';
 import 'package:pet_rescue_mobile/src/data.dart';
 import 'package:pet_rescue_mobile/src/asset.dart';
+
 import 'package:pet_rescue_mobile/resource/location/app_data.dart';
 import 'package:pet_rescue_mobile/resource/location/assistant.dart';
+
 import 'package:pet_rescue_mobile/models/map/address.dart';
 import 'package:pet_rescue_mobile/models/map/place_predictions.dart';
+
 import 'package:pet_rescue_mobile/views/custom_widget/custom_divider.dart';
 import 'package:pet_rescue_mobile/views/custom_widget/custom_dialog.dart';
 
@@ -154,46 +159,12 @@ class _SearchAddressState extends State<SearchAddress> {
                         ),
                         SizedBox(width: 10.0),
                         // confirm address
-                        Container(
-                          decoration: BoxDecoration(
-                            color: primaryGreen,
-                            shape: BoxShape.circle,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black54,
-                                blurRadius: 3.0,
-                                spreadRadius: 0.3,
-                                offset: Offset(0.5, 0.5),
-                              )
-                            ],
-                          ),
-                          child: IconButton(
-                            icon: Icon(
-                              Icons.done,
-                              size: 30.0,
-                              color: Colors.white,
-                            ),
-                            onPressed: () {
-                              Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => new RescueLocation(
-                                          latitude: latitude,
-                                          longitude: longitude,
-                                          placeName: placeName)));
-
-                              print(
-                                  'lat: $latitude : long: $longitude - place: $placeName');
-                            },
-                          ),
-                        ),
                       ],
                     ),
                   ],
                 ),
               ),
             ),
-
             // tile for predictions
             (placePredictionList.length > 0)
                 ? Padding(
@@ -285,41 +256,54 @@ class _SearchAddressState extends State<SearchAddress> {
 
         addressTextController.text = placePrediction.mainText;
       },
-      child: Container(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 10.0),
-            Row(
-              children: [
-                Icon(Icons.add_location, size: 30, color: primaryGreen),
-                SizedBox(width: 10.0),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        placePrediction.mainText,
-                        style: TextStyle(fontSize: 16.0),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      SizedBox(height: 5.0),
-                      Text(
-                        placePrediction.secondaryText,
-                        style: TextStyle(
-                          fontSize: 12.0,
-                          color: Colors.grey,
-                          fontStyle: FontStyle.italic,
+      child: GestureDetector(
+        onTap: () {
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => new RescueLocation(
+                      latitude: latitude,
+                      longitude: longitude,
+                      placeName: placeName)));
+
+          print('lat: $latitude : long: $longitude - place: $placeName');
+        },
+        child: Container(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 10.0),
+              Row(
+                children: [
+                  Icon(Icons.add_location, size: 30, color: primaryGreen),
+                  SizedBox(width: 10.0),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          placePrediction.mainText,
+                          style: TextStyle(fontSize: 16.0),
+                          overflow: TextOverflow.ellipsis,
                         ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
+                        SizedBox(height: 5.0),
+                        Text(
+                          placePrediction.secondaryText,
+                          style: TextStyle(
+                            fontSize: 12.0,
+                            color: Colors.grey,
+                            fontStyle: FontStyle.italic,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
-            SizedBox(height: 10.0),
-          ],
+                ],
+              ),
+              SizedBox(height: 10.0),
+            ],
+          ),
         ),
       ),
     );

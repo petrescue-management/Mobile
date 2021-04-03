@@ -3,10 +3,8 @@ class PetModel {
   String petName;
   int petGender;
   String petAge;
-  //double petWeight;
   String petProfileDescription;
   String petBreedName;
-  //String petFurColorName;
   bool isVaccinated;
   bool isSterilized;
   String centerId;
@@ -17,10 +15,8 @@ class PetModel {
     petName = pet['petName'];
     petGender = pet['petGender'];
     petAge = convertPetAge(pet['petAge']);
-    //petWeight = pet['weight'];
     petProfileDescription = pet['petProfileDescription'];
     petBreedName = pet['petBreedName'];
-    //petFurColorName = pet['petFurColorName'];
     isVaccinated = pet['isVaccinated'];
     isSterilized = pet['isSterilized'];
     centerId = pet['centerId'];

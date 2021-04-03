@@ -1,5 +1,5 @@
-import 'package:pet_rescue_mobile/models/pet/pet_list_base_model.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:pet_rescue_mobile/models/pet/pet_list_base_model.dart';
 import 'package:pet_rescue_mobile/repository/repository.dart';
 
 class PetBloc {

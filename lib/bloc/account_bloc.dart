@@ -1,7 +1,6 @@
+import 'package:rxdart/rxdart.dart';
 import 'package:pet_rescue_mobile/models/user_model.dart';
 import 'package:pet_rescue_mobile/repository/repository.dart';
-
-import 'package:rxdart/rxdart.dart';
 
 class AccountBloc {
   final _repo = Repository();

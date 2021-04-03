@@ -1,20 +1,17 @@
-import 'dart:io';
+import 'package:commons/commons.dart';
+import 'package:multi_image_picker/multi_image_picker.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:commons/commons.dart';
-import 'package:pet_rescue_mobile/models/image_upload.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:image_picker/image_picker.dart';
+
 import 'package:pet_rescue_mobile/src/asset.dart';
 import 'package:pet_rescue_mobile/src/style.dart';
+
 import 'package:pet_rescue_mobile/views/custom_widget/custom_button.dart';
 import 'package:pet_rescue_mobile/views/custom_widget/custom_divider.dart';
 import 'package:pet_rescue_mobile/views/custom_widget/custom_field.dart';
 import 'package:pet_rescue_mobile/views/rescue/rescue_detail.dart';
-
-// import 'package:intl/intl.dart';
-// import 'package:pet_rescue_mobile/models/example/temp.dart';
-// import 'package:pet_rescue_mobile/models/example/temp_data.dart';
 
 // ignore: must_be_immutable
 class Rescue extends StatefulWidget {
@@ -32,39 +29,48 @@ class _RescueState extends State<Rescue> {
 
   final GlobalKey<FormBuilderState> _fbKey = GlobalKey();
 
-  List<Object> images = List<Object>();
-
-  File _imageFile;
+  List<Asset> _images = List<Asset>();
 
   bool hasImage = false;
 
   @override
   void initState() {
     super.initState();
-    setState(() {
-      images.add('');
-      images.add('');
-      images.add('');
-    });
   }
 
-  Widget buildGridView() {
-    return GridView.count(
-      shrinkWrap: true,
-      crossAxisCount: 3,
-      childAspectRatio: 1,
-      children: List.generate(images.length, (index) {
-        if (images[index] is ImageUploadModel) {
-          ImageUploadModel uploadModel = images[index];
+  Widget buildViewPickedImages() {
+    if (_images.length == 0)
+      return GridView.count(
+        crossAxisCount: 3,
+        shrinkWrap: true,
+        childAspectRatio: 1,
+        children: List.generate(3, (index) {
+          return Card(
+            child: IconButton(
+              icon: Icon(
+                Icons.image,
+                color: Colors.grey,
+              ),
+              onPressed: () {},
+            ),
+          );
+        }),
+      );
+    else
+      return GridView.count(
+        shrinkWrap: true,
+        crossAxisCount: 3,
+        childAspectRatio: 1,
+        children: List.generate(_images.length, (index) {
+          Asset asset = _images[index];
           return Card(
             clipBehavior: Clip.antiAlias,
             child: Stack(
               children: <Widget>[
-                Image.file(
-                  uploadModel.imageFile,
+                AssetThumb(
+                  asset: asset,
                   width: 300,
                   height: 300,
-                  fit: BoxFit.fill,
                 ),
                 Positioned(
                   right: 5,
@@ -77,7 +83,7 @@ class _RescueState extends State<Rescue> {
                     ),
                     onTap: () {
                       setState(() {
-                        images.replaceRange(index, index + 1, ['']);
+                        _images.remove(asset);
                         hasImage = false;
                       });
                     },
@@ -86,77 +92,28 @@ class _RescueState extends State<Rescue> {
               ],
             ),
           );
-        } else {
-          return Card(
-            child: IconButton(
-              icon: Icon(Icons.add),
-              onPressed: () {
-                // _onAddImageClick(index);
-                _showPicker(context, index);
-              },
-            ),
-          );
-        }
-      }),
-    );
+        }),
+      );
   }
 
-  _showPicker(context, int index) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext bc) {
-        return SafeArea(
-          child: Container(
-            child: new Wrap(
-              children: <Widget>[
-                new ListTile(
-                    leading: new Icon(Icons.photo_library),
-                    title: new Text('Gallery'),
-                    onTap: () {
-                      _imgFromGallery(index);
-                      Navigator.of(context).pop();
-                    }),
-                new ListTile(
-                  leading: new Icon(Icons.photo_camera),
-                  title: new Text('Camera'),
-                  onTap: () {
-                    _imgFromCamera(index);
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
+  pickImages() async {
+    List<Object> resultList = List<Asset>();
 
-  _imgFromGallery(int index) async {
-    // ignore: deprecated_member_use
-    _imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
+    try {
+      resultList = await MultiImagePicker.pickImages(
+        maxImages: 3,
+        enableCamera: true,
+        selectedAssets: _images,
+        materialOptions: MaterialOptions(
+          actionBarTitle: "Chọn hình ảnh ",
+        ),
+      );
+    } on Exception catch (e) {
+      print(e);
+    }
 
     setState(() {
-      getFileImage(index);
-    });
-  }
-
-  _imgFromCamera(int index) async {
-    // ignore: deprecated_member_use
-    _imageFile = await ImagePicker.pickImage(source: ImageSource.camera);
-
-    setState(() {
-      getFileImage(index);
-    });
-  }
-
-  void getFileImage(int index) async {
-    setState(() {
-      ImageUploadModel imageUpload = new ImageUploadModel();
-      imageUpload.imageFile = _imageFile;
-      imageUpload.imageUrl = _imageFile.path;
-      images.replaceRange(index, index + 1, [imageUpload]);
-
+      _images = resultList;
       hasImage = true;
     });
   }
@@ -168,6 +125,7 @@ class _RescueState extends State<Rescue> {
         onTap: () {
           if (_fbKey.currentState.saveAndValidate()) {
             final formInputs = _fbKey.currentState.value;
+
             print(formInputs);
             Navigator.push(
               context,
@@ -175,7 +133,7 @@ class _RescueState extends State<Rescue> {
                 builder: (context) => RescueDetail(
                   formInput: formInputs,
                   address: widget.address,
-                  imageList: images,
+                  imageList: _images,
                   longitude: widget.longitude,
                   latitude: widget.latitude,
                 ),
@@ -346,17 +304,28 @@ class _RescueState extends State<Rescue> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      ' Chọn hình ảnh mô tả (Tối đa 3 hình)*',
-                      style: TextStyle(
-                        color: Colors.red,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    Row(
+                      children: [
+                        Text(
+                          ' Ảnh mô tả*',
+                          style: TextStyle(
+                            color: Colors.red,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        RaisedButton(
+                          child: Text("Chọn ảnh"),
+                          onPressed: pickImages,
+                        ),
+                      ],
                     ),
                     SizedBox(
                       height: 3,
                     ),
-                    buildGridView(),
+                    buildViewPickedImages(),
                   ],
                 ),
               ),

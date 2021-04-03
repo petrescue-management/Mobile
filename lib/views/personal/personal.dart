@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:commons/commons.dart';
+
 import 'package:pet_rescue_mobile/src/asset.dart';
 import 'package:pet_rescue_mobile/src/style.dart';
+
 import 'package:pet_rescue_mobile/bloc/account_bloc.dart';
+
 import 'package:pet_rescue_mobile/models/user_model.dart';
+
 import 'package:pet_rescue_mobile/repository/repository.dart';
-import 'package:pet_rescue_mobile/views/personal/config_menu.dart';
+
 import 'package:pet_rescue_mobile/main.dart';
+import 'package:pet_rescue_mobile/views/personal/config_menu.dart';
 import 'package:pet_rescue_mobile/views/personal/profile/profile_details.dart';
 import 'package:pet_rescue_mobile/views/personal/volunteer/volunteer_registration.dart';
 import 'package:pet_rescue_mobile/views/personal/progress/progress_report.dart';

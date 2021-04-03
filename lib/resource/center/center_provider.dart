@@ -17,7 +17,7 @@ class CenterProvider {
     if (response.statusCode == 200) {
       return CenterBaseModel.fromJson(json.decode(response.body));
     } else {
-      print('Failed to load post');
+      print('Failed to load center list ${response.statusCode}');
     }
     return null;
   }

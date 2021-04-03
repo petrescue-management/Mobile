@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
+import 'package:multi_image_picker/multi_image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:pet_rescue_mobile/models/pet/pet_list_base_model.dart';
 import 'package:pet_rescue_mobile/src/api_url.dart';
 
@@ -28,12 +30,25 @@ class PetProvider {
   Future<String> uploadRescueImage(File image, String uid) async {
     String result;
     FirebaseStorage storage = FirebaseStorage.instance;
-    StorageReference storageReference = storage.ref().child('petRescueImg/$uid');
+    StorageReference storageReference =
+        storage.ref().child('petRescueImg/$uid');
     StorageUploadTask uploadTask = storageReference.putFile(image);
     StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
     String url = await taskSnapshot.ref.getDownloadURL();
     result = url;
-    print(result + ' result');
     return result;
+  }
+
+  Future<File> getImageFileFromAssets(Asset asset) async {
+    final byteData = await asset.getByteData();
+
+    final tempFile =
+        File('${(await getTemporaryDirectory()).path}/${asset.name}');
+    final file = await tempFile.writeAsBytes(byteData.buffer.asUint8List(
+      byteData.offsetInBytes,
+      byteData.lengthInBytes,
+    ));
+
+    return file;
   }
 }
