@@ -24,8 +24,9 @@ class AccountProvider {
       print('JWT Token: ' + sharedPreferences.getString('token').toString());
       return response.body;
     } else {
-      throw Exception('Can not get jwt');
+      print('Can not get jwt ${response.statusCode}');
     }
+    return null;
   }
 
   Future<UserModel> getUserDetail() async {
@@ -55,6 +56,8 @@ class AccountProvider {
           'fullname', '${result.lastName} ${result.firstName}');
 
       return result;
+    } else {
+      print('Failed ${response.statusCode}');
     }
     return null;
   }
@@ -87,7 +90,7 @@ class AccountProvider {
     if (response.statusCode == 200) {
       return true;
     } else {
-      print(response.statusCode);
+      print('Failed ${response.statusCode}');
     }
     return null;
   }
@@ -114,6 +117,8 @@ class AccountProvider {
 
     if (response.statusCode == 200) {
       return 'Success';
+    } else {
+      print('Failed ${response.statusCode}');
     }
     return 'Failed';
   }

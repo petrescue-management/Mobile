@@ -1,19 +1,24 @@
 import 'dart:io';
-import 'package:commons/commons.dart';
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:path/path.dart';
-import 'package:pet_rescue_mobile/repository/repository.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:path/path.dart';
+import 'package:commons/commons.dart';
+import 'package:image_picker/image_picker.dart';
+
+import 'package:flutter/material.dart';
+
+import 'package:pet_rescue_mobile/repository/repository.dart';
+
 import 'package:pet_rescue_mobile/bloc/account_bloc.dart';
+
 import 'package:pet_rescue_mobile/models/user_model.dart';
+
 import 'package:pet_rescue_mobile/src/style.dart';
 import 'package:pet_rescue_mobile/src/asset.dart';
+
 import 'package:pet_rescue_mobile/views/custom_widget/custom_dialog.dart';
 import 'package:pet_rescue_mobile/views/custom_widget/custom_button.dart';
 import 'package:pet_rescue_mobile/views/custom_widget/custom_divider.dart';
-
 import '../../../main.dart';
 
 // ignore: must_be_immutable

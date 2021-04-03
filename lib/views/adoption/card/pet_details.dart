@@ -1,13 +1,19 @@
 import 'package:commons/commons.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:pet_rescue_mobile/src/style.dart';
+
 import 'package:pet_rescue_mobile/repository/repository.dart';
+
 import 'package:pet_rescue_mobile/views/adoption/form/adoption_form.dart';
 import 'package:pet_rescue_mobile/views/custom_widget/custom_button.dart';
 import 'package:pet_rescue_mobile/views/login/login_request.dart';
+
 import 'package:pet_rescue_mobile/models/pet/pet_model.dart';
 
 // ignore: must_be_immutable

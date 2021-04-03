@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+
 import 'package:pet_rescue_mobile/models/pet/pet_model.dart';
+
 import 'package:pet_rescue_mobile/repository/repository.dart';
+
 import 'package:pet_rescue_mobile/views/adoption/card/pet_details.dart';
 import 'package:pet_rescue_mobile/views/custom_widget/custom_dialog.dart';
 import 'package:pet_rescue_mobile/views/custom_widget/custom_button.dart';
+import 'package:pet_rescue_mobile/main.dart';
+
 import 'package:pet_rescue_mobile/src/asset.dart';
 import 'package:pet_rescue_mobile/src/style.dart';
-import 'package:pet_rescue_mobile/main.dart';
 
 // ignore: must_be_immutable
 class LoginRequest extends StatefulWidget {

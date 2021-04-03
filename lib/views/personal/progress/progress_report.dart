@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+
 import 'package:pet_rescue_mobile/src/asset.dart';
+
 import 'package:pet_rescue_mobile/views/personal/progress/progress_card.dart';
 import 'package:pet_rescue_mobile/main.dart';
 

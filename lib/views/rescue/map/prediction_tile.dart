@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import 'package:pet_rescue_mobile/models/map/place_predictions.dart';
 import 'package:pet_rescue_mobile/models/map/address.dart';
+
 import 'package:pet_rescue_mobile/views/custom_widget/custom_dialog.dart';
+
 import 'package:pet_rescue_mobile/resource/location/assistant.dart';
 import 'package:pet_rescue_mobile/resource/location/app_data.dart';
+
 import 'package:pet_rescue_mobile/src/style.dart';
 import 'package:pet_rescue_mobile/src/data.dart';
 
