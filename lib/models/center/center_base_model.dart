@@ -9,7 +9,6 @@ class CenterBaseModel {
 
   CenterBaseModel.fromJson(List<dynamic> json) {
     List<CenterModel> tmpList = [];
-
     for (var i = 0; i < json.length; i++) {
       CenterModel tmp = CenterModel(json[i]);
       tmpList.add(tmp);

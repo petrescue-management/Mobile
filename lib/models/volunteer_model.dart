@@ -1,4 +1,4 @@
-class UserModel {
+class VolunteerModel {
   String email;
   String id;
   String lastName;
@@ -7,9 +7,9 @@ class UserModel {
   String phone;
   String imgUrl;
   String dob;
-  List<String> roles;
+  String centerId;
 
-  UserModel({
+  VolunteerModel({
     this.email,
     this.id,
     this.lastName,
@@ -18,26 +18,21 @@ class UserModel {
     this.phone,
     this.imgUrl,
     this.dob,
-    this.roles,
+    this.centerId,
   });
 
-  factory UserModel.fromJson(Map<dynamic, dynamic> json) {
+  factory VolunteerModel.fromJson(Map<dynamic, dynamic> json) {
     print(json['dob']);
-    List<String> tempList = [];
-    for (var i = 0; i < json['roles'].length; i++) {
-      String tmpRole = json['roles'][i];
-      tempList.add(tmpRole);
-    }
-    return UserModel(
+    return VolunteerModel(
       email: json['email'],
       id: json['id'],
       lastName: json['lastName'],
       firstName: json['firstName'],
       gender: json['gender'],
       phone: json['phone'],
-      imgUrl: json['imgUrl'],
+      imgUrl: json['imageUrl'],
       dob: json['dob'],
-      roles: tempList,
+      centerId: json['centerId'],
     );
   }
 

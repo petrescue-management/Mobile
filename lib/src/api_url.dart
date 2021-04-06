@@ -10,5 +10,9 @@ class ApiUrl {
       'https://petrescueapi.azurewebsites.net/api/get-pet-by-typename';
   static String createRescueRequest =
       'https://petrescueapi.azurewebsites.net/api/create-finder-form';
-  static String createAdoptRegistrationForm = '';
+  static String createAdoptRegistrationForm =
+      'https://petrescueapi.azurewebsites.net/api/create-adoption-registration-form';
+
+  static String getCenterList =
+      'https://petrescueapi.azurewebsites.net/api/get-list-all-center';
 }

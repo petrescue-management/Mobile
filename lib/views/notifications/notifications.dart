@@ -15,19 +15,19 @@ class _NotificationsPageState extends State<NotificationsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'THÔNG BÁO',
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        centerTitle: true,
-        brightness: Brightness.light,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
+      // appBar: AppBar(
+      //   title: Text(
+      //     'THÔNG BÁO',
+      //     style: TextStyle(
+      //       color: Colors.black,
+      //       fontWeight: FontWeight.bold,
+      //     ),
+      //   ),
+      //   centerTitle: true,
+      //   brightness: Brightness.light,
+      //   backgroundColor: Colors.transparent,
+      //   elevation: 0,
+      // ),
       body: Stack(
         children: [
           Container(
@@ -44,6 +44,18 @@ class _NotificationsPageState extends State<NotificationsPage> {
             ),
           ),
           Container(
+            padding: EdgeInsets.only(top: 8),
+            alignment: Alignment.topCenter,
+            child: Text(
+              'THÔNG BÁO',
+              style: TextStyle(
+                fontSize: 24.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          Container(
+            alignment: Alignment.bottomCenter,
             height: MediaQuery.of(context).size.height * 0.87,
             child: SizedBox(
               child: SingleChildScrollView(

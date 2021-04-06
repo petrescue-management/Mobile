@@ -11,6 +11,7 @@ import 'package:pet_rescue_mobile/main.dart';
 
 import 'package:pet_rescue_mobile/src/asset.dart';
 import 'package:pet_rescue_mobile/src/style.dart';
+import 'package:pet_rescue_mobile/src/data.dart';
 
 // ignore: must_be_immutable
 class LoginRequest extends StatefulWidget {
@@ -45,13 +46,13 @@ class _LoginRequestState extends State<LoginRequest> {
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 20),
             alignment: Alignment.center,
-            height: MediaQuery.of(context).size.height * 0.65,
+            height: MediaQuery.of(context).size.height * 0.7,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Container(
-                  width: 300,
-                  height: 300,
+                  width: 250,
+                  height: 250,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(color: color2, width: 3),
@@ -60,15 +61,24 @@ class _LoginRequestState extends State<LoginRequest> {
                     ),
                   ),
                 ),
-                Text(
-                  "Bạn chưa đăng nhập vào tài khoản của bạn!",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w600,
+                Container(
+                  height: 150,
+                  width: MediaQuery.of(context).size.width,
+                  child: Column(
+                    children: [
+                      _signInButton(),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        child: SizedBox(
+                          child: loginNotice(context),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                _signInButton(),
               ],
             ),
             decoration: BoxDecoration(
@@ -110,16 +120,13 @@ class _LoginRequestState extends State<LoginRequest> {
     return WillPopScope(
       onWillPop: _confirmPop,
       child: Container(
-        height: MediaQuery.of(context).size.height * 0.07,
+        height: MediaQuery.of(context).size.height * 0.06,
         padding: EdgeInsets.symmetric(horizontal: 30.0),
         child: CustomRaiseButtonIcon(
           labelText: ' Đăng nhập với Google',
           assetName: google_logo,
           onPressed: () {
-            showDialog(
-                context: context,
-                builder: (context) =>
-                    ProgressDialog(message: 'Đang kiểm tra tài khoản...'));
+            showDialog(context: context, builder: (context) => GifDialog());
 
             _repo.signIn().then(
                   (value) => {
@@ -129,7 +136,9 @@ class _LoginRequestState extends State<LoginRequest> {
                       {
                         Navigator.of(context)
                             .popUntil((route) => route.isFirst),
-                        Navigator.pushReplacement(
+                        Navigator.pushReplacement(context,
+                            MaterialPageRoute(builder: (context) => MyApp())),
+                        Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>

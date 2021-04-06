@@ -7,7 +7,7 @@ import 'package:pet_rescue_mobile/models/center/center_base_model.dart';
 class CenterProvider {
   Future<CenterBaseModel> getCenterList() async {
     final response = await http.get(
-      ApiUrl.getPetListByType,
+      ApiUrl.getCenterList,
       headers: {
         "Accept": "application/json",
         "Content-Type": "application/json; charset=UTF-8",

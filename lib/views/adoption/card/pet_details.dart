@@ -1,225 +1,479 @@
 import 'package:commons/commons.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 
+import 'package:pet_rescue_mobile/src/asset.dart';
 import 'package:pet_rescue_mobile/src/style.dart';
 
 import 'package:pet_rescue_mobile/repository/repository.dart';
 
-import 'package:pet_rescue_mobile/views/adoption/form/adoption_form.dart';
+import 'package:pet_rescue_mobile/views/adoption/form/adopt_policy.dart';
 import 'package:pet_rescue_mobile/views/custom_widget/custom_button.dart';
 import 'package:pet_rescue_mobile/views/login/login_request.dart';
 
 import 'package:pet_rescue_mobile/models/pet/pet_model.dart';
 
 // ignore: must_be_immutable
-class DetailsScreen extends StatelessWidget {
+class DetailsScreen extends StatefulWidget {
   PetModel pet;
-  final _repo = Repository();
 
   DetailsScreen({this.pet});
 
   @override
-  Widget build(BuildContext context) {
-    // var vaccine =
-    //     pet.isVaccinated ? 'Đã chích ngừa vaccine' : 'Chưa chích ngừa vaccine';
-    // var ster = pet.isSterilized ? 'Đã triệt sản' : 'Chưa triệt sản';
+  _DetailsScreenState createState() => _DetailsScreenState();
+}
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: Column(
-              children: [
-                //image
-                Expanded(
-                  child: Container(
-                    child: ClipRRect(
-                      child: Image.network(
-                        pet.petImgUrl,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                ),
-                //description
-                Expanded(
-                  child: Container(
-                    color: Colors.white,
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          height: 80,
-                        ),
-                        Container(
-                          alignment: Alignment.centerLeft,
-                          margin: EdgeInsets.symmetric(
-                            horizontal: 20,
-                          ),
-                          // child: Text(
-                          //   //'Một số thông tin của bé: \nMô tả: \n   - ${pet.petProfileDescription}\n  Tình trạng sức khỏe: \n   - $vaccine\n   - $ster',
-                          //   style: TextStyle(
-                          //     color: fadedBlack,
-                          //     height: 1.5,
-                          //     fontSize: 15,
-                          //   ),
-                          // ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
+class _DetailsScreenState extends State<DetailsScreen> {
+  ScrollController scrollController = ScrollController();
+
+  TextEditingController breedController = TextEditingController();
+  TextEditingController ageController = TextEditingController();
+  TextEditingController furController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController genderController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
+  TextEditingController centerNameController = TextEditingController();
+  TextEditingController centerAddressController = TextEditingController();
+
+  final _repo = Repository();
+
+  @override
+  void initState() {
+    super.initState();
+    getPet();
+  }
+
+  getPet() async {
+    setState(() {
+      breedController.text = widget.pet.petBreedName;
+      ageController.text = widget.pet.petAge;
+      nameController.text = widget.pet.petName;
+      furController.text = widget.pet.petFurColorName;
+      descriptionController.text = widget.pet.petProfileDescription;
+
+      centerNameController.text = widget.pet.centerName;
+      centerAddressController.text = widget.pet.centerAdrress;
+
+      if (widget.pet.petGender == 1) {
+        genderController.text = 'Cái';
+      } else if (widget.pet.petGender == 2) {
+        genderController.text = 'Đực';
+      } else {
+        genderController.text = 'Khác';
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(
+              Icons.chevron_left,
+              size: 35,
             ),
+            color: Colors.black,
+            onPressed: () {
+              Navigator.pop(context);
+            },
           ),
-          // back button
-          Align(
-            alignment: Alignment.topCenter,
-            child: Container(
-              margin: EdgeInsets.symmetric(
-                vertical: 42,
-                horizontal: 20,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  IconButton(
-                    icon: Icon(
-                      Icons.chevron_left,
-                      size: 35,
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ),
-          // pet info
-          Align(
-            alignment: Alignment.center,
-            child: Container(
-              height: 100,
-              padding: EdgeInsets.all(20),
-              margin: EdgeInsets.symmetric(horizontal: 20),
+          centerTitle: true,
+          brightness: Brightness.light,
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          bottom: buildTabBar(),
+        ),
+        body: Stack(
+          children: [
+            Container(
               decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(30),
-                boxShadow: customShadow,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  // pet name and gender
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        pet.petName,
-                        style: TextStyle(
-                          color: fadedBlack,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Icon(
-                        pet.petGender == 1
-                            ? FontAwesomeIcons.venus
-                            : FontAwesomeIcons.mars,
-                        size: 18,
-                        color: Colors.black54,
-                      )
-                    ],
-                  ),
-                  // pet breed and age
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        pet.petBreedName == null ? "null" : pet.petBreedName,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        pet.petAge,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-          //adopt button
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              height: 100,
-              decoration: BoxDecoration(
-                color: Colors.grey[100],
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(30),
-                  topRight: Radius.circular(30),
+                image: DecorationImage(
+                  image: AssetImage(adopt),
+                  fit: BoxFit.cover,
                 ),
               ),
-              child: Center(
-                child: Container(
-                  width: MediaQuery.of(context).size.width * 0.7,
-                  margin: EdgeInsets.all(20),
-                  child: FutureBuilder<FirebaseUser>(
-                    future: _repo.getCurrentUser(),
-                    builder: (context, AsyncSnapshot<FirebaseUser> snapshot) {
-                      return CustomButton(
-                        label: 'ĐĂNG KÝ NHẬN NUÔI',
-                        onTap: () {
-                          if (snapshot.hasError) {
-                            return waitDialog(context);
-                          } else if (snapshot.data == null) {
-                            return infoDialog(
-                              context,
-                              "Bạn chưa đăng nhập vào tài khoản của bạn!",
-                              neutralAction: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => LoginRequest(
-                                          pet: pet,
-                                        )));
-                              },
-                              title: "",
-                            );
-                          } else {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  return AdoptFormRegistrationPage(
-                                    pet: pet,
-                                  );
+            ),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.6),
+              ),
+            ),
+            buildTabBody(context),
+            //adopt button
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                height: 100,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(30),
+                    topRight: Radius.circular(30),
+                  ),
+                ),
+                child: Center(
+                  child: Container(
+                    width: MediaQuery.of(context).size.width * 0.7,
+                    margin: EdgeInsets.all(20),
+                    child: FutureBuilder<FirebaseUser>(
+                      future: _repo.getCurrentUser(),
+                      builder: (context, AsyncSnapshot<FirebaseUser> snapshot) {
+                        return CustomButton(
+                          label: 'ĐĂNG KÝ NHẬN NUÔI',
+                          onTap: () {
+                            if (snapshot.hasError) {
+                              return waitDialog(context);
+                            } else if (snapshot.data == null) {
+                              return infoDialog(
+                                context,
+                                "Bạn chưa đăng nhập vào tài khoản của bạn!",
+                                neutralAction: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) => LoginRequest(
+                                            pet: widget.pet,
+                                          )));
                                 },
-                              ),
-                            );
-                          }
-                        },
-                      );
-                    },
+                                title: "",
+                              );
+                            } else {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) {
+                                    return AdoptionAgreement(
+                                      pet: widget.pet,
+                                    );
+                                  },
+                                ),
+                              );
+                            }
+                          },
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
+    );
+  }
+
+  Widget buildTabBar() {
+    return TabBar(
+      labelColor: Colors.black,
+      labelStyle: TextStyle(
+        fontSize: 16,
+        fontFamily: 'Philosopher',
+        fontWeight: FontWeight.bold,
+      ),
+      indicatorColor: color2,
+      tabs: <Widget>[
+        Tab(
+          text: 'Thông tin của bé',
+        ),
+        Tab(text: 'Sổ sức khỏe'),
+      ],
+    );
+  }
+
+  Widget buildTabBody(context) {
+    return TabBarView(children: <Widget>[
+      petInfo(),
+      Container(
+        padding: const EdgeInsets.symmetric(
+          vertical: 10,
+          horizontal: 10,
+        ),
+        child: SizedBox(
+          child: SingleChildScrollView(
+            controller: scrollController,
+            child: Column(
+              children: [],
+            ),
+          ),
+        ),
+      ),
+    ]);
+  }
+
+  petInfo() {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(30),
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        // image
+        Container(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height * 0.24,
+          child: ClipRRect(
+            child: Image.network(
+              widget.pet.petImgUrl,
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        SizedBox(height: 10),
+        Container(
+          height: MediaQuery.of(context).size.height * 0.5,
+          child: SizedBox(
+            child: SingleChildScrollView(
+              controller: scrollController,
+              child: Column(
+                children: [
+                  Container(
+                    child: TextFormField(
+                      controller: centerNameController,
+                      decoration: InputDecoration(
+                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                        labelText: 'Trung tâm',
+                        labelStyle: TextStyle(
+                          color: color2,
+                          fontSize: 18,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: color2,
+                            width: 2,
+                          ),
+                        ),
+                        fillColor: Colors.white,
+                        filled: true,
+                        enabled: false,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Container(
+                    child: TextFormField(
+                      controller: centerAddressController,
+                      decoration: InputDecoration(
+                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                        labelText: 'Địa chỉ trung tâm',
+                        labelStyle: TextStyle(
+                          color: color2,
+                          fontSize: 18,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: color2,
+                            width: 2,
+                          ),
+                        ),
+                        fillColor: Colors.white,
+                        filled: true,
+                        enabled: false,
+                      ),
+                      maxLines: 2,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  // name
+                  Container(
+                    child: TextFormField(
+                      controller: nameController,
+                      decoration: InputDecoration(
+                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                        labelText: 'Tên của bé',
+                        labelStyle: TextStyle(
+                          color: color2,
+                          fontSize: 18,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: color2,
+                            width: 2,
+                          ),
+                        ),
+                        fillColor: Colors.white,
+                        filled: true,
+                        enabled: false,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  // age and gender
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // age
+                      Container(
+                        width: 180,
+                        child: TextFormField(
+                          controller: ageController,
+                          decoration: InputDecoration(
+                            floatingLabelBehavior: FloatingLabelBehavior.always,
+                            labelText: 'Tuổi',
+                            labelStyle: TextStyle(
+                              color: color2,
+                              fontSize: 18,
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: color2,
+                                width: 2,
+                              ),
+                            ),
+                            fillColor: Colors.white,
+                            filled: true,
+                            enabled: false,
+                          ),
+                        ),
+                      ),
+                      Container(
+                        width: 180,
+                        child: TextFormField(
+                          controller: genderController,
+                          decoration: InputDecoration(
+                            floatingLabelBehavior: FloatingLabelBehavior.always,
+                            labelText: 'Giới tính',
+                            labelStyle: TextStyle(
+                              color: color2,
+                              fontSize: 18,
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: color2,
+                                width: 2,
+                              ),
+                            ),
+                            fillColor: Colors.white,
+                            filled: true,
+                            enabled: false,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  // breed and fur color
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // breed
+                      Container(
+                        width: 180,
+                        child: TextFormField(
+                          controller: breedController,
+                          decoration: InputDecoration(
+                            floatingLabelBehavior: FloatingLabelBehavior.always,
+                            labelText: 'Giống',
+                            labelStyle: TextStyle(
+                              color: color2,
+                              fontSize: 18,
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: color2,
+                                width: 2,
+                              ),
+                            ),
+                            fillColor: Colors.white,
+                            filled: true,
+                            enabled: false,
+                          ),
+                        ),
+                      ),
+                      // fur color
+                      Container(
+                        width: 180,
+                        child: TextFormField(
+                          controller: furController,
+                          decoration: InputDecoration(
+                            floatingLabelBehavior: FloatingLabelBehavior.always,
+                            labelText: 'Màu lông',
+                            labelStyle: TextStyle(
+                              color: color2,
+                              fontSize: 18,
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: color2,
+                                width: 2,
+                              ),
+                            ),
+                            fillColor: Colors.white,
+                            filled: true,
+                            enabled: false,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  // description
+                  Container(
+                    margin: EdgeInsets.only(bottom: 20),
+                    child: TextFormField(
+                      controller: descriptionController,
+                      decoration: InputDecoration(
+                        labelText: 'Mô tả thêm',
+                        labelStyle: TextStyle(
+                          color: color2,
+                          fontSize: 18,
+                        ),
+                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: color2,
+                            width: 2,
+                          ),
+                        ),
+                        fillColor: Colors.white,
+                        filled: true,
+                      ),
+                      enabled: false,
+                      maxLines: 3,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ]),
     );
   }
 }

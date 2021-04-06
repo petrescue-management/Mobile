@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:path/path.dart';
@@ -41,6 +42,7 @@ class _ProfileDetailsState extends State<ProfileDetails> {
   TextEditingController dobController = TextEditingController();
 
   final _repo = Repository();
+
   @override
   void initState() {
     super.initState();
@@ -162,7 +164,7 @@ class _ProfileDetailsState extends State<ProfileDetails> {
               Container(
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage(bgsh),
+                    image: AssetImage(bglpc),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -178,8 +180,8 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                     Padding(
                       padding: EdgeInsets.only(
                         top: 10,
-                        right: 40,
-                        left: 40,
+                        right: 20,
+                        left: 20,
                       ),
                       child: CustomDivider(),
                     ),
@@ -217,7 +219,7 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                                       tmpUser.email = emailController.text;
                                       tmpUser.phone = phoneController.text;
                                       tmpUser.gender = widget.user.gender;
-                                      tmpUser.dob = widget.user.dob;
+                                      tmpUser.dob = dobController.text;
 
                                       if (_image == null) {
                                         tmpUser.imgUrl = widget.user.imgUrl;
@@ -227,6 +229,7 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                                             'Đã cập nhật thông tin cá nhân',
                                             title: 'Thành công',
                                             neutralAction: () {
+                                          _repo.getUserDetails();
                                           Navigator.of(context).popUntil(
                                               (route) => route.isFirst);
                                           Navigator.pushReplacement(
@@ -302,7 +305,7 @@ class _ProfileDetailsState extends State<ProfileDetails> {
   }
 
   Widget profilePic(BuildContext context, UserModel user) {
-    var height = MediaQuery.of(context).size.height * 0.16;
+    var height = MediaQuery.of(context).size.height * 0.2;
     return Container(
       height: height,
       alignment: Alignment.center,
@@ -357,18 +360,21 @@ class _ProfileDetailsState extends State<ProfileDetails> {
     return result;
   }
 
-  String getUserGender(int index) {
-    if (index == 1)
-      return 'Nữ';
-    else if (index == 2)
-      return 'Nam';
-    else
-      return 'Khác';
+  Future _selectDate(context) async {
+    DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: new DateTime.now(),
+        firstDate: new DateTime(1950),
+        lastDate: new DateTime(2050));
+    if (picked != null)
+      setState(() {
+        dobController.text = picked.toString();
+      });
   }
 
   Widget profileInfo(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 40),
+      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       child: SingleChildScrollView(
         controller: scrollController,
         child: Column(
@@ -403,64 +409,73 @@ class _ProfileDetailsState extends State<ProfileDetails> {
             SizedBox(
               height: 20,
             ),
-            //* LASTNAME
-            TextFormField(
-              controller: lastNameController,
-              decoration: InputDecoration(
-                floatingLabelBehavior: FloatingLabelBehavior.always,
-                labelText: 'Họ',
-                labelStyle: TextStyle(
-                  color: color2,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: color2,
-                    width: 2,
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                //* LASTNAME
+                Container(
+                  width: 165,
+                  child: TextFormField(
+                    controller: lastNameController,
+                    decoration: InputDecoration(
+                      floatingLabelBehavior: FloatingLabelBehavior.always,
+                      labelText: 'Họ',
+                      labelStyle: TextStyle(
+                        color: color2,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: color2,
+                          width: 2,
+                        ),
+                      ),
+                      fillColor: Colors.white,
+                      filled: true,
+                      counterText: '',
+                      prefixIcon: Icon(
+                        Icons.edit_outlined,
+                        color: color2,
+                      ),
+                    ),
+                    maxLength: 10,
                   ),
                 ),
-                fillColor: Colors.white,
-                filled: true,
-                counterText: '',
-                prefixIcon: Icon(
-                  Icons.edit_outlined,
-                  color: color2,
-                ),
-              ),
-              maxLength: 10,
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            //* FIRSTNAME
-            TextFormField(
-              controller: firstNameController,
-              decoration: InputDecoration(
-                floatingLabelBehavior: FloatingLabelBehavior.always,
-                labelText: 'Tên',
-                labelStyle: TextStyle(
-                  color: color2,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: color2,
-                    width: 2,
+                //* FIRSTNAME
+                Container(
+                  width: 165,
+                  child: TextFormField(
+                    controller: firstNameController,
+                    decoration: InputDecoration(
+                      floatingLabelBehavior: FloatingLabelBehavior.always,
+                      labelText: 'Tên',
+                      labelStyle: TextStyle(
+                        color: color2,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: color2,
+                          width: 2,
+                        ),
+                      ),
+                      fillColor: Colors.white,
+                      filled: true,
+                      counterText: '',
+                      prefixIcon: Icon(
+                        Icons.edit_outlined,
+                        color: color2,
+                      ),
+                    ),
+                    maxLength: 10,
                   ),
                 ),
-                fillColor: Colors.white,
-                filled: true,
-                counterText: '',
-                prefixIcon: Icon(
-                  Icons.edit_outlined,
-                  color: color2,
-                ),
-              ),
-              maxLength: 10,
+              ],
             ),
             SizedBox(
               height: 20,
@@ -493,6 +508,43 @@ class _ProfileDetailsState extends State<ProfileDetails> {
               ),
               keyboardType: TextInputType.number,
               maxLength: 10,
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            //* DATE OF BIRTH
+            InkWell(
+              onTap: () {
+                _selectDate(context);
+              },
+              child: IgnorePointer(
+                child: TextFormField(
+                  controller: dobController,
+                  decoration: InputDecoration(
+                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                    labelText: 'Ngày sinh*',
+                    labelStyle: TextStyle(
+                      color: color2,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: color2,
+                        width: 2,
+                      ),
+                    ),
+                    fillColor: Colors.white,
+                    filled: true,
+                    counterText: '',
+                    prefixIcon: Icon(
+                      Icons.calendar_today,
+                      color: color2,
+                    ),
+                  ),
+                ),
+              ),
             ),
             SizedBox(
               height: 20,

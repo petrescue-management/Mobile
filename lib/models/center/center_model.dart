@@ -4,6 +4,8 @@ class CenterModel {
   String address;
   String imageUrl;
   int centerStatus;
+  String phone;
+  String email;
 
   CenterModel(center) {
     centerId = center['centerId'];
@@ -11,5 +13,7 @@ class CenterModel {
     address = center['address'];
     imageUrl = center['imageUrl'];
     centerStatus = center['centerStatus'];
+    phone = center['phone'];
+    email = center['email'];
   }
 }

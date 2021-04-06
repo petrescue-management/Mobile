@@ -75,11 +75,19 @@ class FirebaseSignIn {
     print("User Signed Out");
   }
 
-
   // trước là tên thư mục, sau là tên file
   Future<String> uploadAvatar(File image, String uid) async {
     FirebaseStorage storage = FirebaseStorage.instance;
     StorageReference storageReference = storage.ref().child('user-avatar/$uid');
+    StorageUploadTask uploadTask = storageReference.putFile(image);
+    StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
+    String url = await taskSnapshot.ref.getDownloadURL();
+    return url;
+  }
+
+  Future<String> uploadVolunteer(File image, String uid) async {
+    FirebaseStorage storage = FirebaseStorage.instance;
+    StorageReference storageReference = storage.ref().child('volunteer-avatar/$uid');
     StorageUploadTask uploadTask = storageReference.putFile(image);
     StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
     String url = await taskSnapshot.ref.getDownloadURL();
