@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:commons/commons.dart';
 import 'package:http/http.dart' as http;
 import 'package:pet_rescue_mobile/models/user_model.dart';
+import 'package:pet_rescue_mobile/models/volunteer_model.dart';
 import 'package:pet_rescue_mobile/src/api_url.dart';
 
 class AccountProvider {
@@ -71,8 +72,8 @@ class AccountProvider {
     resBody['lastName'] = user.lastName;
     resBody['firstName'] = user.firstName;
     resBody['dob'] = user.dob;
-    resBody['phone'] = user.phone;
     resBody['gender'] = user.gender;
+    resBody['phone'] = user.phone;
     resBody['imgUrl'] = user.imgUrl;
 
     String str = json.encode(resBody);
@@ -95,7 +96,7 @@ class AccountProvider {
     return null;
   }
 
-  Future<String> registrationVolunteer(UserModel user) async {
+  Future<bool> registrationVolunteer(VolunteerModel user) async {
     var resBody = {};
     resBody['lastName'] = user.lastName;
     resBody['firstName'] = user.firstName;
@@ -103,6 +104,8 @@ class AccountProvider {
     resBody['phone'] = user.phone;
     resBody['gender'] = user.gender;
     resBody['email'] = user.email;
+    resBody['centerId'] = user.centerId;
+    resBody['imageUrl'] = user.imgUrl;
 
     String str = json.encode(resBody);
     print(str);
@@ -116,10 +119,10 @@ class AccountProvider {
     );
 
     if (response.statusCode == 200) {
-      return 'Success';
+      return true;
     } else {
       print('Failed ${response.statusCode}');
     }
-    return 'Failed';
+    return null;
   }
 }

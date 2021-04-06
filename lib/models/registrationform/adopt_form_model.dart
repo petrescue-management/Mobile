@@ -1,33 +1,52 @@
 class AdoptForm {
-  String petId;
+  String petProfileId;
   String userName;
-  String phoneNumber;
+  String phone;
   String email;
   String job;
+  String dob;
   String address;
   int houseType;
   int frequencyAtHome;
-  int childAge;
-  int havePet;
-  int adoptionRegistrationStatus;
   bool haveChildren;
-  bool haveAgreement;
+  String childAge;
   bool beViolentTendencies;
+  bool haveAgreement;
+  int havePet;
 
   AdoptForm({
-    this.address,
-    this.adoptionRegistrationStatus,
-    this.beViolentTendencies,
-    this.childAge,
-    this.email,
-    this.frequencyAtHome,
-    this.haveAgreement,
-    this.haveChildren,
-    this.havePet,
-    this.houseType,
-    this.job,
-    this.petId,
-    this.phoneNumber,
+    this.petProfileId,
     this.userName,
+    this.phone,
+    this.email,
+    this.job,
+    this.dob,
+    this.address,
+    this.houseType,
+    this.frequencyAtHome,
+    this.haveChildren,
+    this.childAge,
+    this.beViolentTendencies,
+    this.haveAgreement,
+    this.havePet,
   });
+
+  factory AdoptForm.fromJson(Map<String, dynamic> json) {
+    return AdoptForm(
+      petProfileId: json['petProfileId'],
+      userName: json['userName'],
+      phone: json['phone'],
+      email: json['email'],
+      job: json['job'],
+      dob: json['dob'],
+      address: json['address'],
+      houseType: json['houseType'],
+      frequencyAtHome: json['frequencyAtHome'],
+      haveChildren: json['haveChildren'],
+      childAge: json['childAge'],
+      beViolentTendencies: json['beViolentTendencies'],
+      haveAgreement: json['haveAgreement'],
+      havePet: json['havePet'],
+    );
+  }
 }

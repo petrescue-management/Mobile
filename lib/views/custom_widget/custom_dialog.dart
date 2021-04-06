@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pet_rescue_mobile/src/asset.dart';
 
 // ignore: must_be_immutable
 class ProgressDialog extends StatelessWidget {
@@ -38,6 +39,34 @@ class ProgressDialog extends StatelessWidget {
                 ),
               ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ignore: must_be_immutable
+class GifDialog extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      child: Container(
+        margin: EdgeInsets.all(15.0),
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        child: Container(
+          width: MediaQuery.of(context).size.width,
+          height: 100,
+          decoration: BoxDecoration(
+            shape: BoxShape.rectangle,
+            image: DecorationImage(
+              image: AssetImage(gifKitten),
+              fit: BoxFit.fitWidth
+            ),
           ),
         ),
       ),

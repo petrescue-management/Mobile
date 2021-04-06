@@ -16,8 +16,8 @@ import 'package:pet_rescue_mobile/src/style.dart';
 import 'package:pet_rescue_mobile/views/custom_widget/custom_dialog.dart';
 import 'package:pet_rescue_mobile/views/custom_widget/custom_button.dart';
 import 'package:pet_rescue_mobile/views/custom_widget/custom_divider.dart';
-import 'package:pet_rescue_mobile/views/personal/progress/progress_report.dart';
 
+import '../../main.dart';
 
 // ignore: must_be_immutable
 class RescueDetail extends StatefulWidget {
@@ -26,12 +26,13 @@ class RescueDetail extends StatefulWidget {
   List<Asset> imageList;
   String address = '';
 
-  RescueDetail(
-      {this.formInput,
-      this.imageList,
-      this.address,
-      this.latitude,
-      this.longitude});
+  RescueDetail({
+    this.formInput,
+    this.imageList,
+    this.address,
+    this.latitude,
+    this.longitude,
+  });
 
   @override
   _RescueDetailState createState() => _RescueDetailState();
@@ -203,13 +204,13 @@ class _RescueDetailState extends State<RescueDetail> {
                                             'Yêu cầu của bạn đã được gửi tới\ncác trung tâm cứu hộ.',
                                             title: 'Thành công',
                                             neutralAction: () {
+                                          Navigator.of(context).popUntil(
+                                              (route) => route.isFirst);
                                           Navigator.pushReplacement(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  ProgressReportPage(),
-                                            ),
-                                          );
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      MyApp()));
                                         });
                                       }
                                     });

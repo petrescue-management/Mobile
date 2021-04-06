@@ -6,7 +6,7 @@ class CenterBloc {
   final _repo = Repository();
   final _centerList = BehaviorSubject<CenterBaseModel>();
 
-  Observable<CenterBaseModel> get getPetListByType => _centerList.stream;
+  Observable<CenterBaseModel> get getCenter => _centerList.stream;
 
   getCenterList() async {
     CenterBaseModel centerList = await _repo.getCenterList();

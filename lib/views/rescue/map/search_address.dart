@@ -159,6 +159,39 @@ class _SearchAddressState extends State<SearchAddress> {
                         ),
                         SizedBox(width: 10.0),
                         // confirm address
+                        Container(
+                          decoration: BoxDecoration(
+                            color: primaryGreen,
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black54,
+                                blurRadius: 3.0,
+                                spreadRadius: 0.3,
+                                offset: Offset(0.5, 0.5),
+                              )
+                            ],
+                          ),
+                          child: IconButton(
+                            icon: Icon(
+                              Icons.done,
+                              size: 30.0,
+                              color: Colors.white,
+                            ),
+                            onPressed: () {
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => new RescueLocation(
+                                          latitude: latitude,
+                                          longitude: longitude,
+                                          placeName: placeName)));
+
+                              print(
+                                  'lat: $latitude : long: $longitude - place: $placeName');
+                            },
+                          ),
+                        ),
                       ],
                     ),
                   ],
@@ -256,54 +289,41 @@ class _SearchAddressState extends State<SearchAddress> {
 
         addressTextController.text = placePrediction.mainText;
       },
-      child: GestureDetector(
-        onTap: () {
-          Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => new RescueLocation(
-                      latitude: latitude,
-                      longitude: longitude,
-                      placeName: placeName)));
-
-          print('lat: $latitude : long: $longitude - place: $placeName');
-        },
-        child: Container(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: 10.0),
-              Row(
-                children: [
-                  Icon(Icons.add_location, size: 30, color: primaryGreen),
-                  SizedBox(width: 10.0),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          placePrediction.mainText,
-                          style: TextStyle(fontSize: 16.0),
-                          overflow: TextOverflow.ellipsis,
+      child: Container(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: 10.0),
+            Row(
+              children: [
+                Icon(Icons.add_location, size: 30, color: primaryGreen),
+                SizedBox(width: 10.0),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        placePrediction.mainText,
+                        style: TextStyle(fontSize: 16.0),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      SizedBox(height: 5.0),
+                      Text(
+                        placePrediction.secondaryText,
+                        style: TextStyle(
+                          fontSize: 12.0,
+                          color: Colors.grey,
+                          fontStyle: FontStyle.italic,
                         ),
-                        SizedBox(height: 5.0),
-                        Text(
-                          placePrediction.secondaryText,
-                          style: TextStyle(
-                            fontSize: 12.0,
-                            color: Colors.grey,
-                            fontStyle: FontStyle.italic,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
-                    ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
                   ),
-                ],
-              ),
-              SizedBox(height: 10.0),
-            ],
-          ),
+                ),
+              ],
+            ),
+            SizedBox(height: 10.0),
+          ],
         ),
       ),
     );

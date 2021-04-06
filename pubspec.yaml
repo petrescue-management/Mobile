@@ -80,18 +80,23 @@ flutter:
   assets:
     - assets/background.jpg
     - assets/p8.png
-    - assets/bgz6.jpg
+    - assets/adopt.png
+    - assets/adoptregis.png
+    - assets/ridebike.png
+    - assets/warning.png
     - assets/xp.jpg
-    - assets/shyam.jpg
+    - assets/bglpc.jpg
     - assets/launcher_image.png
     - assets/Logo_withtitle_square.png
     - assets/google_logo.png
     - assets/icons/animal-rescue.png
     - assets/icons/collar.png
+    - assets/icons/upload.png
     - assets/images/cat.png
     - assets/images/dog.png
     - assets/map.png
     - assets/Logo_notitle_square.png
+    - assets/playingcat.gif
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

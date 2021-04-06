@@ -16,13 +16,13 @@ class ConfigMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(
-        horizontal: 35,
+        horizontal: 40,
         vertical: 10,
       ),
       child: FlatButton(
-        padding: EdgeInsets.all(20),
+        padding: EdgeInsets.all(15),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30),
+          borderRadius: BorderRadius.circular(25),
           side: BorderSide(
             color: color2,
             width: 2,

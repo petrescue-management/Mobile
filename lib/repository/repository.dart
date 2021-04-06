@@ -9,14 +9,15 @@ import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:pet_rescue_mobile/models/pet/pet_list_base_model.dart';
 import 'package:pet_rescue_mobile/models/center/center_base_model.dart';
 import 'package:pet_rescue_mobile/models/user_model.dart';
+import 'package:pet_rescue_mobile/models/registrationform/adopt_form_model.dart';
 import 'package:pet_rescue_mobile/models/registrationform/rescue_report_model.dart';
+import 'package:pet_rescue_mobile/models/volunteer_model.dart';
 
 import 'package:pet_rescue_mobile/resource/form/form_provider.dart';
 import 'package:pet_rescue_mobile/resource/account/account_provider.dart';
 import 'package:pet_rescue_mobile/resource/pet/pet_provider.dart';
 import 'package:pet_rescue_mobile/resource/center/center_provider.dart';
 import 'package:pet_rescue_mobile/resource/account/sign_in.dart';
-
 
 class Repository {
   final accountProvider = AccountProvider();
@@ -25,6 +26,7 @@ class Repository {
   final formProvider = FormProvider();
   final centerProvider = CenterProvider();
 
+  // user
   Future<String> signIn() => firebaseProvider.signInWithGoogle();
 
   Future<FirebaseUser> getCurrentUser() => firebaseProvider.getCurrentUser();
@@ -42,11 +44,17 @@ class Repository {
   Future<bool> updateUserDetails(UserModel user) =>
       accountProvider.updateUserDetail(user);
 
-  Future<String> registrationVolunteer(UserModel user) =>
+  // volunteer
+  Future<bool> registrationVolunteer(VolunteerModel user) =>
       accountProvider.registrationVolunteer(user);
 
+  Future<String> uploadVolunteer(File image, String uid) =>
+      firebaseProvider.uploadVolunteer(image, uid);
+
+  // center
   Future<CenterBaseModel> getCenterList() => centerProvider.getCenterList();
 
+  // pet
   Future<PetListBaseModel> getPetListByType() => petProvider.getPetListByType();
 
   Future<File> getImageFileFromAssets(Asset asset) =>
@@ -55,6 +63,10 @@ class Repository {
   Future<String> uploadRescueImage(File image, String uid) =>
       petProvider.uploadRescueImage(image, uid);
 
+  // form
   Future<bool> createRescueRequest(RescueReport rescueReport) =>
       formProvider.createRescueRequest(rescueReport);
+
+  Future<String> createAdopttionRegistrationForm(AdoptForm adoptForm) =>
+      formProvider.createAdoptionRegistrionForm(adoptForm);
 }

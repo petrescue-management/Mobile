@@ -60,14 +60,14 @@ class _AdoptionPageState extends State<AdoptionPage> {
           Container(
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage(bgz6),
+                image: AssetImage(adopt),
                 fit: BoxFit.cover,
               ),
             ),
           ),
           Container(
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.7),
+              color: Colors.white.withOpacity(0.6),
             ),
           ),
           StreamBuilder(
@@ -116,7 +116,7 @@ class _AdoptionPageState extends State<AdoptionPage> {
         child: Container(
           decoration: BoxDecoration(
             shape: BoxShape.rectangle,
-            color: Colors.white,
+            color: Colors.white.withOpacity(0),
           ),
           child: CircularProgressIndicator(),
         ),
