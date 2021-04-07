@@ -87,16 +87,17 @@ flutter:
     - assets/xp.jpg
     - assets/bglpc.jpg
     - assets/launcher_image.png
-    - assets/Logo_withtitle_square.png
-    - assets/google_logo.png
-    - assets/icons/animal-rescue.png
-    - assets/icons/collar.png
-    - assets/icons/upload.png
-    - assets/images/cat.png
-    - assets/images/dog.png
     - assets/map.png
     - assets/Logo_notitle_square.png
     - assets/playingcat.gif
+    - assets/icons/animal-rescue.png
+    - assets/icons/collar.png
+    - assets/icons/upload.png
+    - assets/icons/google_logo.png
+    - assets/icons/litter-box.png
+    - assets/images/cat.png
+    - assets/images/dog.png
+    
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

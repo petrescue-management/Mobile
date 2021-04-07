@@ -125,7 +125,6 @@ class _RescueState extends State<Rescue> {
         onTap: () {
           if (_fbKey.currentState.saveAndValidate()) {
             final formInputs = _fbKey.currentState.value;
-
             print(formInputs);
             Navigator.push(
               context,

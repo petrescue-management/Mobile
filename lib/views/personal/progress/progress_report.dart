@@ -31,7 +31,6 @@ class _ProgressReportPageState extends State<ProgressReportPage> {
               Navigator.pop(context);
             },
           ),
-          centerTitle: true,
           brightness: Brightness.light,
           backgroundColor: Colors.transparent,
           elevation: 0,
@@ -70,9 +69,9 @@ class _ProgressReportPageState extends State<ProgressReportPage> {
       indicatorColor: color2,
       tabs: <Widget>[
         Tab(
-          text: "Cứu hộ",
+          text: 'Cứu hộ',
         ),
-        Tab(text: "Nhận nuôi"),
+        Tab(text: 'Nhận nuôi'),
       ],
     );
   }
