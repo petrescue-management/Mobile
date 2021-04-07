@@ -88,12 +88,12 @@ class CustomRaiseButtonIcon extends StatelessWidget {
           borderRadius: BorderRadius.all(Radius.circular(50.0)),
         ),
         onPressed: onPressed,
-        icon: Image(image: AssetImage(assetName), height: 28.0),
+        icon: Image(image: AssetImage(assetName), height: 30.0),
         label: Text(
           labelText,
           style: TextStyle(
             color: Colors.black,
-            fontSize: 18,
+            fontSize: 20,
             fontWeight: FontWeight.bold,
             letterSpacing: 1.2,
           ),

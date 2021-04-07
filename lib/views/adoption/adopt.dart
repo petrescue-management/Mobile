@@ -116,7 +116,6 @@ class _AdoptionPageState extends State<AdoptionPage> {
         child: Container(
           decoration: BoxDecoration(
             shape: BoxShape.rectangle,
-            color: Colors.white.withOpacity(0),
           ),
           child: CircularProgressIndicator(),
         ),

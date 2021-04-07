@@ -69,138 +69,103 @@ class _DetailsScreenState extends State<DetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: Icon(
-              Icons.chevron_left,
-              size: 35,
-            ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'THÔNG TIN CỦA BÉ',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
             color: Colors.black,
-            onPressed: () {
-              Navigator.pop(context);
-            },
           ),
-          centerTitle: true,
-          brightness: Brightness.light,
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          bottom: buildTabBar(),
         ),
-        body: Stack(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(adopt),
-                  fit: BoxFit.cover,
-                ),
+        leading: IconButton(
+          icon: Icon(
+            Icons.chevron_left,
+            size: 35,
+          ),
+          color: Colors.black,
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        centerTitle: true,
+        brightness: Brightness.light,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
+      body: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(adopt),
+                fit: BoxFit.cover,
               ),
             ),
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.6),
-              ),
+          ),
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.6),
             ),
-            buildTabBody(context),
-            //adopt button
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                height: 100,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(30),
-                    topRight: Radius.circular(30),
-                  ),
+          ),
+          petInfo(),
+          //adopt button
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              height: 100,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(30),
+                  topRight: Radius.circular(30),
                 ),
-                child: Center(
-                  child: Container(
-                    width: MediaQuery.of(context).size.width * 0.7,
-                    margin: EdgeInsets.all(20),
-                    child: FutureBuilder<FirebaseUser>(
-                      future: _repo.getCurrentUser(),
-                      builder: (context, AsyncSnapshot<FirebaseUser> snapshot) {
-                        return CustomButton(
-                          label: 'ĐĂNG KÝ NHẬN NUÔI',
-                          onTap: () {
-                            if (snapshot.hasError) {
-                              return waitDialog(context);
-                            } else if (snapshot.data == null) {
-                              return infoDialog(
-                                context,
-                                "Bạn chưa đăng nhập vào tài khoản của bạn!",
-                                neutralAction: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) => LoginRequest(
-                                            pet: widget.pet,
-                                          )));
+              ),
+              child: Center(
+                child: Container(
+                  width: MediaQuery.of(context).size.width * 0.7,
+                  margin: EdgeInsets.all(20),
+                  child: FutureBuilder<FirebaseUser>(
+                    future: _repo.getCurrentUser(),
+                    builder: (context, AsyncSnapshot<FirebaseUser> snapshot) {
+                      return CustomButton(
+                        label: 'ĐĂNG KÝ NHẬN NUÔI',
+                        onTap: () {
+                          if (snapshot.hasError) {
+                            return waitDialog(context);
+                          } else if (snapshot.data == null) {
+                            return infoDialog(
+                              context,
+                              "Bạn chưa đăng nhập vào tài khoản của bạn!",
+                              neutralAction: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => LoginRequest(
+                                          pet: widget.pet,
+                                        )));
+                              },
+                              title: "",
+                            );
+                          } else {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) {
+                                  return AdoptionAgreement(
+                                    pet: widget.pet,
+                                  );
                                 },
-                                title: "",
-                              );
-                            } else {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) {
-                                    return AdoptionAgreement(
-                                      pet: widget.pet,
-                                    );
-                                  },
-                                ),
-                              );
-                            }
-                          },
-                        );
-                      },
-                    ),
+                              ),
+                            );
+                          }
+                        },
+                      );
+                    },
                   ),
                 ),
               ),
             ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget buildTabBar() {
-    return TabBar(
-      labelColor: Colors.black,
-      labelStyle: TextStyle(
-        fontSize: 16,
-        fontFamily: 'Philosopher',
-        fontWeight: FontWeight.bold,
-      ),
-      indicatorColor: color2,
-      tabs: <Widget>[
-        Tab(
-          text: 'Thông tin của bé',
-        ),
-        Tab(text: 'Sổ sức khỏe'),
-      ],
-    );
-  }
-
-  Widget buildTabBody(context) {
-    return TabBarView(children: <Widget>[
-      petInfo(),
-      Container(
-        padding: const EdgeInsets.symmetric(
-          vertical: 10,
-          horizontal: 10,
-        ),
-        child: SizedBox(
-          child: SingleChildScrollView(
-            controller: scrollController,
-            child: Column(
-              children: [],
-            ),
           ),
-        ),
+        ],
       ),
-    ]);
+    );
   }
 
   petInfo() {
@@ -221,15 +186,15 @@ class _DetailsScreenState extends State<DetailsScreen> {
             ),
           ),
         ),
-        SizedBox(height: 10),
         Container(
-          height: MediaQuery.of(context).size.height * 0.5,
+          height: MediaQuery.of(context).size.height * 0.55,
           child: SizedBox(
             child: SingleChildScrollView(
               controller: scrollController,
               child: Column(
                 children: [
                   Container(
+                    margin: EdgeInsets.only(top: 20),
                     child: TextFormField(
                       controller: centerNameController,
                       decoration: InputDecoration(

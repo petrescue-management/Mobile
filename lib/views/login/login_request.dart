@@ -110,51 +110,41 @@ class _LoginRequestState extends State<LoginRequest> {
     );
   }
 
-  // ignore: missing_return
-  Future<bool> _confirmPop() {
-    Navigator.of(context).pop();
-  }
-
   // sign in button
   Widget _signInButton() {
-    return WillPopScope(
-      onWillPop: _confirmPop,
-      child: Container(
-        height: MediaQuery.of(context).size.height * 0.06,
-        padding: EdgeInsets.symmetric(horizontal: 30.0),
-        child: CustomRaiseButtonIcon(
-          labelText: ' Đăng nhập với Google',
-          assetName: google_logo,
-          onPressed: () {
-            showDialog(context: context, builder: (context) => GifDialog());
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.06,
+      padding: EdgeInsets.symmetric(horizontal: 30.0),
+      child: CustomRaiseButtonIcon(
+        labelText: ' Đăng nhập với Google',
+        assetName: google_logo,
+        onPressed: () {
+          showDialog(context: context, builder: (context) => GifDialog());
 
-            _repo.signIn().then(
-                  (value) => {
-                    if (value == null || value.isEmpty)
-                      loading(context)
-                    else if (value != null && widget.pet != null)
-                      {
-                        Navigator.of(context)
-                            .popUntil((route) => route.isFirst),
-                        Navigator.pushReplacement(context,
-                            MaterialPageRoute(builder: (context) => MyApp())),
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    DetailsScreen(pet: widget.pet))),
-                      }
-                    else
-                      {
-                        Navigator.of(context)
-                            .popUntil((route) => route.isFirst),
-                        Navigator.pushReplacement(context,
-                            MaterialPageRoute(builder: (context) => MyApp())),
-                      }
-                  },
-                );
-          },
-        ),
+          _repo.signIn().then(
+                (value) => {
+                  if (value == null || value.isEmpty)
+                    loading(context)
+                  else if (value != null && widget.pet != null)
+                    {
+                      Navigator.of(context).popUntil((route) => route.isFirst),
+                      Navigator.pushReplacement(context,
+                          MaterialPageRoute(builder: (context) => MyApp())),
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  DetailsScreen(pet: widget.pet))),
+                    }
+                  else
+                    {
+                      Navigator.of(context).popUntil((route) => route.isFirst),
+                      Navigator.pushReplacement(context,
+                          MaterialPageRoute(builder: (context) => MyApp())),
+                    }
+                },
+              );
+        },
       ),
     );
   }

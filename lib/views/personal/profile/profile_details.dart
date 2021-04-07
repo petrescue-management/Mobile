@@ -40,6 +40,7 @@ class _ProfileDetailsState extends State<ProfileDetails> {
   TextEditingController emailController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController dobController = TextEditingController();
+  TextEditingController tmpDateController = TextEditingController();
 
   final _repo = Repository();
 
@@ -56,7 +57,15 @@ class _ProfileDetailsState extends State<ProfileDetails> {
       emailController.text = widget.user.email;
       phoneController.text = widget.user.phone;
       dobController.text = widget.user.dob;
+
+      tmpDateController.text = formatDateTime(dobController.text);
     });
+  }
+
+  formatDateTime(String date) {
+    DateTime tmp = DateTime.parse(date);
+    String result = '${tmp.day}/${tmp.month}/${tmp.year}';
+    return result;
   }
 
   File _image;
@@ -362,13 +371,15 @@ class _ProfileDetailsState extends State<ProfileDetails> {
 
   Future _selectDate(context) async {
     DateTime picked = await showDatePicker(
-        context: context,
-        initialDate: new DateTime.now(),
-        firstDate: new DateTime(1950),
-        lastDate: new DateTime(2050));
+      context: context,
+      initialDate: new DateTime.now(),
+      firstDate: new DateTime(1950),
+      lastDate: new DateTime(2050),
+    );
     if (picked != null)
       setState(() {
         dobController.text = picked.toString();
+        tmpDateController.text = formatDateTime(dobController.text);
       });
   }
 
@@ -519,7 +530,7 @@ class _ProfileDetailsState extends State<ProfileDetails> {
               },
               child: IgnorePointer(
                 child: TextFormField(
-                  controller: dobController,
+                  controller: tmpDateController,
                   decoration: InputDecoration(
                     floatingLabelBehavior: FloatingLabelBehavior.always,
                     labelText: 'Ngày sinh*',
