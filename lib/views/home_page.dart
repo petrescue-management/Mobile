@@ -43,6 +43,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       body: Stack(
         children: [
+          // background
           Container(
             decoration: BoxDecoration(
               image: DecorationImage(
@@ -56,6 +57,7 @@ class _HomePageState extends State<HomePage> {
             children: [
               _buildHeader,
               SizedBox(height: 20),
+              // image slider
               CarouselSlider(
                 items: imageSliders,
                 options: CarouselOptions(
@@ -68,6 +70,7 @@ class _HomePageState extends State<HomePage> {
                       });
                     }),
               ),
+              // slider indicator
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: imgList.map((url) {

@@ -1,5 +1,8 @@
 import 'package:commons/commons.dart';
 
+import 'package:carousel_slider/carousel_options.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -37,16 +40,17 @@ class _DetailsScreenState extends State<DetailsScreen> {
   TextEditingController descriptionController = TextEditingController();
   TextEditingController centerNameController = TextEditingController();
   TextEditingController centerAddressController = TextEditingController();
+  TextEditingController insertedAtController = TextEditingController();
 
   final _repo = Repository();
+
+  List<String> imgUrlList;
+  List<Widget> imageSliders;
+  int _current = 0;
 
   @override
   void initState() {
     super.initState();
-    getPet();
-  }
-
-  getPet() async {
     setState(() {
       breedController.text = widget.pet.petBreedName;
       ageController.text = widget.pet.petAge;
@@ -64,7 +68,42 @@ class _DetailsScreenState extends State<DetailsScreen> {
       } else {
         genderController.text = 'Khác';
       }
+
+      insertedAtController.text = formatDateTime(widget.pet.insertedAt);
+
+      imgUrlList = widget.pet.petImgUrl;
+
+      imageSliders = imgUrlList
+          .map(
+            (item) => Container(
+              child: Container(
+                margin: EdgeInsets.all(5.0),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                  child: Stack(
+                    children: <Widget>[
+                      Image.network(item, fit: BoxFit.cover, width: 1000.0),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          )
+          .toList();
     });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      imgUrlList.forEach((imageUrl) {
+        precacheImage(NetworkImage(imageUrl), context);
+      });
+    });
+  }
+
+  formatDateTime(String date) {
+    DateTime tmp = DateTime.parse(date);
+    String tmpDay = (tmp.day < 10 ? '0${tmp.day}' : '${tmp.day}');
+    String tmpMonth = (tmp.month < 10 ? '0${tmp.month}' : '${tmp.month}');
+    String result = '$tmpDay/$tmpMonth/${tmp.year}';
+    return result;
   }
 
   @override
@@ -176,15 +215,35 @@ class _DetailsScreenState extends State<DetailsScreen> {
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         // image
-        Container(
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height * 0.24,
-          child: ClipRRect(
-            child: Image.network(
-              widget.pet.petImgUrl,
-              fit: BoxFit.cover,
-            ),
+        CarouselSlider(
+          items: imageSliders,
+          options: CarouselOptions(
+            enableInfiniteScroll: false,
+            enlargeCenterPage: true,
+            aspectRatio: 2.0,
+            onPageChanged: (index, reason) {
+              setState(() {
+                _current = index;
+              });
+            },
           ),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: imgUrlList.map((url) {
+            int index = imgUrlList.indexOf(url);
+            return Container(
+              width: 8.0,
+              height: 8.0,
+              margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: _current == index
+                    ? Color.fromRGBO(0, 0, 0, 0.9)
+                    : Color.fromRGBO(0, 0, 0, 0.4),
+              ),
+            );
+          }).toList(),
         ),
         Container(
           height: MediaQuery.of(context).size.height * 0.55,
@@ -193,23 +252,25 @@ class _DetailsScreenState extends State<DetailsScreen> {
               controller: scrollController,
               child: Column(
                 children: [
+                  // name
                   Container(
                     margin: EdgeInsets.only(top: 20),
                     child: TextFormField(
-                      controller: centerNameController,
+                      controller: nameController,
                       decoration: InputDecoration(
                         floatingLabelBehavior: FloatingLabelBehavior.always,
-                        labelText: 'Trung tâm',
+                        labelText: 'Tên của bé',
                         labelStyle: TextStyle(
-                          color: color2,
+                          color: mainColor,
                           fontSize: 18,
+                          fontWeight: FontWeight.bold,
                         ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                            color: color2,
+                            color: mainColor,
                             width: 2,
                           ),
                         ),
@@ -222,6 +283,37 @@ class _DetailsScreenState extends State<DetailsScreen> {
                   SizedBox(
                     height: 20,
                   ),
+                  // center name
+                  Container(
+                    child: TextFormField(
+                      controller: centerNameController,
+                      decoration: InputDecoration(
+                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                        labelText: 'Trung tâm quản lý',
+                        labelStyle: TextStyle(
+                          color: mainColor,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: mainColor,
+                            width: 2,
+                          ),
+                        ),
+                        fillColor: Colors.white,
+                        filled: true,
+                        enabled: false,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  // center address
                   Container(
                     child: TextFormField(
                       controller: centerAddressController,
@@ -229,15 +321,16 @@ class _DetailsScreenState extends State<DetailsScreen> {
                         floatingLabelBehavior: FloatingLabelBehavior.always,
                         labelText: 'Địa chỉ trung tâm',
                         labelStyle: TextStyle(
-                          color: color2,
+                          color: mainColor,
                           fontSize: 18,
+                          fontWeight: FontWeight.bold,
                         ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                            color: color2,
+                            color: mainColor,
                             width: 2,
                           ),
                         ),
@@ -251,23 +344,24 @@ class _DetailsScreenState extends State<DetailsScreen> {
                   SizedBox(
                     height: 20,
                   ),
-                  // name
+                  // inserted at
                   Container(
                     child: TextFormField(
-                      controller: nameController,
+                      controller: insertedAtController,
                       decoration: InputDecoration(
                         floatingLabelBehavior: FloatingLabelBehavior.always,
-                        labelText: 'Tên của bé',
+                        labelText: 'Đã ở trung tâm từ ngày',
                         labelStyle: TextStyle(
-                          color: color2,
+                          color: mainColor,
                           fontSize: 18,
+                          fontWeight: FontWeight.bold,
                         ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                            color: color2,
+                            color: mainColor,
                             width: 2,
                           ),
                         ),
@@ -286,22 +380,23 @@ class _DetailsScreenState extends State<DetailsScreen> {
                     children: [
                       // age
                       Container(
-                        width: 180,
+                        width: 170,
                         child: TextFormField(
                           controller: ageController,
                           decoration: InputDecoration(
                             floatingLabelBehavior: FloatingLabelBehavior.always,
                             labelText: 'Tuổi',
                             labelStyle: TextStyle(
-                              color: color2,
+                              color: mainColor,
                               fontSize: 18,
+                              fontWeight: FontWeight.bold,
                             ),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderSide: BorderSide(
-                                color: color2,
+                                color: mainColor,
                                 width: 2,
                               ),
                             ),
@@ -311,23 +406,25 @@ class _DetailsScreenState extends State<DetailsScreen> {
                           ),
                         ),
                       ),
+                      // gender
                       Container(
-                        width: 180,
+                        width: 170,
                         child: TextFormField(
                           controller: genderController,
                           decoration: InputDecoration(
                             floatingLabelBehavior: FloatingLabelBehavior.always,
                             labelText: 'Giới tính',
                             labelStyle: TextStyle(
-                              color: color2,
+                              color: mainColor,
                               fontSize: 18,
+                              fontWeight: FontWeight.bold,
                             ),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderSide: BorderSide(
-                                color: color2,
+                                color: mainColor,
                                 width: 2,
                               ),
                             ),
@@ -348,22 +445,23 @@ class _DetailsScreenState extends State<DetailsScreen> {
                     children: [
                       // breed
                       Container(
-                        width: 180,
+                        width: 170,
                         child: TextFormField(
                           controller: breedController,
                           decoration: InputDecoration(
                             floatingLabelBehavior: FloatingLabelBehavior.always,
                             labelText: 'Giống',
                             labelStyle: TextStyle(
-                              color: color2,
+                              color: mainColor,
                               fontSize: 18,
+                              fontWeight: FontWeight.bold,
                             ),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderSide: BorderSide(
-                                color: color2,
+                                color: mainColor,
                                 width: 2,
                               ),
                             ),
@@ -375,22 +473,23 @@ class _DetailsScreenState extends State<DetailsScreen> {
                       ),
                       // fur color
                       Container(
-                        width: 180,
+                        width: 170,
                         child: TextFormField(
                           controller: furController,
                           decoration: InputDecoration(
                             floatingLabelBehavior: FloatingLabelBehavior.always,
                             labelText: 'Màu lông',
                             labelStyle: TextStyle(
-                              color: color2,
+                              color: mainColor,
                               fontSize: 18,
+                              fontWeight: FontWeight.bold,
                             ),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderSide: BorderSide(
-                                color: color2,
+                                color: mainColor,
                                 width: 2,
                               ),
                             ),
@@ -413,8 +512,9 @@ class _DetailsScreenState extends State<DetailsScreen> {
                       decoration: InputDecoration(
                         labelText: 'Mô tả thêm',
                         labelStyle: TextStyle(
-                          color: color2,
+                          color: mainColor,
                           fontSize: 18,
+                          fontWeight: FontWeight.bold,
                         ),
                         floatingLabelBehavior: FloatingLabelBehavior.always,
                         border: OutlineInputBorder(
@@ -422,7 +522,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                            color: color2,
+                            color: mainColor,
                             width: 2,
                           ),
                         ),

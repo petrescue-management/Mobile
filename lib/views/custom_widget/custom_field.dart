@@ -27,13 +27,13 @@ class CustomText extends StatelessWidget {
           floatingLabelBehavior: FloatingLabelBehavior.always,
           labelText: label,
           labelStyle: TextStyle(
-            color: color2,
+            color: mainColor,
           ),
           hintText: hintText,
           hintStyle: TextStyle(color: Colors.black),
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: color2,
+              color: mainColor,
               width: 2,
             ),
           ),
@@ -44,7 +44,7 @@ class CustomText extends StatelessWidget {
           filled: true,
           prefixIcon: Icon(
             icon,
-            color: color2,
+            color: mainColor,
           ),
         ),
       ),
@@ -78,14 +78,14 @@ class CustomTextFormField extends StatelessWidget {
         floatingLabelBehavior: FloatingLabelBehavior.always,
         labelText: labelText,
         labelStyle: TextStyle(
-          color: color2,
+          color: mainColor,
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
-            color: color2,
+            color: mainColor,
             width: 2,
           ),
         ),
@@ -127,6 +127,7 @@ customRadioGroup(String label, String attribute, String error,
             labelText: label,
             labelStyle: TextStyle(
               color: primaryGreen,
+              fontWeight: FontWeight.bold,
             ),
             focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(

@@ -8,7 +8,7 @@ import 'package:pet_rescue_mobile/views/adoption/card/pet_details.dart';
 import 'package:pet_rescue_mobile/models/pet/pet_model.dart';
 
 // ignore: must_be_immutable
-class PetCard extends StatelessWidget {
+class PetCard extends StatefulWidget {
   List<PetModel> petList;
   PetModel pet;
 
@@ -18,9 +18,25 @@ class PetCard extends StatelessWidget {
   });
 
   @override
+  _PetCardState createState() => _PetCardState();
+}
+
+class _PetCardState extends State<PetCard> {
+  List<String> imgUrlList;
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      imgUrlList = widget.pet.petImgUrl;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final cardHeight = MediaQuery.of(context).size.height * 0.22;
+    String imgUrl = imgUrlList.first;
 
     return GestureDetector(
       onTap: () {
@@ -28,7 +44,7 @@ class PetCard extends StatelessWidget {
           MaterialPageRoute(
             builder: (context) {
               return DetailsScreen(
-                pet: pet,
+                pet: widget.pet,
               );
             },
           ),
@@ -63,7 +79,7 @@ class PetCard extends StatelessWidget {
                             children: [
                               Expanded(
                                 child: Text(
-                                  pet.petName,
+                                  widget.pet.petName,
                                   style: TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.bold,
@@ -71,7 +87,7 @@ class PetCard extends StatelessWidget {
                                 ),
                               ),
                               Icon(
-                                pet.petGender == 1
+                                widget.pet.petGender == 1
                                     ? FontAwesomeIcons.venus
                                     : FontAwesomeIcons.mars,
                                 size: 18,
@@ -84,9 +100,9 @@ class PetCard extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                pet.petBreedName == null
+                                widget.pet.petBreedName == null
                                     ? "null"
-                                    : pet.petBreedName,
+                                    : widget.pet.petBreedName,
                                 style: TextStyle(
                                   fontSize: 12,
                                   color: fadedBlack,
@@ -97,7 +113,7 @@ class PetCard extends StatelessWidget {
                                 height: 5.0,
                               ),
                               Text(
-                                pet.petAge,
+                                widget.pet.petAge,
                                 style: TextStyle(
                                   fontSize: 12,
                                   color: fadedBlack,
@@ -126,16 +142,14 @@ class PetCard extends StatelessWidget {
               child: Stack(
                 children: [
                   Container(
-                    child: ClipRRect(
+                    margin: EdgeInsets.only(top: 32),
+                    decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
-                      child: Image.network(
-                        pet.petImgUrl,
+                      image: DecorationImage(
+                        image: NetworkImage(imgUrl),
                         fit: BoxFit.cover,
-                        height: 150,
-                        width: 150,
                       ),
                     ),
-                    margin: EdgeInsets.only(top: 32),
                   ),
                 ],
               ),

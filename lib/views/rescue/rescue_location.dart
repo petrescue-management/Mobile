@@ -55,7 +55,7 @@ class _RescueLocationState extends State<RescueLocation> {
 
   var geoLocator = Geolocator();
 
-  double bottomPaddingMap = 0;
+  double bottomPaddingMap = 0, topPaddingMap = 0;
 
   bool _isLoading;
 
@@ -65,15 +65,13 @@ class _RescueLocationState extends State<RescueLocation> {
     );
     print('position: $position');
 
-    if (widget.latitude == null && widget.longitude == null ||
-        widget.latitude == 0 ||
-        widget.longitude == 0) {
+    if (widget.latitude == 0 && widget.longitude == 0) {
       currentPosition = position;
-      print('0 nè $currentPosition');
+      print('current position: $currentPosition');
     } else {
       currentPosition =
           Position(latitude: widget.latitude, longitude: widget.longitude);
-      print('có nè $currentPosition');
+      print('find position $currentPosition');
     }
 
     LatLng latLngPosition =
@@ -147,6 +145,7 @@ class _RescueLocationState extends State<RescueLocation> {
       widget.longitude = 0;
       widget.placeName = '';
     });
+
     Future.microtask(() async {
       await Permission.location.status;
       await Permission.location.request();
@@ -155,6 +154,8 @@ class _RescueLocationState extends State<RescueLocation> {
           this._isLoading = false;
         });
       });
+
+      locatePosition();
     });
   }
 
@@ -182,24 +183,7 @@ class _RescueLocationState extends State<RescueLocation> {
           }
         },
         child: Scaffold(
-          body: _isLoading ? loadMap(context) : getLocation(context),
-        ),
-      ),
-    );
-  }
-
-  Widget loadMap(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height,
-      width: MediaQuery.of(context).size.width,
-      color: Colors.white,
-      child: Center(
-        child: Container(
-          decoration: BoxDecoration(
-            shape: BoxShape.rectangle,
-            color: Colors.white,
-          ),
-          child: CircularProgressIndicator(),
+          body: _isLoading ? loading(context) : getLocation(context),
         ),
       ),
     );
@@ -209,16 +193,18 @@ class _RescueLocationState extends State<RescueLocation> {
     var contextWidth = MediaQuery.of(context).size.width;
     var contextHeight = MediaQuery.of(context).size.height;
 
-    String fullAddress = (Provider.of<AppData>(context).currentLocation != null &&
-            widget.placeName == '')
-        ? Provider.of<AppData>(context).currentLocation.placeName
-        : (widget.placeName == null ? '' : widget.placeName);
+    String fullAddress =
+        (Provider.of<AppData>(context).currentLocation != null &&
+                widget.placeName == '')
+            ? Provider.of<AppData>(context).currentLocation.placeName
+            : (widget.placeName == null ? '' : widget.placeName);
 
     return Stack(
       children: [
         // map
         GoogleMap(
-          padding: EdgeInsets.only(bottom: bottomPaddingMap),
+          padding:
+              EdgeInsets.only(bottom: bottomPaddingMap, top: topPaddingMap),
           mapType: MapType.normal,
           myLocationButtonEnabled: true,
           initialCameraPosition: RescueLocation._kGooglePlex,
@@ -232,6 +218,7 @@ class _RescueLocationState extends State<RescueLocation> {
 
             setState(() {
               bottomPaddingMap = contextHeight * 0.15;
+              topPaddingMap = contextHeight * 0.65;
             });
 
             locatePosition();
@@ -255,11 +242,7 @@ class _RescueLocationState extends State<RescueLocation> {
                   ),
                 ),
               )
-            : Container(
-                height: 0,
-                width: 0,
-                color: Colors.white.withOpacity(0),
-              ),
+            : SizedBox(height: 0),
         // search address
         Positioned(
           top: 60.0,

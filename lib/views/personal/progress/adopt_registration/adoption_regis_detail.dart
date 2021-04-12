@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
-
 import 'package:pet_rescue_mobile/src/style.dart';
-import 'package:pet_rescue_mobile/views/personal/progress/finder_form/finder_list.dart';
-import 'package:pet_rescue_mobile/views/personal/progress/adopt_registration/adoption_regis_list.dart';
+import 'package:pet_rescue_mobile/models/registrationform/adopt_regis_form.dart';
 
-class ProgressReportPage extends StatefulWidget {
-  const ProgressReportPage({Key key}) : super(key: key);
+import 'package:pet_rescue_mobile/views/personal/progress/adopt_registration/detail/pet_detail.dart';
+import 'package:pet_rescue_mobile/views/personal/progress/adopt_registration/detail/register_detail.dart';
+
+// ignore: must_be_immutable
+class AdoptFormDetails extends StatefulWidget {
+  AdoptionRegisForm form;
+
+  AdoptFormDetails({this.form});
 
   @override
-  _ProgressReportPageState createState() => _ProgressReportPageState();
+  _AdoptFormDetailsState createState() => _AdoptFormDetailsState();
 }
 
-class _ProgressReportPageState extends State<ProgressReportPage> {
-  ScrollController scrollController = ScrollController();
-
+class _AdoptFormDetailsState extends State<AdoptFormDetails> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -21,7 +23,7 @@ class _ProgressReportPageState extends State<ProgressReportPage> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            'YÊU CẦU CỦA TÔI',
+            'THÔNG TIN CHI TIẾT',
             style: TextStyle(
               color: Colors.black,
               fontWeight: FontWeight.bold,
@@ -68,16 +70,16 @@ class _ProgressReportPageState extends State<ProgressReportPage> {
       ),
       indicatorColor: mainColor,
       tabs: <Widget>[
-        Tab(text: 'Cứu hộ'),
-        Tab(text: 'Nhận nuôi'),
+        Tab(text: 'Thú cưng'),
+        Tab(text: 'Người đăng ký'),
       ],
     );
   }
 
   Widget buildTabBody() {
     return TabBarView(children: <Widget>[
-      RescueRequestList(),
-      AdoptionRegistrationFormList(),
+      PetDetails(form: widget.form),
+      RegisterDetail(form: widget.form)
     ]);
   }
 }

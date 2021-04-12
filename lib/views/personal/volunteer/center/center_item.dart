@@ -24,7 +24,7 @@ class CenterItem extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color: color2,
+              color: mainColor,
               width: 2,
             ),
             color: Colors.white,

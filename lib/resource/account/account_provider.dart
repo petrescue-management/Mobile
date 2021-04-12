@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:commons/commons.dart';
 import 'package:http/http.dart' as http;
-import 'package:pet_rescue_mobile/models/user_model.dart';
-import 'package:pet_rescue_mobile/models/volunteer_model.dart';
+import 'package:pet_rescue_mobile/models/user/user_model.dart';
+import 'package:pet_rescue_mobile/models/user/volunteer_model.dart';
 import 'package:pet_rescue_mobile/src/api_url.dart';
 
 class AccountProvider {

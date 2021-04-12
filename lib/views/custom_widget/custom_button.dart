@@ -82,7 +82,7 @@ class CustomRaiseButtonIcon extends StatelessWidget {
       child: RaisedButton.icon(
         shape: RoundedRectangleBorder(
           side: BorderSide(
-            color: color2,
+            color: mainColor,
             width: 2,
           ),
           borderRadius: BorderRadius.all(Radius.circular(50.0)),

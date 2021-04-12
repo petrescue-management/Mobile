@@ -17,7 +17,7 @@ class Assistant {
         return 'Failed';
       }
     } catch (e) {
-      return 'Failed. Exception';
+      return 'Failed ${e.toString()}';
     }
   }
 

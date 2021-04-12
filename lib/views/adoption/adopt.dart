@@ -7,6 +7,7 @@ import 'package:pet_rescue_mobile/src/asset.dart';
 import 'package:pet_rescue_mobile/src/style.dart';
 
 import 'package:pet_rescue_mobile/views/adoption/categories/pet_cate_display.dart';
+import 'package:pet_rescue_mobile/views/custom_widget/custom_dialog.dart';
 
 import 'package:pet_rescue_mobile/bloc/pet_bloc.dart';
 
@@ -35,9 +36,10 @@ class _AdoptionPageState extends State<AdoptionPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Nhận nuôi thú cưng',
+          'NHẬN NUÔI BÉ CƯNG',
           style: TextStyle(
             color: Colors.black,
+            fontWeight: FontWeight.bold,
           ),
         ),
         centerTitle: true,
@@ -54,6 +56,38 @@ class _AdoptionPageState extends State<AdoptionPage> {
             Navigator.of(context).pop();
           },
         ),
+        actions: [
+          Builder(
+            builder: (context) => IconButton(
+              icon: Icon(Icons.filter_alt_outlined),
+              color: Colors.black,
+              onPressed: () {
+                Scaffold.of(context).openEndDrawer();
+              },
+            ),
+          ),
+        ],
+      ),
+      endDrawer: Drawer(
+        child: ListView(
+          // Important: Remove any padding from the ListView.
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            ListTile(
+              title: Text('Item 1'),
+              onTap: () {
+                // Update the state of the app.
+                // ...
+              },
+            ),
+            ListTile(
+              title: Text('Item 2'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
       ),
       body: Stack(
         children: [
@@ -67,7 +101,7 @@ class _AdoptionPageState extends State<AdoptionPage> {
           ),
           Container(
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.6),
+              color: Colors.white.withOpacity(0.7),
             ),
           ),
           StreamBuilder(
@@ -103,22 +137,6 @@ class _AdoptionPageState extends State<AdoptionPage> {
             },
           ),
         ],
-      ),
-    );
-  }
-
-  // loading
-  Widget loading(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height,
-      width: MediaQuery.of(context).size.width,
-      child: Center(
-        child: Container(
-          decoration: BoxDecoration(
-            shape: BoxShape.rectangle,
-          ),
-          child: CircularProgressIndicator(),
-        ),
       ),
     );
   }

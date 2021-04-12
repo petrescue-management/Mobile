@@ -7,7 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:pet_rescue_mobile/bloc/account_bloc.dart';
 
 import 'package:pet_rescue_mobile/models/center/center_model.dart';
-import 'package:pet_rescue_mobile/models/volunteer_model.dart';
+import 'package:pet_rescue_mobile/models/user/volunteer_model.dart';
 import 'package:pet_rescue_mobile/repository/repository.dart';
 import 'package:pet_rescue_mobile/src/asset.dart';
 import 'package:pet_rescue_mobile/src/style.dart';
@@ -45,10 +45,13 @@ class _VolunteerFormState extends State<VolunteerForm> {
     // ignore: deprecated_member_use
     File image = await ImagePicker.pickImage(
         source: ImageSource.gallery, imageQuality: 50);
-    setState(() {
-      _image = image;
-      hasImage = true;
-    });
+
+    if (image != null) {
+      setState(() {
+        _image = image;
+        hasImage = true;
+      });
+    }
   }
 
   _imgFromCamera() async {
@@ -56,10 +59,12 @@ class _VolunteerFormState extends State<VolunteerForm> {
     File image = await ImagePicker.pickImage(
         source: ImageSource.camera, imageQuality: 50);
 
-    setState(() {
-      _image = image;
-      hasImage = true;
-    });
+    if (image != null) {
+      setState(() {
+        _image = image;
+        hasImage = true;
+      });
+    }
   }
 
   void _showPicker(context) {
@@ -98,64 +103,69 @@ class _VolunteerFormState extends State<VolunteerForm> {
       return CustomButton(
         label: 'GỬI ĐƠN ĐĂNG KÝ',
         onTap: () {
-          confirmationDialog(
-              context, 'Bạn muốn gửi đơn đăng ký tình nguyện viên?',
+          if (_fbKey.currentState.saveAndValidate()) {
+            confirmationDialog(
+              context,
+              'Bạn muốn gửi đơn đăng ký tình nguyện viên?',
               title: '',
               confirm: false,
               negativeText: 'Không',
-              positiveText: 'Có', positiveAction: () {
-            showDialog(
-                context: context,
-                builder: (context) => ProgressDialog(message: 'Đang gửi...'));
+              positiveText: 'Có',
+              positiveAction: () {
+                showDialog(
+                    context: context,
+                    builder: (context) =>
+                        ProgressDialog(message: 'Đang gửi...'));
 
-            if (_fbKey.currentState.saveAndValidate()) {
-              final formInputs = _fbKey.currentState.value;
-              print(formInputs);
+                final formInputs = _fbKey.currentState.value;
+                print(formInputs);
 
-              VolunteerModel user = new VolunteerModel();
-              if (formInputs['radioGender'] == 'Nữ') {
-                user.gender = 1;
-              } else if (formInputs['radioGender'] == 'Nam') {
-                user.gender = 2;
-              } else {
-                user.gender = 3;
-              }
+                VolunteerModel user = new VolunteerModel();
+                if (formInputs['radioGender'] == 'Nữ') {
+                  user.gender = 1;
+                } else if (formInputs['radioGender'] == 'Nam') {
+                  user.gender = 2;
+                } else {
+                  user.gender = 3;
+                }
 
-              user.firstName = formInputs['firstName'];
-              user.lastName = formInputs['lastName'];
-              user.dob = formInputs['dob'].toString();
-              user.phone = formInputs['phoneNumber'];
-              user.email = formInputs['email'];
+                user.firstName = formInputs['firstName'];
+                user.lastName = formInputs['lastName'];
+                user.dob = formInputs['dob'].toString();
+                user.phone = formInputs['phoneNumber'];
+                user.email = formInputs['email'];
 
-              user.centerId = widget.center.centerId;
+                user.centerId = widget.center.centerId;
 
-              String url = '';
-              String baseName = basename(_image.path);
-              if (baseName != null) {
-                _repo.uploadVolunteer(_image, baseName).then((value) {
-                  setState(() {
-                    url = value;
-                    user.imgUrl = url;
+                String url = '';
+                String baseName = basename(_image.path);
+                if (baseName != null) {
+                  _repo.uploadVolunteer(_image, baseName).then((value) {
+                    setState(() {
+                      url = value;
+                      user.imgUrl = url;
 
-                    accountBloc.regisVolunteer(user);
-                    successDialog(context,
-                        'Đơn đăng ký của bạn đã được gửi đến ${widget.center.centerName.trim()}. Trung tâm sẽ xem xét và phản hồi cho bạn qua email ${user.email}. Xin cảm ơn.',
-                        title: 'Thành công', neutralAction: () {
-                      Navigator.of(context).popUntil((route) => route.isFirst);
-                      Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (context) => MyApp()));
+                      accountBloc.regisVolunteer(user);
+                      successDialog(context,
+                          'Đơn đăng ký của bạn đã được gửi đến ${widget.center.centerName.trim()}. Trung tâm sẽ xem xét và phản hồi cho bạn qua email ${user.email}. Xin cảm ơn.',
+                          title: 'Thành công', neutralAction: () {
+                        Navigator.of(context)
+                            .popUntil((route) => route.isFirst);
+                        Navigator.pushReplacement(context,
+                            MaterialPageRoute(builder: (context) => MyApp()));
+                      });
                     });
                   });
-                });
-              }
-            } else {
-              warningDialog(
-                context,
-                'Bạn chưa điền đầy đủ thông tin.\nXin hãy kiểm tra lại.',
-                title: '',
-              );
-            }
-          });
+                }
+              },
+            );
+          } else {
+            warningDialog(
+              context,
+              'Bạn chưa điền đầy đủ thông tin.\nXin hãy kiểm tra lại.',
+              title: '',
+            );
+          }
         },
       );
     } else {
@@ -273,7 +283,7 @@ class _VolunteerFormState extends State<VolunteerForm> {
             height: 125,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(color: color2, width: 2),
+              border: Border.all(color: mainColor, width: 2),
               image: DecorationImage(
                 image: _image == null
                     ? AssetImage(
@@ -293,7 +303,7 @@ class _VolunteerFormState extends State<VolunteerForm> {
               height: 40,
               width: 40,
               decoration: BoxDecoration(
-                color: color2,
+                color: mainColor,
                 shape: BoxShape.circle,
               ),
               alignment: Alignment.center,
@@ -333,6 +343,7 @@ class _VolunteerFormState extends State<VolunteerForm> {
                     labelText: 'Email*',
                     labelStyle: TextStyle(
                       color: primaryGreen,
+                      fontWeight: FontWeight.bold,
                     ),
                     hintText: '',
                     floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -376,6 +387,7 @@ class _VolunteerFormState extends State<VolunteerForm> {
                         labelText: 'Họ*',
                         labelStyle: TextStyle(
                           color: primaryGreen,
+                          fontWeight: FontWeight.bold,
                         ),
                         hintText: '',
                         floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -412,6 +424,7 @@ class _VolunteerFormState extends State<VolunteerForm> {
                         labelText: 'Tên*',
                         labelStyle: TextStyle(
                           color: primaryGreen,
+                          fontWeight: FontWeight.bold,
                         ),
                         hintText: '',
                         floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -453,6 +466,7 @@ class _VolunteerFormState extends State<VolunteerForm> {
                     labelText: 'Số điện thoại*',
                     labelStyle: TextStyle(
                       color: primaryGreen,
+                      fontWeight: FontWeight.bold,
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(
@@ -505,10 +519,12 @@ class _VolunteerFormState extends State<VolunteerForm> {
                 child: FormBuilderDateTimePicker(
                   attribute: 'dob',
                   inputType: InputType.date,
+                  format: DateFormat('dd/MM/yyyy'),
                   decoration: InputDecoration(
                     labelText: 'Ngày sinh*',
                     labelStyle: TextStyle(
                       color: primaryGreen,
+                      fontWeight: FontWeight.bold,
                     ),
                     hintText: '',
                     floatingLabelBehavior: FloatingLabelBehavior.always,

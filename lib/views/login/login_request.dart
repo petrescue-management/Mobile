@@ -55,9 +55,9 @@ class _LoginRequestState extends State<LoginRequest> {
                   height: 250,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    border: Border.all(color: color2, width: 3),
+                    border: Border.all(color: mainColor, width: 3),
                     image: DecorationImage(
-                      image: AssetImage(app_logo_notitle),
+                      image: AssetImage(app_logo_withtitle),
                     ),
                   ),
                 ),
@@ -71,7 +71,7 @@ class _LoginRequestState extends State<LoginRequest> {
                         height: 20,
                       ),
                       Container(
-                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        padding: EdgeInsets.symmetric(horizontal: 25),
                         child: SizedBox(
                           child: loginNotice(context),
                         ),
@@ -91,24 +91,6 @@ class _LoginRequestState extends State<LoginRequest> {
   }
 
   final _repo = Repository();
-
-  // loading
-  Widget loading(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height,
-      width: MediaQuery.of(context).size.width,
-      color: Colors.white,
-      child: Center(
-        child: Container(
-          decoration: BoxDecoration(
-            shape: BoxShape.rectangle,
-            color: Colors.white,
-          ),
-          child: CircularProgressIndicator(),
-        ),
-      ),
-    );
-  }
 
   // sign in button
   Widget _signInButton() {

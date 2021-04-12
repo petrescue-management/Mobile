@@ -1,49 +1,61 @@
-import 'package:path/path.dart';
 import 'package:commons/commons.dart';
-import 'package:multi_image_picker/multi_image_picker.dart';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 import 'package:pet_rescue_mobile/repository/repository.dart';
-import 'package:pet_rescue_mobile/bloc/form_bloc.dart';
-import 'package:pet_rescue_mobile/models/registrationform/rescue_report_model.dart';
-import 'package:pet_rescue_mobile/src/status.dart';
 import 'package:pet_rescue_mobile/src/asset.dart';
 import 'package:pet_rescue_mobile/src/style.dart';
 
-import 'package:pet_rescue_mobile/views/custom_widget/custom_dialog.dart';
 import 'package:pet_rescue_mobile/views/custom_widget/custom_button.dart';
+import 'package:pet_rescue_mobile/views/custom_widget/custom_dialog.dart';
 import 'package:pet_rescue_mobile/views/custom_widget/custom_divider.dart';
 
-import '../../main.dart';
+import 'package:pet_rescue_mobile/models/registrationform/finder_form.dart';
+
+import '../../../../main.dart';
 
 // ignore: must_be_immutable
-class RescueDetail extends StatefulWidget {
-  Map<String, dynamic> formInput;
-  double latitude, longitude;
-  List<Asset> imageList;
-  String address = '';
+class FinderCardDetail extends StatefulWidget {
+  FinderForm finder;
+  String address;
 
-  RescueDetail({
-    this.formInput,
-    this.imageList,
+  FinderCardDetail({
+    this.finder,
     this.address,
-    this.latitude,
-    this.longitude,
   });
 
   @override
-  _RescueDetailState createState() => _RescueDetailState();
+  _FinderCardDetailState createState() => _FinderCardDetailState();
 }
 
-class _RescueDetailState extends State<RescueDetail> {
+class _FinderCardDetailState extends State<FinderCardDetail> {
   ScrollController scrollController = ScrollController();
 
   final GlobalKey<FormBuilderState> _fbKey = GlobalKey();
 
   final _repo = Repository();
+
+  String petAttribute;
+
+  getPetAttribute(int petAttribute) {
+    if (petAttribute == 1)
+      return 'Đi lạc';
+    else if (petAttribute == 2)
+      return 'Bị bỏ rơi';
+    else if (petAttribute == 3)
+      return 'Bị thương';
+    else
+      return 'Cho đi';
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      petAttribute = getPetAttribute(widget.finder.petAttribute);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +66,7 @@ class _RescueDetailState extends State<RescueDetail> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text(
-          'YÊU CẦU CỨU HỘ',
+          'CHI TIẾT CỨU HỘ',
           style: TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.bold,
@@ -75,21 +87,22 @@ class _RescueDetailState extends State<RescueDetail> {
           },
         ),
       ),
-      body: Stack(children: [
-        Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage(bgp8),
-              fit: BoxFit.cover,
+      body: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(bgp8),
+                fit: BoxFit.cover,
+              ),
             ),
           ),
-        ),
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.8),
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.8),
+            ),
           ),
-        ),
-        Container(
+          Container(
             height: contextHeight,
             width: contextWidth,
             child: Column(
@@ -154,75 +167,62 @@ class _RescueDetailState extends State<RescueDetail> {
                   ),
                 ),
               ],
-            )),
-      ]),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
   _btnSubmitFinderForm(context) {
-    return CustomButton(
-      label: 'GỬI YÊU CẦU',
-      onTap: () {
-        if (_fbKey.currentState.saveAndValidate()) {
+    if (widget.finder.finderFormStatus == 1) {
+      return CustomButton(
+        label: 'HỦY YÊU CẦU',
+        onTap: () {
           showDialog(
-              context: context,
-              builder: (context) => ProgressDialog(message: 'Đang gửi...'));
+            context: context,
+            builder: (context) => ProgressDialog(message: 'Đang hủy...'),
+          );
 
-          RescueReport tmpReport = new RescueReport();
-          tmpReport.finderDescription = widget.formInput['description'];
-          tmpReport.latitude = widget.latitude;
-          tmpReport.longitude = widget.longitude;
-          tmpReport.phone = widget.formInput['phoneNumber'];
-
-          if (widget.formInput['radioPetStatus'] == 'Đi lạc')
-            tmpReport.petAttribute = PetAttribute.Lost.index + 1;
-          else if (widget.formInput['radioPetStatus'] == 'Bị bỏ rơi')
-            tmpReport.petAttribute = PetAttribute.Abandoned.index + 1;
-          else if (widget.formInput['radioPetStatus'] == 'Bị thương')
-            tmpReport.petAttribute = PetAttribute.Injured.index + 1;
-          else
-            tmpReport.petAttribute = PetAttribute.Giveaway.index + 1;
-
-          String url = '';
-          int count = 0;
-          widget.imageList.forEach((item) {
-            Asset asset = item;
-
-            _repo.getImageFileFromAssets(asset).then((result) {
-              String baseName = basename(result.path);
-
-              _repo.uploadRescueImage(result, baseName).then((value) {
-                setState(() {
-                  url += '$value;';
-                  count++;
-                });
-
-                if (count == widget.imageList.length) {
-                  tmpReport.finderFormImgUrl = url;
-
-                  formBloc.createRescueRequest(tmpReport);
-                  successDialog(
+          _repo.cancelFinderForm(widget.finder.finderFormId).then((value) {
+            if (value == null) {
+              warningDialog(
+                context,
+                'Không thể hủy yêu cầu.',
+                title: '',
+                neutralText: 'Đóng',
+                neutralAction: () {
+                  Navigator.pop(context);
+                },
+              );
+            } else {
+              successDialog(
+                context,
+                'Yêu cầu của bạn đã được gửi tới các trung tâm cứu hộ.',
+                title: 'Thành công',
+                neutralText: 'Đóng',
+                neutralAction: () {
+                  Navigator.of(context).popUntil((route) => route.isFirst);
+                  Navigator.pushReplacement(
                     context,
-                    'Yêu cầu của bạn đã được gửi tới các trung tâm cứu hộ.',
-                    title: 'Thành công',
-                    neutralText: 'Đóng',
-                    neutralAction: () {
-                      Navigator.of(context).popUntil((route) => route.isFirst);
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MyApp(),
-                        ),
-                      );
-                    },
+                    MaterialPageRoute(
+                      builder: (context) => MyApp(),
+                    ),
                   );
-                }
-              });
-            });
+                },
+              );
+            }
           });
-        }
-      },
-    );
+        },
+      );
+    } else if (widget.finder.finderFormStatus == 2 ||
+        widget.finder.finderFormStatus == 3) {
+      return CustomDisableButton(
+        label: 'HỦY YÊU CẦU',
+      );
+    } else {
+      return SizedBox(height: 0);
+    }
   }
 
   Widget _rescueForm(BuildContext context) {
@@ -236,25 +236,23 @@ class _RescueDetailState extends State<RescueDetail> {
             children: <Widget>[
               //* IMAGE PICKER
               Container(
-                margin: EdgeInsets.only(top: 20),
-                height: MediaQuery.of(context).size.height * 0.15,
-                child: GridView.count(
-                  shrinkWrap: true,
-                  crossAxisCount: 3,
-                  childAspectRatio: 1,
-                  children: List.generate(
-                    widget.imageList.length,
-                    (index) {
-                      Asset asset = widget.imageList[index];
-                      return AssetThumb(
-                        asset: asset,
-                        width: 300,
-                        height: 300,
+                  margin: EdgeInsets.only(top: 20),
+                  height: MediaQuery.of(context).size.height * 0.15,
+                  child: GridView.builder(
+                    itemCount: widget.finder.finderImageUrl.length,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      crossAxisSpacing: 4.0,
+                      mainAxisSpacing: 4.0,
+                    ),
+                    itemBuilder: (context, int index) {
+                      String item = widget.finder.finderImageUrl[index];
+                      return Image.network(
+                        item,
+                        fit: BoxFit.cover,
                       );
                     },
-                  ),
-                ),
-              ),
+                  )),
               SizedBox(height: 10),
               //* PHONE NUMBER
               Container(
@@ -265,7 +263,7 @@ class _RescueDetailState extends State<RescueDetail> {
                     labelStyle: TextStyle(
                       color: mainColor,
                     ),
-                    hintText: widget.formInput['phoneNumber'],
+                    hintText: widget.finder.phone,
                     hintStyle: TextStyle(
                       color: Colors.black,
                     ),
@@ -292,7 +290,7 @@ class _RescueDetailState extends State<RescueDetail> {
                     labelStyle: TextStyle(
                       color: mainColor,
                     ),
-                    hintText: widget.formInput['radioPetStatus'],
+                    hintText: petAttribute,
                     hintStyle: TextStyle(
                       color: Colors.black,
                     ),
@@ -321,7 +319,7 @@ class _RescueDetailState extends State<RescueDetail> {
                     labelStyle: TextStyle(
                       color: mainColor,
                     ),
-                    hintText: widget.formInput['description'],
+                    hintText: widget.finder.finderDescription,
                     hintStyle: TextStyle(
                       color: Colors.black,
                     ),
@@ -341,49 +339,6 @@ class _RescueDetailState extends State<RescueDetail> {
                   enabled: false,
                   maxLines: 5,
                 ),
-              ),
-              //* CONFIRMATION
-              FormBuilderCheckbox(
-                attribute: 'acceptTerms',
-                onChanged: (value) => () {
-                  var _onChanged = true;
-                  setState(() {
-                    value = _onChanged;
-                    _onChanged = !_onChanged;
-                  });
-                },
-                initialValue: false,
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                ),
-                label: RichText(
-                  text: TextSpan(
-                    style: TextStyle(fontSize: 16, fontFamily: 'Philosopher'),
-                    children: [
-                      TextSpan(
-                        text: '* ',
-                        style: TextStyle(color: Colors.red),
-                      ),
-                      TextSpan(
-                        text: 'Tôi đã đọc và đồng ý với ',
-                        style: TextStyle(color: Colors.black),
-                      ),
-                      TextSpan(
-                        text: 'Điều khoản và Điều kiện ',
-                        style: TextStyle(color: Colors.blue),
-                      ),
-                      TextSpan(
-                        text: 'của tổ chức. ',
-                        style: TextStyle(color: Colors.black),
-                      ),
-                    ],
-                  ),
-                ),
-                validators: [
-                  FormBuilderValidators.requiredTrue(
-                      errorText:
-                          'Bạn cần đồng ý với điều khoản của chúng tôi.'),
-                ],
               ),
             ],
           ),

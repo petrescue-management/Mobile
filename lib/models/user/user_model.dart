@@ -8,6 +8,7 @@ class UserModel {
   String imgUrl;
   String dob;
   List<String> roles;
+  //CenterProfile center;
 
   UserModel({
     this.email,
@@ -19,6 +20,7 @@ class UserModel {
     this.imgUrl,
     this.dob,
     this.roles,
+    //this.center,
   });
 
   factory UserModel.fromJson(Map<dynamic, dynamic> json) {
@@ -38,8 +40,21 @@ class UserModel {
       imgUrl: json['imgUrl'],
       dob: json['dob'],
       roles: tempList,
+      //center: CenterProfile.fromJson(json['center']),
     );
   }
 
   String get getImgUrl => imgUrl;
+}
+
+class CenterProfile {
+  String centerName;
+
+  CenterProfile({this.centerName});
+
+  factory CenterProfile.fromJson(Map<dynamic, dynamic> json) {
+    return CenterProfile(
+      centerName: json['centerName'],
+    );
+  }
 }
