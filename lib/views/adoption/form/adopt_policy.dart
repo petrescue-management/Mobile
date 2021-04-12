@@ -25,6 +25,18 @@ class _AdoptionAgreementState extends State<AdoptionAgreement> {
 
   final GlobalKey<FormBuilderState> _fbKey = GlobalKey();
 
+  List<String> imgUrlList;
+  String firstUrl;
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      imgUrlList = widget.pet.petImgUrl;
+      firstUrl = imgUrlList.elementAt(0);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,7 +51,7 @@ class _AdoptionAgreementState extends State<AdoptionAgreement> {
             ),
           ),
           Container(
-            decoration: BoxDecoration(color: Colors.white.withOpacity(0.7)),
+            decoration: BoxDecoration(color: Colors.white.withOpacity(0.8)),
           ),
           Center(
             child: Container(
@@ -60,9 +72,9 @@ class _AdoptionAgreementState extends State<AdoptionAgreement> {
                           height: 150,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            border: Border.all(color: color2, width: 2),
+                            border: Border.all(color: mainColor, width: 2),
                             image: DecorationImage(
-                              image: NetworkImage(widget.pet.petImgUrl),
+                              image: NetworkImage(firstUrl),
                               fit: BoxFit.cover,
                             ),
                           ),

@@ -12,6 +12,7 @@ import 'package:pet_rescue_mobile/views/custom_widget/custom_button.dart';
 import 'package:pet_rescue_mobile/views/custom_widget/custom_divider.dart';
 import 'package:pet_rescue_mobile/views/custom_widget/custom_field.dart';
 import 'package:pet_rescue_mobile/views/rescue/rescue_detail.dart';
+import 'package:pet_rescue_mobile/views/rescue/rescue_location.dart';
 
 // ignore: must_be_immutable
 class Rescue extends StatefulWidget {
@@ -114,8 +115,13 @@ class _RescueState extends State<Rescue> {
 
     setState(() {
       _images = resultList;
-      hasImage = true;
     });
+
+    if (_images.length > 0) {
+      setState(() {
+        hasImage = true;
+      });
+    }
   }
 
   _btnSubmitInformation(bool hasImage, BuildContext context) {
@@ -182,7 +188,15 @@ class _RescueState extends State<Rescue> {
             ),
             color: Colors.black,
             onPressed: () {
-              Navigator.pop(context);
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => RescueLocation(
+                    latitude: 0,
+                    longitude: 0,
+                  ),
+                ),
+              );
             },
           ),
           centerTitle: true,
@@ -221,7 +235,7 @@ class _RescueState extends State<Rescue> {
                             TextSpan(
                               text: 'Địa chỉ của bạn:\n',
                               style: TextStyle(
-                                color: color2,
+                                color: mainColor,
                                 fontSize: 16,
                                 height: 2,
                               ),
@@ -338,6 +352,7 @@ class _RescueState extends State<Rescue> {
                     labelText: 'Số điện thoại *',
                     labelStyle: TextStyle(
                       color: primaryGreen,
+                      fontWeight: FontWeight.bold,
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(
@@ -394,6 +409,7 @@ class _RescueState extends State<Rescue> {
                     labelText: 'Hãy mô tả thêm',
                     labelStyle: TextStyle(
                       color: primaryGreen,
+                      fontWeight: FontWeight.bold,
                     ),
                     hintText: '',
                     floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -415,7 +431,7 @@ class _RescueState extends State<Rescue> {
                         errorText: 'Hãy thêm mô tả về tình trạng của bé.'),
                   ],
                   maxLines: 6,
-                  maxLength: 250,
+                  maxLength: 500,
                 ),
               ),
             ],

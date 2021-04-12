@@ -34,7 +34,7 @@ class _BottomNaviBarState extends State<BottomNaviBar> {
 
   Widget _bottomNaviBar(int selectedIndex) {
     return BottomNavigationBar(
-      selectedItemColor: color2,
+      selectedItemColor: mainColor,
       showSelectedLabels: false,
       showUnselectedLabels: false,
       onTap: (int index) => setState(() => _selectedIndex = index),

@@ -14,7 +14,3 @@ class PushNotification {
     );
   }
 }
-
-class NotificationData {
-  
-}

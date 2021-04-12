@@ -6,12 +6,14 @@ import 'package:pet_rescue_mobile/src/style.dart';
 
 import 'package:pet_rescue_mobile/bloc/account_bloc.dart';
 
-import 'package:pet_rescue_mobile/models/user_model.dart';
+import 'package:pet_rescue_mobile/models/user/user_model.dart';
 
 import 'package:pet_rescue_mobile/repository/repository.dart';
 
 import 'package:pet_rescue_mobile/main.dart';
+import 'package:pet_rescue_mobile/views/custom_widget/custom_dialog.dart';
 import 'package:pet_rescue_mobile/views/login/policy.dart';
+import 'package:pet_rescue_mobile/views/personal/adoptedpet/adopted_pet.dart';
 import 'package:pet_rescue_mobile/views/personal/config_menu.dart';
 import 'package:pet_rescue_mobile/views/personal/profile/profile_details.dart';
 import 'package:pet_rescue_mobile/views/personal/volunteer/volunteer.dart';
@@ -31,8 +33,6 @@ class _PersonalPageState extends State<PersonalPage> {
 
   String avatar, fullname;
 
-  bool hasRole = false;
-
   @override
   void initState() {
     super.initState();
@@ -40,9 +40,7 @@ class _PersonalPageState extends State<PersonalPage> {
     SharedPreferences.getInstance().then((value) => {
           setState(() {
             avatar = value.getString('avatar');
-            print(avatar);
             fullname = value.getString('fullname');
-            print(fullname);
           })
         });
   }
@@ -79,13 +77,8 @@ class _PersonalPageState extends State<PersonalPage> {
                   stream: accountBloc.userDetail,
                   builder: (context, AsyncSnapshot<UserModel> snapshot) {
                     if (snapshot.hasError || snapshot.data == null) {
-                      return Center(child: CircularProgressIndicator());
+                      return loading(context);
                     } else {
-                      snapshot.data.roles.forEach((element) {
-                        if (element == 'volunteer') {
-                          hasRole = true;
-                        }
-                      });
                       return Container(
                         child: Column(
                           children: [
@@ -156,33 +149,43 @@ class _PersonalPageState extends State<PersonalPage> {
 
   Widget configMenu(UserModel user) {
     return Container(
-      child: Container(
-        margin: EdgeInsets.only(top: 25),
-        height: MediaQuery.of(context).size.height * 0.6,
+      height: MediaQuery.of(context).size.height * 0.65,
+      child: SizedBox(
         child: SingleChildScrollView(
           controller: scrollController,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              ConfigMenu(
-                text: 'Chỉnh sửa thông tin',
-                icon: Icons.account_circle,
-                press: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return ProfileDetails(
-                          user: user,
-                        );
-                      },
-                    ),
-                  );
-                },
+              Container(
+                margin: EdgeInsets.only(top: 20),
+                child: ConfigMenu(
+                  text: 'Chỉnh sửa thông tin',
+                  icon: Icons.account_circle,
+                  press: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return ProfileDetails(
+                            user: user,
+                          );
+                        },
+                      ),
+                    );
+                  },
+                ),
               ),
               ConfigMenu(
                 text: 'Thú cưng của tôi',
                 icon: Icons.favorite,
-                press: () {},
+                press: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return AdoptedPet();
+                      },
+                    ),
+                  );
+                },
               ),
               ConfigMenu(
                 text: 'Yêu cầu của tôi',
@@ -197,23 +200,28 @@ class _PersonalPageState extends State<PersonalPage> {
                   );
                 },
               ),
-              hasRole == false
-                  ? ConfigMenu(
-                      text: 'Trở thành tình nguyện viên',
-                      icon: Icons.volunteer_activism,
-                      press: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return VolunteerWelcome();
-                            },
-                          ),
-                        );
-                      },
-                    )
-                  : SizedBox(
-                      height: 0,
-                    ),
+              ConfigMenu(
+                text: 'Trở thành tình nguyện viên',
+                icon: Icons.volunteer_activism,
+                press: () {
+                  if (user.roles.length == 0 || user.roles == []) {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return VolunteerWelcome();
+                        },
+                      ),
+                    );
+                  } else {
+                    infoDialog(
+                      context,
+                      'Bạn đã là tình nguyện viên.\nBạn không thể đăng ký làm tình nguyện viên của trung tâm khác ngay lúc này.',
+                      title: 'Thông báo',
+                      neutralText: 'Đóng',
+                    );
+                  }
+                },
+              ),
               ConfigMenu(
                 text: 'Điều khoản',
                 icon: Icons.policy,

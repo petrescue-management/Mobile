@@ -320,6 +320,7 @@ class _AdoptFormRegistrationPageState extends State<AdoptFormRegistrationPage> {
                       labelText: 'Họ*',
                       labelStyle: TextStyle(
                         color: primaryGreen,
+                        fontWeight: FontWeight.bold,
                       ),
                       hintText: '',
                       floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -356,6 +357,7 @@ class _AdoptFormRegistrationPageState extends State<AdoptFormRegistrationPage> {
                       labelText: 'Tên*',
                       labelStyle: TextStyle(
                         color: primaryGreen,
+                        fontWeight: FontWeight.bold,
                       ),
                       hintText: '',
                       floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -389,14 +391,15 @@ class _AdoptFormRegistrationPageState extends State<AdoptFormRegistrationPage> {
             //* DATE OF BIRTH
             Container(
               child: FormBuilderDateTimePicker(
+                format: DateFormat('dd/MM/yyyy'),
                 attribute: 'dob',
                 inputType: InputType.date,
                 decoration: InputDecoration(
                   labelText: 'Ngày sinh*',
                   labelStyle: TextStyle(
                     color: primaryGreen,
+                    fontWeight: FontWeight.bold,
                   ),
-                  hintText: '',
                   floatingLabelBehavior: FloatingLabelBehavior.always,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -430,6 +433,7 @@ class _AdoptFormRegistrationPageState extends State<AdoptFormRegistrationPage> {
                   labelText: 'Số điện thoại*',
                   labelStyle: TextStyle(
                     color: primaryGreen,
+                    fontWeight: FontWeight.bold,
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(
@@ -471,6 +475,7 @@ class _AdoptFormRegistrationPageState extends State<AdoptFormRegistrationPage> {
                   labelText: 'Email*',
                   labelStyle: TextStyle(
                     color: primaryGreen,
+                    fontWeight: FontWeight.bold,
                   ),
                   hintText: '',
                   floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -507,6 +512,7 @@ class _AdoptFormRegistrationPageState extends State<AdoptFormRegistrationPage> {
                   labelText: 'Nghề nghiệp*',
                   labelStyle: TextStyle(
                     color: primaryGreen,
+                    fontWeight: FontWeight.bold,
                   ),
                   hintText: '',
                   floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -543,6 +549,7 @@ class _AdoptFormRegistrationPageState extends State<AdoptFormRegistrationPage> {
                   labelText: 'Địa chỉ*',
                   labelStyle: TextStyle(
                     color: primaryGreen,
+                    fontWeight: FontWeight.bold,
                   ),
                   hintText: '',
                   floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -572,6 +579,7 @@ class _AdoptFormRegistrationPageState extends State<AdoptFormRegistrationPage> {
               ),
             ),
             SizedBox(height: 20),
+            //* house type
             customRadioGroup(
               'Địa chỉ trên là:',
               'houseType',
@@ -594,6 +602,7 @@ class _AdoptFormRegistrationPageState extends State<AdoptFormRegistrationPage> {
         title: Text('Câu hỏi thêm'),
         content: Column(
           children: [
+            //* frequencyAtHome
             customRadioGroup(
               'Bạn có thường ở nhà không?*',
               'frequencyAtHome',
@@ -605,15 +614,17 @@ class _AdoptFormRegistrationPageState extends State<AdoptFormRegistrationPage> {
                 FormBuilderFieldOption(value: 'Thường xuyên ở nhà')
               ],
             ),
+            //* haveChildren
             customRadioGroup(
               'Có trẻ em hay không?*',
               'haveChildren',
               'Chưa trả lời',
               [
                 FormBuilderFieldOption(value: 'Có'),
-                FormBuilderFieldOption(value: 'Không'),
+                FormBuilderFieldOption(value: 'Không có'),
               ],
             ),
+            //* childAge
             Container(
               child: FormBuilderTextField(
                 attribute: 'childAge',
@@ -621,6 +632,7 @@ class _AdoptFormRegistrationPageState extends State<AdoptFormRegistrationPage> {
                   labelText: 'Độ tuổi của trẻ (Nếu có)',
                   labelStyle: TextStyle(
                     color: primaryGreen,
+                    fontWeight: FontWeight.bold,
                   ),
                   hintText: '',
                   floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -646,15 +658,17 @@ class _AdoptFormRegistrationPageState extends State<AdoptFormRegistrationPage> {
               ),
             ),
             SizedBox(height: 20),
+            //* beViolentTendencies
             customRadioGroup(
               'Có bất kỳ thành viên nào trong gia đình bạn thể hiện\nhoặc có xu hướng bạo lực không?*',
               'beViolentTendencies',
               'Chưa trả lời',
               [
                 FormBuilderFieldOption(value: 'Có'),
-                FormBuilderFieldOption(value: 'Không'),
+                FormBuilderFieldOption(value: 'Không có'),
               ],
             ),
+            //* haveAgreement
             customRadioGroup(
               'Các thành viên trong gia đình có biết về quyết định\n nhận nuôi chó/mèo của bạn không?*',
               'haveAgreement',
@@ -664,6 +678,7 @@ class _AdoptFormRegistrationPageState extends State<AdoptFormRegistrationPage> {
                 FormBuilderFieldOption(value: 'Không'),
               ],
             ),
+            //* havePet
             customRadioGroup(
               'Bạn có từng hoặc đang nuôi chó/mèo không?*',
               'havePet',

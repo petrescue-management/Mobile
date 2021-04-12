@@ -7,24 +7,42 @@ class PetModel {
   String petProfileDescription;
   String petBreedName;
   String petFurColorName;
-  String petImgUrl;
+  List<String> petImgUrl;
   String centerId;
   String centerName;
   String centerAdrress;
+  String insertedAt;
 
-  PetModel(pet) {
-    petProfileId = pet['petProfileId'];
-    petDocumentId = pet['petDocumentId'];
-    petName = pet['petName'];
-    petGender = pet['petGender'];
-    petAge = convertPetAge(pet['petAge']);
-    petProfileDescription = pet['petProfileDescription'];
-    petBreedName = pet['petBreedName'];
-    petFurColorName = pet['petFurColorName'];
-    centerId = pet['centerId'];
-    petImgUrl = pet['petImgUrl'];
-    centerName = pet['centerProfile']['centerName'];
-    centerAdrress = pet['centerProfile']['centerAdrress'];
+  PetModel({
+    this.petProfileId,
+    this.petDocumentId,
+    this.petName,
+    this.petGender,
+    this.petAge,
+    this.petProfileDescription,
+    this.petBreedName,
+    this.petFurColorName,
+    this.petImgUrl,
+    this.centerId,
+    this.centerName,
+    this.centerAdrress,
+    this.insertedAt,
+  });
+
+  PetModel.fromJson(Map<String, dynamic> json) {
+    petProfileId = json['petProfileId'];
+    petDocumentId = json['petDocumentId'];
+    petName = json['petName'];
+    petGender = json['petGender'];
+    petAge = convertPetAge(json['petAge']);
+    petProfileDescription = json['petProfileDescription'];
+    petBreedName = json['petBreedName'];
+    petFurColorName = json['petFurColorName'];
+    centerId = json['centerId'];
+    petImgUrl = getImgUrlList(json['petImgUrl']);
+    centerName = json['centerName'];
+    centerAdrress = json['centerAddress'];
+    insertedAt = json['insertedAt'];
   }
 
   convertPetAge(int age) {
@@ -37,5 +55,20 @@ class PetModel {
     } else {
       return 'Có tuổi';
     }
+  }
+
+  List getImgUrlList(String imgUrl) {
+    List<String> tmp = imgUrl.split(';');
+
+    List<String> result = [];
+    
+    tmp.forEach((item) {
+      if (item != ';') {
+        result.add(item);
+      }
+    });
+    result.removeLast();
+
+    return result;
   }
 }

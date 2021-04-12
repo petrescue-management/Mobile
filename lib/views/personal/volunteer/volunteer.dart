@@ -31,7 +31,7 @@ class _VolunteerWelcomeState extends State<VolunteerWelcome> {
             ),
           ),
           Container(
-            decoration: BoxDecoration(color: Colors.white.withOpacity(0.8)),
+            decoration: BoxDecoration(color: Colors.white.withOpacity(0.85)),
           ),
           Center(
             child: Container(

@@ -64,12 +64,25 @@ class GifDialog extends StatelessWidget {
           decoration: BoxDecoration(
             shape: BoxShape.rectangle,
             image: DecorationImage(
-              image: AssetImage(gifKitten),
-              fit: BoxFit.fitWidth
-            ),
+                image: AssetImage(gifKitten), fit: BoxFit.fitWidth),
           ),
         ),
       ),
     );
   }
+}
+
+Widget loading(BuildContext context) {
+  return Container(
+    height: MediaQuery.of(context).size.height,
+    width: MediaQuery.of(context).size.width,
+    child: Center(
+      child: Container(
+        decoration: BoxDecoration(
+          shape: BoxShape.rectangle,
+        ),
+        child: CircularProgressIndicator(),
+      ),
+    ),
+  );
 }

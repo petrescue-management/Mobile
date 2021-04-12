@@ -3,6 +3,7 @@ import 'package:pet_rescue_mobile/bloc/center_bloc.dart';
 import 'package:pet_rescue_mobile/models/center/center_base_model.dart';
 import 'package:pet_rescue_mobile/models/center/center_model.dart';
 import 'package:pet_rescue_mobile/views/personal/volunteer/center/center_item.dart';
+import 'package:pet_rescue_mobile/views/custom_widget/custom_dialog.dart';
 import 'package:pet_rescue_mobile/src/asset.dart';
 
 class CenterList extends StatefulWidget {
@@ -81,23 +82,6 @@ class _CenterListState extends State<CenterList> {
                 )),
           )
         ],
-      ),
-    );
-  }
-
-  // loading
-  Widget loading(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height,
-      width: MediaQuery.of(context).size.width,
-      child: Center(
-        child: Container(
-          decoration: BoxDecoration(
-            shape: BoxShape.rectangle,
-            color: Colors.white.withOpacity(0),
-          ),
-          child: CircularProgressIndicator(),
-        ),
       ),
     );
   }

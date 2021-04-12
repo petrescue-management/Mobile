@@ -18,6 +18,7 @@ import 'package:pet_rescue_mobile/views/home_page.dart';
 import 'package:pet_rescue_mobile/views/navigator/bottom_navigation.dart';
 import 'package:pet_rescue_mobile/views/notifications/notifications.dart';
 import 'package:pet_rescue_mobile/views/personal/personal.dart';
+import 'package:pet_rescue_mobile/views/custom_widget/custom_dialog.dart';
 
 void main() => runApp(
       ChangeNotifierProvider(
@@ -75,15 +76,19 @@ class _MyApp extends State<MyApp> {
     retrieveNotification(_notificationInfo);
   }
 
-  Future onSelectNotification(String payload) async {}
+  Future onSelectNotification(String payload) async {
+    if (payload != null) {
+      print('payload: ' + payload);
+    }
+  }
 
   showNotification(String title, String body) async {
     var android = AndroidNotificationDetails(
-      'id',
-      'channel ',
-      'description',
+      'rescueme_user_id',
+      'rescueme_user_channel',
+      'RescueMe notification',
       priority: Priority.High,
-      importance: Importance.Max,
+      importance: Importance.High,
     );
     var platform = new NotificationDetails(android, null);
     await flutterLocalNotificationsPlugin.show(
@@ -91,7 +96,7 @@ class _MyApp extends State<MyApp> {
       title,
       body,
       platform,
-      payload: 'Welcome to the Local Notification demo',
+      payload: 'RescueMe notification payload',
     );
   }
 
@@ -121,6 +126,18 @@ class _MyApp extends State<MyApp> {
           // saveOrUpdateNotifications(
           //     _notificationInfo.title, _notificationInfo.body, _dbReference);
         },
+
+        // onBackgroundMessage: (Map<String, dynamic> message) async {
+        //   print('onBackgroundMessage: $message');
+
+        //   PushNotification notification = PushNotification.fromJson(message);
+
+        //   setState(() {
+        //     _notificationInfo = notification;
+        //   });
+
+        //   showNotification(_notificationInfo.title, _notificationInfo.body);
+        // },
 
         // app in the background
         onResume: (Map<String, dynamic> message) async {
@@ -183,23 +200,6 @@ class _MyApp extends State<MyApp> {
               );
             }
           }),
-    );
-  }
-
-  Widget loading(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height,
-      width: MediaQuery.of(context).size.width,
-      color: Colors.white,
-      child: Center(
-        child: Container(
-          decoration: BoxDecoration(
-            shape: BoxShape.rectangle,
-            color: Colors.white,
-          ),
-          child: CircularProgressIndicator(),
-        ),
-      ),
     );
   }
 }

@@ -1,6 +1,6 @@
-import 'package:pet_rescue_mobile/models/volunteer_model.dart';
+import 'package:pet_rescue_mobile/models/user/volunteer_model.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:pet_rescue_mobile/models/user_model.dart';
+import 'package:pet_rescue_mobile/models/user/user_model.dart';
 import 'package:pet_rescue_mobile/repository/repository.dart';
 
 class AccountBloc {

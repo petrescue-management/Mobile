@@ -84,12 +84,14 @@ flutter:
     - assets/adoptregis.png
     - assets/ridebike.png
     - assets/warning.png
+    - assets/adopted.png
     - assets/xp.jpg
     - assets/bglpc.jpg
     - assets/launcher_image.png
-    - assets/map.png
     - assets/Logo_notitle_square.png
+    - assets/Logo_withtitle_square.png
     - assets/playingcat.gif
+    - assets/icons/map.png
     - assets/icons/animal-rescue.png
     - assets/icons/collar.png
     - assets/icons/upload.png
