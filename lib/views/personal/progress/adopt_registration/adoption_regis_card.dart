@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:pet_rescue_mobile/src/style.dart';
-
 import 'package:pet_rescue_mobile/models/registrationform/adopt_regis_form.dart';
+
+import 'package:pet_rescue_mobile/src/style.dart';
 
 import 'adoption_regis_detail.dart';
 
@@ -50,11 +50,11 @@ class _AdoptionRegistrationFormCard
     if (status == 1) {
       result = 'Đang chờ xử lý';
     } else if (status == 2) {
-      result = 'Đang duyệt';
+      result = 'Đã được chấp nhận';
     } else if (status == 3) {
-      result = 'Yêu cầu bị hủy';
+      result = 'Đã bị từ chối';
     } else {
-      result = 'Thành công';
+      result = 'Đã hủy';
     }
 
     return result;
@@ -130,9 +130,7 @@ class _AdoptionRegistrationFormCard
                                   status,
                                   style: TextStyle(
                                     fontSize: 13,
-                                    color: widget.form
-                                                .adoptionRegistrationStatus !=
-                                            3
+                                    color: (widget.form.adoptionRegistrationStatus != 4 && widget.form.adoptionRegistrationStatus != 3)
                                         ? Colors.green
                                         : Colors.red,
                                     fontStyle: FontStyle.italic,

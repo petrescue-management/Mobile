@@ -96,7 +96,7 @@ class AccountProvider {
     return null;
   }
 
-  Future<bool> registrationVolunteer(VolunteerModel user) async {
+  Future<String> registrationVolunteer(VolunteerModel user) async {
     var resBody = {};
     resBody['lastName'] = user.lastName;
     resBody['firstName'] = user.firstName;
@@ -119,7 +119,11 @@ class AccountProvider {
     );
 
     if (response.statusCode == 200) {
-      return true;
+      String result = response.body;
+      return result;
+    } else if (response.statusCode == 400) {
+      print('Failed ${response.statusCode}');
+      return 'Existed';
     } else {
       print('Failed ${response.statusCode}');
     }

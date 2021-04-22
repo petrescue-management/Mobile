@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:path/path.dart';
@@ -7,11 +6,9 @@ import 'package:commons/commons.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:pet_rescue_mobile/repository/repository.dart';
-
-import 'package:pet_rescue_mobile/bloc/account_bloc.dart';
-
 import 'package:pet_rescue_mobile/models/user/user_model.dart';
 
 import 'package:pet_rescue_mobile/src/style.dart';
@@ -249,13 +246,26 @@ class _ProfileDetailsState extends State<ProfileDetails> {
           if (_image == null) {
             tmpUser.imgUrl = widget.user.imgUrl;
 
-            accountBloc.updateUserDetail(tmpUser);
-            successDialog(context, 'Đã cập nhật thông tin cá nhân',
-                title: 'Thành công', neutralAction: () {
-              _repo.getUserDetails();
-              Navigator.of(context).popUntil((route) => route.isFirst);
-              Navigator.pushReplacement(
-                  context, MaterialPageRoute(builder: (context) => MyApp()));
+            _repo.updateUserDetails(tmpUser).then((value) {
+              if (value != null) {
+                successDialog(context, 'Đã cập nhật thông tin cá nhân',
+                    title: 'Thành công', neutralAction: () {
+                  _repo.getUserDetails();
+                  Navigator.of(context).popUntil((route) => route.isFirst);
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => MyApp()));
+                });
+              } else {
+                warningDialog(
+                  context,
+                  'Không thể cập nhật thông tin.',
+                  title: '',
+                  neutralText: 'Đóng',
+                  neutralAction: () {
+                    Navigator.pop(context);
+                  },
+                );
+              }
             });
           } else {
             String url = '';
@@ -266,12 +276,27 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                   url = value;
                   tmpUser.imgUrl = url;
 
-                  accountBloc.updateUserDetail(tmpUser);
-                  successDialog(context, 'Đã cập nhật thông tin cá nhân',
-                      title: 'Thành công', neutralAction: () {
-                    Navigator.of(context).popUntil((route) => route.isFirst);
-                    Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (context) => MyApp()));
+                  _repo.updateUserDetails(tmpUser).then((value) {
+                    if (value != null) {
+                      successDialog(context, 'Đã cập nhật thông tin cá nhân',
+                          title: 'Thành công', neutralAction: () {
+                        _repo.getUserDetails();
+                        Navigator.of(context)
+                            .popUntil((route) => route.isFirst);
+                        Navigator.pushReplacement(context,
+                            MaterialPageRoute(builder: (context) => MyApp()));
+                      });
+                    } else {
+                      warningDialog(
+                        context,
+                        'Không thể cập nhật thông tin.',
+                        title: '',
+                        neutralText: 'Đóng',
+                        neutralAction: () {
+                          Navigator.pop(context);
+                        },
+                      );
+                    }
                   });
                 });
               });

@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+
 import 'package:pet_rescue_mobile/models/center/center_model.dart';
-import 'package:pet_rescue_mobile/views/personal/volunteer/volunteer_registration_form.dart';
+
 import 'package:pet_rescue_mobile/src/style.dart';
+
+import 'package:pet_rescue_mobile/views/personal/volunteer/volunteer_registration_form.dart';
+
 
 // ignore: must_be_immutable
 class CenterItem extends StatelessWidget {

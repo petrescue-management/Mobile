@@ -1,19 +1,20 @@
 import 'package:commons/commons.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 import 'package:pet_rescue_mobile/repository/repository.dart';
+import 'package:pet_rescue_mobile/models/registrationform/finder_form.dart';
+
 import 'package:pet_rescue_mobile/src/asset.dart';
 import 'package:pet_rescue_mobile/src/style.dart';
 
 import 'package:pet_rescue_mobile/views/custom_widget/custom_button.dart';
 import 'package:pet_rescue_mobile/views/custom_widget/custom_dialog.dart';
 import 'package:pet_rescue_mobile/views/custom_widget/custom_divider.dart';
-
-import 'package:pet_rescue_mobile/models/registrationform/finder_form.dart';
-
+import 'package:pet_rescue_mobile/views/custom_widget/video/custom_video_player.dart';
 import '../../../../main.dart';
+import '../progress_report.dart';
 
 // ignore: must_be_immutable
 class FinderCardDetail extends StatefulWidget {
@@ -31,9 +32,7 @@ class FinderCardDetail extends StatefulWidget {
 
 class _FinderCardDetailState extends State<FinderCardDetail> {
   ScrollController scrollController = ScrollController();
-
-  final GlobalKey<FormBuilderState> _fbKey = GlobalKey();
-
+  TextEditingController reasonController = TextEditingController();
   final _repo = Repository();
 
   String petAttribute;
@@ -147,23 +146,20 @@ class _FinderCardDetailState extends State<FinderCardDetail> {
                   ),
                   child: CustomDivider(),
                 ),
-                FormBuilder(
-                  key: _fbKey,
-                  child: Expanded(
-                    child: Column(
-                      children: [
-                        Expanded(
-                          child: _rescueForm(context),
+                Expanded(
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: _rescueForm(context),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          vertical: 10,
+                          horizontal: 60,
                         ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                            vertical: 10,
-                            horizontal: 60,
-                          ),
-                          child: _btnSubmitFinderForm(context),
-                        ),
-                      ],
-                    ),
+                        child: _btnSubmitFinderForm(context),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -180,39 +176,157 @@ class _FinderCardDetailState extends State<FinderCardDetail> {
         label: 'HỦY YÊU CẦU',
         onTap: () {
           showDialog(
-            context: context,
-            builder: (context) => ProgressDialog(message: 'Đang hủy...'),
-          );
-
-          _repo.cancelFinderForm(widget.finder.finderFormId).then((value) {
-            if (value == null) {
-              warningDialog(
-                context,
-                'Không thể hủy yêu cầu.',
-                title: '',
-                neutralText: 'Đóng',
-                neutralAction: () {
-                  Navigator.pop(context);
-                },
-              );
-            } else {
-              successDialog(
-                context,
-                'Yêu cầu của bạn đã được gửi tới các trung tâm cứu hộ.',
-                title: 'Thành công',
-                neutralText: 'Đóng',
-                neutralAction: () {
-                  Navigator.of(context).popUntil((route) => route.isFirst);
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => MyApp(),
+              context: context,
+              builder: (BuildContext context) {
+                return Dialog(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+                  elevation: 6,
+                  backgroundColor: Colors.transparent,
+                  child: Container(
+                    height: 280,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.rectangle,
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
                     ),
-                  );
-                },
-              );
-            }
-          });
+                    child: Column(
+                      children: <Widget>[
+                        Container(
+                          margin: EdgeInsets.only(top: 10),
+                          child: Text(
+                            "LÍ DO HỦY YÊU CẦU",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 17,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 10),
+                          child: CustomDivider(),
+                        ),
+                        Padding(
+                            padding: EdgeInsets.symmetric(
+                              vertical: 10,
+                              horizontal: 15,
+                            ),
+                            child: TextFormField(
+                              controller: reasonController,
+                              maxLines: 5,
+                              autofocus: false,
+                              keyboardType: TextInputType.text,
+                              decoration: InputDecoration(
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(20.0),
+                                  ),
+                                  counterText: '',
+                                  hintText:
+                                      'Hãy nhập lí do bạn hủy yêu cầu cứu hộ...'),
+                              maxLength: 1000,
+                            )),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            RaisedButton(
+                              color: Colors.white,
+                              child: Text(
+                                "HỦY YÊU CẦU",
+                                style: TextStyle(
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              onPressed: () {
+                                if (reasonController.text == null ||
+                                    reasonController.text == '') {
+                                  warningDialog(
+                                    context,
+                                    'Xin hãy nhập lí do bạn hủy yêu cầu này.',
+                                    title: '',
+                                    neutralText: 'Đóng',
+                                    neutralAction: () {
+                                      Navigator.pop(context);
+                                    },
+                                  );
+                                } else {
+                                  confirmationDialog(context,
+                                      'Bạn có chắc chắn muốn hủy yêu cầu cứu hộ này?',
+                                      title: '',
+                                      confirm: false,
+                                      negativeText: 'Không',
+                                      positiveText: 'Có', positiveAction: () {
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) => ProgressDialog(
+                                              message: 'Đang hủy yêu cầu...',
+                                            ));
+                                    _repo
+                                        .cancelFinderForm(
+                                            widget.finder.finderFormId,
+                                            reasonController.text)
+                                        .then((value) {
+                                      if (value != null) {
+                                        successDialog(
+                                          context,
+                                          'Yêu cầu cứu hộ đã bị hủy',
+                                          title: 'Đã hủy',
+                                          neutralText: 'Đóng',
+                                          neutralAction: () {
+                                            Navigator.of(context).popUntil(
+                                                (route) => route.isFirst);
+                                            Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => MyApp(),
+                                              ),
+                                            );
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        ProgressReportPage()));
+                                          },
+                                        );
+                                      } else {
+                                        warningDialog(
+                                          context,
+                                          'Không thể hủy yêu cầu cứu hộ này.',
+                                          title: '',
+                                          neutralText: 'Đóng',
+                                          neutralAction: () {
+                                            Navigator.pop(context);
+                                          },
+                                        );
+                                      }
+                                    });
+                                  });
+                                }
+                              },
+                            ),
+                            SizedBox(width: 8),
+                            FlatButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: Text(
+                                "Đóng",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              });
         },
       );
     } else if (widget.finder.finderFormStatus == 2 ||
@@ -236,7 +350,18 @@ class _FinderCardDetailState extends State<FinderCardDetail> {
             children: <Widget>[
               //* IMAGE PICKER
               Container(
-                  margin: EdgeInsets.only(top: 20),
+                alignment: Alignment.centerLeft,
+                margin: EdgeInsets.only(top: 20),
+                child: Text(
+                  ' Ảnh mô tả',
+                  style: TextStyle(
+                    color: mainColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              SizedBox(height: 10),
+              Container(
                   height: MediaQuery.of(context).size.height * 0.15,
                   child: GridView.builder(
                     itemCount: widget.finder.finderImageUrl.length,
@@ -253,6 +378,37 @@ class _FinderCardDetailState extends State<FinderCardDetail> {
                       );
                     },
                   )),
+              SizedBox(height: 10),
+              //* VIDEO PICKER
+              Container(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  ' Video mô tả',
+                  style: TextStyle(
+                    color: mainColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 3, vertical: 10),
+                child: (widget.finder.finderFormVidUrl == null ||
+                        widget.finder.finderFormVidUrl == '')
+                    ? Container(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Không có video mô tả',
+                          style: TextStyle(color: Colors.black, fontSize: 15),
+                        ),
+                      )
+                    : Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: 250,
+                        child: VideoThumbnailFromUrl(
+                          videoUrl: widget.finder.finderFormVidUrl,
+                        ),
+                      ),
+              ),
               SizedBox(height: 10),
               //* PHONE NUMBER
               Container(

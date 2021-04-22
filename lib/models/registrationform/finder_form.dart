@@ -2,6 +2,7 @@ class FinderForm {
   String finderFormId;
   String finderDescription;
   List<String> finderImageUrl;
+  String finderFormVidUrl;
   String finderDate;
   int petAttribute;
   int finderFormStatus;
@@ -13,6 +14,7 @@ class FinderForm {
     this.finderFormId = form['finderFormId'];
     this.finderDescription = form['finderDescription'];
     this.finderImageUrl = getImgUrlList(form['finderImageUrl']);
+    this.finderFormVidUrl = form['finderFormVidUrl'];
     this.finderDate = form['finderDate'];
     this.petAttribute = form['petAttribute'];
     this.finderFormStatus = form['finderFormStatus'];

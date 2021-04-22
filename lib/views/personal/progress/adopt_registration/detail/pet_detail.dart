@@ -1,8 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_options.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 
 import 'package:pet_rescue_mobile/src/asset.dart';
 import 'package:pet_rescue_mobile/src/style.dart';

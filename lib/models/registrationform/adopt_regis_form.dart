@@ -13,7 +13,7 @@ class AdoptionRegisForm {
   String houseType;
   String frequencyAtHome;
   String haveChildren;
-  int childAge;
+  String childAge;
   String beViolentTendencies;
   String haveAgreement;
   String havePet;
@@ -31,7 +31,7 @@ class AdoptionRegisForm {
     this.houseType = getHouseType(form['houseType']);
     this.frequencyAtHome = getFrequencyAtHome(form['frequencyAtHome']);
     this.haveChildren = getHaveChildren(form['haveChildren']);
-    this.childAge = form['childAge'];
+    this.childAge = getChildAge(form['childAge']);
     this.beViolentTendencies =
         getBeViolentTendencies(form['beViolentTendencies']);
     this.haveAgreement = getHaveAgreement(form['haveAgreement']);
@@ -91,6 +91,16 @@ class AdoptionRegisForm {
       result = 'Không có';
     }
     return result;
+  }
+
+  getChildAge(int childAge) {
+    if (childAge == 1) {
+      return 'Dưới 5 tuổi';
+    } else if (childAge == 2) {
+      return 'Dưới 10 tuổi';
+    } else {
+      return 'Dưới 15 tuổi';
+    }
   }
 
   getBeViolentTendencies(bool beViolentTendencies) {

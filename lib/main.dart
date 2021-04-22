@@ -1,4 +1,3 @@
-// import 'package:commons/commons.dart';
 import 'package:provider/provider.dart';
 
 import 'package:flutter/material.dart';
@@ -7,7 +6,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-// import 'package:firebase_database/firebase_database.dart';
 
 import 'package:pet_rescue_mobile/src/data.dart';
 import 'package:pet_rescue_mobile/repository/repository.dart';
@@ -46,8 +44,6 @@ class _MyApp extends State<MyApp> {
 
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
-
-  // DatabaseReference _dbReference;
 
   @override
   void initState() {
@@ -114,30 +110,7 @@ class _MyApp extends State<MyApp> {
           });
 
           showNotification(_notificationInfo.title, _notificationInfo.body);
-
-          // SharedPreferences sharedPreferences =
-          //     await SharedPreferences.getInstance();
-
-          // _dbReference = FirebaseDatabase.instance
-          //     .reference()
-          //     .child('authUser')
-          //     .child('${sharedPreferences.getString('userId')}');
-
-          // saveOrUpdateNotifications(
-          //     _notificationInfo.title, _notificationInfo.body, _dbReference);
         },
-
-        // onBackgroundMessage: (Map<String, dynamic> message) async {
-        //   print('onBackgroundMessage: $message');
-
-        //   PushNotification notification = PushNotification.fromJson(message);
-
-        //   setState(() {
-        //     _notificationInfo = notification;
-        //   });
-
-        //   showNotification(_notificationInfo.title, _notificationInfo.body);
-        // },
 
         // app in the background
         onResume: (Map<String, dynamic> message) async {
@@ -151,16 +124,6 @@ class _MyApp extends State<MyApp> {
       );
     });
   }
-
-  // saveOrUpdateNotifications(String title, String body, DatabaseReference _ref) {
-  //   Map<String, dynamic> noti = {
-  //     'title': title,
-  //     'body': body,
-  //     'datetime': DateTime.now().toString(),
-  //   };
-
-  //   _ref.child('1').set(noti);
-  // }
 
   @override
   Widget build(BuildContext context) {

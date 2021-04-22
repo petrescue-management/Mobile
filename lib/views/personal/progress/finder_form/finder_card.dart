@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
 import 'package:geolocator/geolocator.dart';
+
 import 'package:pet_rescue_mobile/resource/location/assistant.dart';
+import 'package:pet_rescue_mobile/models/registrationform/finder_form.dart';
+import 'package:pet_rescue_mobile/src/asset.dart';
 
 import 'package:pet_rescue_mobile/src/style.dart';
 
-import 'package:pet_rescue_mobile/models/registrationform/finder_form.dart';
 import 'finder_detail.dart';
 
 // ignore: must_be_immutable
@@ -109,18 +111,35 @@ class _FinderCard extends State<FinderCard> {
               child: Row(
                 children: [
                   // image
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.32,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(18),
-                        bottomLeft: Radius.circular(18),
+                  Stack(
+                    children: [
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.32,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(18),
+                            bottomLeft: Radius.circular(18),
+                          ),
+                          image: DecorationImage(
+                            image: AssetImage(app_logo_notitle),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                       ),
-                      image: DecorationImage(
-                        image: NetworkImage(firstUrl),
-                        fit: BoxFit.cover,
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.32,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(18),
+                            bottomLeft: Radius.circular(18),
+                          ),
+                          image: DecorationImage(
+                            image: NetworkImage(firstUrl),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                       ),
-                    ),
+                    ],
                   ),
                   // location & status
                   Expanded(

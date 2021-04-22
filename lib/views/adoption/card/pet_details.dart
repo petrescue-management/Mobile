@@ -1,23 +1,20 @@
 import 'package:commons/commons.dart';
-
 import 'package:carousel_slider/carousel_options.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:pet_rescue_mobile/models/pet/pet_model.dart';
+import 'package:pet_rescue_mobile/repository/repository.dart';
 
 import 'package:pet_rescue_mobile/src/asset.dart';
 import 'package:pet_rescue_mobile/src/style.dart';
 
-import 'package:pet_rescue_mobile/repository/repository.dart';
-
 import 'package:pet_rescue_mobile/views/adoption/form/adopt_policy.dart';
 import 'package:pet_rescue_mobile/views/custom_widget/custom_button.dart';
 import 'package:pet_rescue_mobile/views/login/login_request.dart';
-
-import 'package:pet_rescue_mobile/models/pet/pet_model.dart';
 
 // ignore: must_be_immutable
 class DetailsScreen extends StatefulWidget {
@@ -108,6 +105,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print(widget.pet.petProfileId);
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -184,15 +182,32 @@ class _DetailsScreenState extends State<DetailsScreen> {
                               title: "",
                             );
                           } else {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  return AdoptionAgreement(
-                                    pet: widget.pet,
-                                  );
-                                },
-                              ),
-                            );
+                            _repo
+                                .checkExistAdoptionRegistrationForm(
+                                    widget.pet.petProfileId)
+                                .then((value) {
+                              if (value != null) {
+                                warningDialog(
+                                  context,
+                                  "Bạn đã đăng ký nhận nuôi bé thú cưng này. Hãy kiểm tra lại đơn đăng ký của bạn mục 'Yêu cầu của tôi'.",
+                                  title: '',
+                                  neutralText: 'Đóng',
+                                  neutralAction: () {
+                                    Navigator.pop(context);
+                                  },
+                                );
+                              } else {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) {
+                                      return AdoptionAgreement(
+                                        pet: widget.pet,
+                                      );
+                                    },
+                                  ),
+                                );
+                              }
+                            });
                           }
                         },
                       );

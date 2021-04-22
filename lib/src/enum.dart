@@ -5,3 +5,8 @@ enum PetAttribute {
   Giveaway,
   Returned
 }
+
+enum MediaSource {
+  video,
+  image
+}

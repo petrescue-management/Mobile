@@ -9,7 +9,7 @@ class AdoptForm {
   int houseType;
   int frequencyAtHome;
   bool haveChildren;
-  String childAge;
+  int childAge;
   bool beViolentTendencies;
   bool haveAgreement;
   int havePet;

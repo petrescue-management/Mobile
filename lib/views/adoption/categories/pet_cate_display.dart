@@ -1,10 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import 'package:pet_rescue_mobile/models/pet/pet_model.dart';
+
 import 'package:pet_rescue_mobile/src/asset.dart';
 
 import 'package:pet_rescue_mobile/views/adoption/card/pet_card.dart';
-
-import 'package:pet_rescue_mobile/models/pet/pet_model.dart';
 
 // ignore: must_be_immutable
 class PetCategoryDisplay extends StatelessWidget {

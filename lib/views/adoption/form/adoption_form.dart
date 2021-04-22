@@ -1,10 +1,11 @@
 import 'package:commons/commons.dart';
-
-import 'package:flutter/cupertino.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 import 'package:pet_rescue_mobile/repository/repository.dart';
+import 'package:pet_rescue_mobile/models/pet/pet_model.dart';
+import 'package:pet_rescue_mobile/models/registrationform/adopt_form_model.dart';
 
 import 'package:pet_rescue_mobile/src/asset.dart';
 import 'package:pet_rescue_mobile/src/style.dart';
@@ -12,9 +13,6 @@ import 'package:pet_rescue_mobile/src/style.dart';
 import 'package:pet_rescue_mobile/views/custom_widget/custom_button.dart';
 import 'package:pet_rescue_mobile/views/custom_widget/custom_field.dart';
 import 'package:pet_rescue_mobile/views/custom_widget/custom_dialog.dart';
-
-import 'package:pet_rescue_mobile/models/pet/pet_model.dart';
-import 'package:pet_rescue_mobile/models/registrationform/adopt_form_model.dart';
 import 'package:pet_rescue_mobile/main.dart';
 
 // ignore: must_be_immutable
@@ -37,9 +35,17 @@ class _AdoptFormRegistrationPageState extends State<AdoptFormRegistrationPage> {
 
   final _repo = Repository();
 
+  DatabaseReference _dbReference;
+
   @override
   void initState() {
     super.initState();
+
+    _dbReference = FirebaseDatabase.instance
+        .reference()
+        .child('manager')
+        .child('${widget.pet.centerId}')
+        .child('Notification');
   }
 
   Future<bool> _confirmPop() {
@@ -238,7 +244,15 @@ class _AdoptFormRegistrationPageState extends State<AdoptFormRegistrationPage> {
               adopt.haveChildren = false;
             }
 
-            adopt.childAge = formInputs['childAge'];
+            if (formInputs['childAge'] == 'Dưới 5 tuổi') {
+              adopt.childAge = 1;
+            } else if (formInputs['childAge'] == 'Dưới 10 tuổi') {
+              adopt.childAge = 2;
+            } else if (formInputs['childAge'] == 'Dưới 15 tuổi') {
+              adopt.childAge = 3;
+            } else {
+              adopt.childAge = 4;
+            }
 
             if (formInputs['beViolentTendencies'] == 'Có') {
               adopt.beViolentTendencies = true;
@@ -260,9 +274,34 @@ class _AdoptFormRegistrationPageState extends State<AdoptFormRegistrationPage> {
               adopt.havePet = 3;
             }
 
-            _repo.createAdopttionRegistrationForm(adopt).then((value) {
+            _repo.createAdoptionRegistrationForm(adopt).then((value) {
               if (value != null) {
-                print('alo: ' + value);
+                var currentDate = DateTime.now();
+                String currentDay = (currentDate.day < 10
+                    ? '0${currentDate.day}'
+                    : '${currentDate.day}');
+                String currentMonth = (currentDate.month < 10
+                    ? '0${currentDate.month}'
+                    : '${currentDate.month}');
+                String currentHour = (currentDate.hour < 10
+                    ? '0${currentDate.hour}'
+                    : '${currentDate.hour}');
+                String currentMinute = (currentDate.minute < 10
+                    ? '0${currentDate.minute}'
+                    : '${currentDate.minute}');
+                String currentSecond = (currentDate.second < 10
+                    ? '0${currentDate.second}'
+                    : '${currentDate.second}');
+                var notiDate =
+                    '${currentDate.year}-$currentMonth-$currentDay $currentHour:$currentMinute:$currentSecond';
+
+                Map<String, dynamic> notification = {
+                  'date': notiDate,
+                  'isCheck': false,
+                  'type': 1,
+                };
+
+                _dbReference.child(value).set(notification);
 
                 successDialog(
                   context,
@@ -343,7 +382,8 @@ class _AdoptFormRegistrationPageState extends State<AdoptFormRegistrationPage> {
                     ),
                     validators: [
                       FormBuilderValidators.required(
-                          errorText: 'Hãy nhập họ của bạn'),
+                        errorText: 'Hãy nhập họ của bạn',
+                      ),
                     ],
                     maxLength: 20,
                   ),
@@ -380,7 +420,8 @@ class _AdoptFormRegistrationPageState extends State<AdoptFormRegistrationPage> {
                     ),
                     validators: [
                       FormBuilderValidators.required(
-                          errorText: 'Hãy nhập tên của bạn.'),
+                        errorText: 'Hãy nhập tên của bạn.',
+                      ),
                     ],
                     maxLength: 20,
                   ),
@@ -419,14 +460,15 @@ class _AdoptFormRegistrationPageState extends State<AdoptFormRegistrationPage> {
                 ),
                 validators: [
                   FormBuilderValidators.required(
-                      errorText: 'Hãy chọn ngày sinh của bạn.'),
+                    errorText: 'Hãy chọn ngày sinh của bạn.',
+                  ),
                 ],
               ),
             ),
             SizedBox(height: 20),
             //* PHONE NUMBER
             Container(
-              child: FormBuilderPhoneField(
+              child: FormBuilderTextField(
                 attribute: 'phone',
                 decoration: InputDecoration(
                   floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -456,13 +498,13 @@ class _AdoptFormRegistrationPageState extends State<AdoptFormRegistrationPage> {
                   filled: true,
                   counterText: '',
                 ),
-                defaultSelectedCountryIsoCode: 'vn',
                 validators: [
                   FormBuilderValidators.required(
-                      errorText: 'Hãy nhập số điện thoại của bạn'),
+                    errorText: 'Hãy nhập số điện thoại của bạn',
+                  ),
                 ],
                 maxLengthEnforced: true,
-                maxLength: 9,
+                maxLength: 10,
                 keyboardType: TextInputType.number,
               ),
             ),
@@ -498,7 +540,11 @@ class _AdoptFormRegistrationPageState extends State<AdoptFormRegistrationPage> {
                 ),
                 validators: [
                   FormBuilderValidators.required(
-                      errorText: 'Hãy nhập email của bạn.'),
+                    errorText: 'Hãy nhập email của bạn.',
+                  ),
+                  FormBuilderValidators.email(
+                    errorText: 'Email không hợp lệ.',
+                  ),
                 ],
                 maxLength: 100,
               ),
@@ -625,39 +671,17 @@ class _AdoptFormRegistrationPageState extends State<AdoptFormRegistrationPage> {
               ],
             ),
             //* childAge
-            Container(
-              child: FormBuilderTextField(
-                attribute: 'childAge',
-                decoration: InputDecoration(
-                  labelText: 'Độ tuổi của trẻ (Nếu có)',
-                  labelStyle: TextStyle(
-                    color: primaryGreen,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  hintText: '',
-                  floatingLabelBehavior: FloatingLabelBehavior.always,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: primaryGreen,
-                      width: 2,
-                    ),
-                  ),
-                  fillColor: Colors.white,
-                  filled: true,
-                  counterText: '',
-                  prefixIcon: Icon(
-                    Icons.edit_outlined,
-                    color: primaryGreen,
-                  ),
-                ),
-                maxLength: 2,
-                keyboardType: TextInputType.number,
-              ),
+            customRadioGroup(
+              'Có trẻ em hay không?*',
+              'childAge',
+              'Chưa trả lời',
+              [
+                FormBuilderFieldOption(value: 'Dưới 5 tuổi'),
+                FormBuilderFieldOption(value: 'Dưới 10 tuổi'),
+                FormBuilderFieldOption(value: 'Dưới 15 tuổi'),
+                FormBuilderFieldOption(value: 'Không có'),
+              ],
             ),
-            SizedBox(height: 20),
             //* beViolentTendencies
             customRadioGroup(
               'Có bất kỳ thành viên nào trong gia đình bạn thể hiện\nhoặc có xu hướng bạo lực không?*',

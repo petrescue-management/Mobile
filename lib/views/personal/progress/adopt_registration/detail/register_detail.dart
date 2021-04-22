@@ -12,6 +12,11 @@ import 'package:pet_rescue_mobile/src/asset.dart';
 import 'package:pet_rescue_mobile/src/style.dart';
 
 import 'package:pet_rescue_mobile/views/custom_widget/custom_button.dart';
+import 'package:pet_rescue_mobile/views/custom_widget/custom_dialog.dart';
+import 'package:pet_rescue_mobile/views/custom_widget/custom_divider.dart';
+import 'package:pet_rescue_mobile/views/personal/progress/progress_report.dart';
+
+import '../../../../../main.dart';
 
 // ignore: must_be_immutable
 class RegisterDetail extends StatefulWidget {
@@ -38,6 +43,8 @@ class _RegisterDetailState extends State<RegisterDetail> {
   TextEditingController violentTendenciesController = TextEditingController();
   TextEditingController haveAgreementController = TextEditingController();
   TextEditingController havePetController = TextEditingController();
+
+  TextEditingController reasonController = TextEditingController();
 
   final _repo = Repository();
 
@@ -124,7 +131,160 @@ class _RegisterDetailState extends State<RegisterDetail> {
     if (widget.form.adoptionRegistrationStatus == 1) {
       return CustomButton(
         label: 'HỦY ĐĂNG KÝ',
-        onTap: () {},
+        onTap: () {
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return Dialog(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+                  elevation: 6,
+                  backgroundColor: Colors.transparent,
+                  child: Container(
+                    height: 280,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.rectangle,
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
+                    ),
+                    child: Column(
+                      children: <Widget>[
+                        Container(
+                          margin: EdgeInsets.only(top: 10),
+                          child: Text(
+                            "LÍ DO HỦY ĐƠN ĐĂNG KÝ",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 17,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 10),
+                          child: CustomDivider(),
+                        ),
+                        Padding(
+                            padding: EdgeInsets.symmetric(
+                              vertical: 10,
+                              horizontal: 15,
+                            ),
+                            child: TextFormField(
+                              controller: reasonController,
+                              maxLines: 5,
+                              autofocus: false,
+                              keyboardType: TextInputType.text,
+                              decoration: InputDecoration(
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(20.0),
+                                  ),
+                                  counterText: '',
+                                  hintText:
+                                      'Hãy nhập lí do bạn hủy đơn đăng ký nhận nuôi...'),
+                              maxLength: 1000,
+                            )),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            RaisedButton(
+                              color: Colors.white,
+                              child: Text(
+                                "HỦY ĐƠN",
+                                style: TextStyle(
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              onPressed: () {
+                                if (reasonController.text == null ||
+                                    reasonController.text == '') {
+                                  warningDialog(
+                                    context,
+                                    'Xin hãy nhập lí do bạn hủy đơn đăng ký này.',
+                                    title: '',
+                                    neutralText: 'Đóng',
+                                    neutralAction: () {
+                                      Navigator.pop(context);
+                                    },
+                                  );
+                                } else {
+                                  confirmationDialog(context,
+                                      'Bạn có chắc chắn muốn hủy đơn đăng ký này?',
+                                      title: '',
+                                      confirm: false,
+                                      negativeText: 'Không',
+                                      positiveText: 'Có', positiveAction: () {
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) => ProgressDialog(
+                                              message: 'Đang hủy đơn đăng ký...',
+                                            ));
+                                    _repo
+                                        .cancelAdoptionRegistrationForm(
+                                            widget.form.adoptionRegistrationId,
+                                            reasonController.text)
+                                        .then((value) {
+                                      if (value != null) {
+                                        successDialog(
+                                          context,
+                                          'Đơn đăng ký nhận nuôi bé ${widget.form.pet.petName} đã bị hủy.',
+                                          title: 'Đã hủy',
+                                          neutralText: 'Đóng',
+                                          neutralAction: () {
+                                            Navigator.of(context).popUntil(
+                                                (route) => route.isFirst);
+                                            Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => MyApp(),
+                                              ),
+                                            );
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        ProgressReportPage()));
+                                          },
+                                        );
+                                      } else {
+                                        warningDialog(
+                                          context,
+                                          'Không thể hủy đơn đăng ký này.',
+                                          title: '',
+                                          neutralText: 'Đóng',
+                                          neutralAction: () {
+                                            Navigator.pop(context);
+                                          },
+                                        );
+                                      }
+                                    });
+                                  });
+                                }
+                              },
+                            ),
+                            SizedBox(width: 8),
+                            FlatButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: Text(
+                                "Đóng",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              });
+        },
       );
     } else if (widget.form.adoptionRegistrationStatus == 2) {
       return CustomDisableButton(
@@ -411,7 +571,7 @@ class _RegisterDetailState extends State<RegisterDetail> {
             ),
             //* CHILD AGE
             TextFormField(
-              controller: childAgeController,
+              controller: childAgeController == null ? '' : childAgeController,
               decoration: InputDecoration(
                 floatingLabelBehavior: FloatingLabelBehavior.always,
                 labelText: 'Độ tuổi của trẻ (nếu có)',

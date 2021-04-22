@@ -11,11 +11,15 @@ class AdoptedPetModel {
   String phone;
   String job;
   // pet info
+  String petProfileId;
   String petName;
   List<String> petImgUrl;
   String petBreedName;
-  String petTypeName;
-  String petColorName;
+  String petFurColorName;
+  int gender;
+  int age;
+  String centerName;
+  String centerAddress;
 
   AdoptedPetModel(pet) {
     this.adoptionRegistrationId = pet['adoptionRegistrationId'];
@@ -28,11 +32,15 @@ class AdoptedPetModel {
     this.email = pet['email'];
     this.job = pet['job'];
     this.phone = pet['phone'];
+    this.petProfileId = pet['petProfileId'];
     this.petName = pet['petName'];
     this.petImgUrl = getImgUrlList(pet['petImgUrl']);
     this.petBreedName = pet['petBreedName'];
-    this.petTypeName = pet['petTypeName'];
-    this.petColorName = pet['petColorName'];
+    this.petFurColorName = pet['petFurColorName'];
+    this.gender = pet['gender'];
+    this.age = pet['age'];
+    this.centerName = pet['centerName'];
+    this.centerAddress = pet['centerAddress'];
   }
 
   List getImgUrlList(String imgUrl) {
