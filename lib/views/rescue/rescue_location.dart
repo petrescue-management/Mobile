@@ -11,15 +11,14 @@ import 'package:flutter/material.dart';
 import 'package:pet_rescue_mobile/models/map/address.dart';
 import 'package:pet_rescue_mobile/models/map/place_predictions.dart';
 
-import 'package:pet_rescue_mobile/src/style.dart';
-import 'package:pet_rescue_mobile/src/data.dart';
-
 import 'package:pet_rescue_mobile/resource/location/app_data.dart';
 import 'package:pet_rescue_mobile/resource/location/assistant.dart';
 
+import 'package:pet_rescue_mobile/src/style.dart';
+import 'package:pet_rescue_mobile/src/data.dart';
+
 import 'package:pet_rescue_mobile/views/custom_widget/custom_divider.dart';
 import 'package:pet_rescue_mobile/views/custom_widget/custom_dialog.dart';
-
 import 'package:pet_rescue_mobile/views/rescue/rescue.dart';
 import 'package:pet_rescue_mobile/main.dart';
 
@@ -213,6 +212,12 @@ class _RescueLocationState extends State<RescueLocation> {
           zoomControlsEnabled: true,
           markers: _markers,
           onMapCreated: (GoogleMapController controller) {
+            showDialog(
+                context: context,
+                builder: (context) => ProgressDialog(
+                      message: 'Đang tải...',
+                    ));
+
             _controllerGoogleMap.complete(controller);
             newGoogleMapController = controller;
 
@@ -222,6 +227,8 @@ class _RescueLocationState extends State<RescueLocation> {
             });
 
             locatePosition();
+
+            Navigator.pop(context);
           },
         ),
         // tile for predictions
@@ -446,7 +453,7 @@ class _RescueLocationState extends State<RescueLocation> {
   getPlaceAddressDetails(String placeId, context) async {
     showDialog(
         context: context,
-        builder: (context) => ProgressDialog(message: 'Đang xử lý...'));
+        builder: (context) => ProgressDialog(message: 'Đang cập nhật vị trí...'));
 
     String placeDetailsUrl =
         'https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&key=$mapKey';

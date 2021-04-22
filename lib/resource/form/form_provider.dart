@@ -9,7 +9,7 @@ import 'package:pet_rescue_mobile/models/registrationform/adopt_form_model.dart'
 import 'package:pet_rescue_mobile/models/registrationform/rescue_report_model.dart';
 
 class FormProvider {
-  Future<bool> createRescueRequest(RescueReport rescueReport) async {
+  Future<bool> createRescueRequest(RescueReport rescueReport, String videoUrl) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     var jwtToken = sharedPreferences.getString('token');
 
@@ -20,6 +20,12 @@ class FormProvider {
     resBody['lat'] = rescueReport.latitude;
     resBody['lng'] = rescueReport.longitude;
     resBody['phone'] = rescueReport.phone;
+
+    if (videoUrl == '') {
+      resBody['finderFormVideoUrl'] = '';
+    } else {
+      resBody['finderFormVideoUrl'] = rescueReport.finderFormVideoUrl;
+    }
 
     String str = json.encode(resBody);
 
@@ -32,7 +38,25 @@ class FormProvider {
       body: str,
     );
 
-    print(str);
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      print('Failed to load post ${response.statusCode}');
+    }
+    return null;
+  }
+
+  Future<bool> checkExistAdoptionRegistrationForm(String petProfileId) async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    var jwtToken = sharedPreferences.getString('token');
+
+    final response = await http.post(
+      ApiUrl.isExistAdoptRegistrationForm + petProfileId,
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer ' + jwtToken,
+      },
+    );
 
     if (response.statusCode == 200) {
       return true;
@@ -42,8 +66,7 @@ class FormProvider {
     return null;
   }
 
-  Future<String> createAdoptionRegistrionForm(AdoptForm adoptForm) async {
-    String result = '';
+  Future<String> createAdoptionRegistrationForm(AdoptForm adoptForm) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     var jwtToken = sharedPreferences.getString('token');
 
@@ -77,7 +100,7 @@ class FormProvider {
     print(str);
 
     if (response.statusCode == 200) {
-      result = response.body.toString();
+      String result = response.body;
       return result;
     } else {
       print('Failed: ${response.statusCode} ${response.body}');
@@ -125,18 +148,46 @@ class FormProvider {
     return null;
   }
 
-  Future<bool> cancelFinderForm(String finderFormId) async {
+  Future<bool> cancelFinderForm(String finderFormId, String reason) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     var jwtToken = sharedPreferences.getString('token');
 
     var resBody = {};
     resBody['id'] = finderFormId;
-    resBody['statuc'] = 5;
+    resBody['reason'] = reason;
 
     String str = json.encode(resBody);
 
     final response = await http.put(
       ApiUrl.cancelFinderForm,
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer ' + jwtToken,
+      },
+      body: str,
+    );
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      print('Failed to load post ${response.statusCode}');
+    }
+    return null;
+  }
+
+  Future<bool> cancelAdoptionRegistrationForm(String adoptionRegistrationFormId, String reason) async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    var jwtToken = sharedPreferences.getString('token');
+
+    var resBody = {};
+    resBody['id'] = adoptionRegistrationFormId;
+    resBody['reason'] = reason;
+    resBody['status'] = 4;
+
+    String str = json.encode(resBody);
+
+    final response = await http.put(
+      ApiUrl.cancelAdoptRegistrationForm,
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer ' + jwtToken,

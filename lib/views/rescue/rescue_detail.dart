@@ -1,22 +1,22 @@
+import 'dart:io';
 import 'package:path/path.dart';
 import 'package:commons/commons.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 import 'package:pet_rescue_mobile/repository/repository.dart';
-import 'package:pet_rescue_mobile/bloc/form_bloc.dart';
 import 'package:pet_rescue_mobile/models/registrationform/rescue_report_model.dart';
-import 'package:pet_rescue_mobile/src/status.dart';
+
+import 'package:pet_rescue_mobile/src/enum.dart';
 import 'package:pet_rescue_mobile/src/asset.dart';
 import 'package:pet_rescue_mobile/src/style.dart';
 
 import 'package:pet_rescue_mobile/views/custom_widget/custom_dialog.dart';
 import 'package:pet_rescue_mobile/views/custom_widget/custom_button.dart';
 import 'package:pet_rescue_mobile/views/custom_widget/custom_divider.dart';
-
+import 'package:pet_rescue_mobile/views/custom_widget/video/custom_video_player.dart';
 import '../../main.dart';
 
 // ignore: must_be_immutable
@@ -25,6 +25,7 @@ class RescueDetail extends StatefulWidget {
   double latitude, longitude;
   List<Asset> imageList;
   String address = '';
+  File video;
 
   RescueDetail({
     this.formInput,
@@ -32,6 +33,7 @@ class RescueDetail extends StatefulWidget {
     this.address,
     this.latitude,
     this.longitude,
+    this.video,
   });
 
   @override
@@ -40,7 +42,6 @@ class RescueDetail extends StatefulWidget {
 
 class _RescueDetailState extends State<RescueDetail> {
   ScrollController scrollController = ScrollController();
-
   final GlobalKey<FormBuilderState> _fbKey = GlobalKey();
 
   final _repo = Repository();
@@ -164,59 +165,140 @@ class _RescueDetailState extends State<RescueDetail> {
       label: 'GỬI YÊU CẦU',
       onTap: () {
         if (_fbKey.currentState.saveAndValidate()) {
-          showDialog(
-              context: context,
-              builder: (context) => ProgressDialog(message: 'Đang gửi...'));
+          confirmationDialog(context, 'Bạn muốn gửi yêu cầu cứu hộ?',
+              title: '',
+              confirm: false,
+              negativeText: 'Không',
+              positiveText: 'Có', positiveAction: () {
+            showDialog(
+                context: context,
+                builder: (context) => ProgressDialog(message: 'Đang gửi...'));
 
-          RescueReport tmpReport = new RescueReport();
-          tmpReport.finderDescription = widget.formInput['description'];
-          tmpReport.latitude = widget.latitude;
-          tmpReport.longitude = widget.longitude;
-          tmpReport.phone = widget.formInput['phoneNumber'];
+            RescueReport tmpReport = new RescueReport();
+            tmpReport.finderDescription = widget.formInput['description'];
+            tmpReport.latitude = widget.latitude;
+            tmpReport.longitude = widget.longitude;
+            tmpReport.phone = widget.formInput['phoneNumber'];
 
-          if (widget.formInput['radioPetStatus'] == 'Đi lạc')
-            tmpReport.petAttribute = PetAttribute.Lost.index + 1;
-          else if (widget.formInput['radioPetStatus'] == 'Bị bỏ rơi')
-            tmpReport.petAttribute = PetAttribute.Abandoned.index + 1;
-          else if (widget.formInput['radioPetStatus'] == 'Bị thương')
-            tmpReport.petAttribute = PetAttribute.Injured.index + 1;
-          else
-            tmpReport.petAttribute = PetAttribute.Giveaway.index + 1;
+            if (widget.formInput['radioPetStatus'] == 'Đi lạc')
+              tmpReport.petAttribute = PetAttribute.Lost.index + 1;
+            else if (widget.formInput['radioPetStatus'] == 'Bị bỏ rơi')
+              tmpReport.petAttribute = PetAttribute.Abandoned.index + 1;
+            else if (widget.formInput['radioPetStatus'] == 'Bị thương')
+              tmpReport.petAttribute = PetAttribute.Injured.index + 1;
+            else
+              tmpReport.petAttribute = PetAttribute.Giveaway.index + 1;
 
-          String url = '';
-          int count = 0;
-          widget.imageList.forEach((item) {
-            Asset asset = item;
+            String url = '';
+            int count = 0;
+            widget.imageList.forEach((item) {
+              Asset asset = item;
 
-            _repo.getImageFileFromAssets(asset).then((result) {
-              String baseName = basename(result.path);
+              _repo.getImageFileFromAssets(asset).then((result) {
+                String baseName = basename(result.path);
+                _repo.uploadRescueImage(result, baseName).then((value) {
+                  if (value != null) {
+                    setState(() {
+                      url += '$value;';
+                      count++;
+                    });
 
-              _repo.uploadRescueImage(result, baseName).then((value) {
-                setState(() {
-                  url += '$value;';
-                  count++;
+                    if (count == widget.imageList.length) {
+                      tmpReport.finderFormImgUrl = url;
+
+                      if (widget.video == null) {
+                        _repo.createRescueRequest(tmpReport, '').then((value) {
+                          if (value != null) {
+                            successDialog(
+                              context,
+                              'Yêu cầu của bạn đã được gửi tới các trung tâm cứu hộ.',
+                              title: 'Thành công',
+                              neutralText: 'Đóng',
+                              neutralAction: () {
+                                Navigator.of(context)
+                                    .popUntil((route) => route.isFirst);
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => MyApp(),
+                                  ),
+                                );
+                              },
+                            );
+                          } else {
+                            warningDialog(
+                              context,
+                              'Không thể gửi yêu cầu cứu hộ.',
+                              title: '',
+                              neutralText: 'Đóng',
+                              neutralAction: () {
+                                Navigator.pop(context);
+                              },
+                            );
+                          }
+                        });
+                      } else {
+                        String vidBaseName = basename(widget.video.path);
+                        _repo
+                            .uploadRescueVideo(widget.video, vidBaseName)
+                            .then((value) {
+                          if (value != null) {
+                            _repo.createRescueRequest(tmpReport, value).then((value) {
+                              if (value != null) {
+                                successDialog(
+                                  context,
+                                  'Yêu cầu của bạn đã được gửi tới các trung tâm cứu hộ.',
+                                  title: 'Thành công',
+                                  neutralText: 'Đóng',
+                                  neutralAction: () {
+                                    Navigator.of(context)
+                                        .popUntil((route) => route.isFirst);
+                                    Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => MyApp(),
+                                      ),
+                                    );
+                                  },
+                                );
+                              } else {
+                                warningDialog(
+                                  context,
+                                  'Không thể gửi yêu cầu cứu hộ.',
+                                  title: '',
+                                  neutralText: 'Đóng',
+                                  neutralAction: () {
+                                    Navigator.pop(context);
+                                  },
+                                );
+                              }
+                            });
+                          } else {
+                            warningDialog(
+                              context,
+                              'Lỗi upload video.',
+                              title: '',
+                              neutralText: 'Đóng',
+                              neutralAction: () {
+                                Navigator.pop(context);
+                              },
+                            );
+                          }
+                        });
+                      }
+                    }
+                  } else {
+                    warningDialog(
+                      context,
+                      'Lỗi upload hình ảnh.',
+                      title: '',
+                      neutralText: 'Đóng',
+                      neutralAction: () {
+                        Navigator.pop(context);
+                      },
+                    );
+                  }
                 });
-
-                if (count == widget.imageList.length) {
-                  tmpReport.finderFormImgUrl = url;
-
-                  formBloc.createRescueRequest(tmpReport);
-                  successDialog(
-                    context,
-                    'Yêu cầu của bạn đã được gửi tới các trung tâm cứu hộ.',
-                    title: 'Thành công',
-                    neutralText: 'Đóng',
-                    neutralAction: () {
-                      Navigator.of(context).popUntil((route) => route.isFirst);
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MyApp(),
-                        ),
-                      );
-                    },
-                  );
-                }
               });
             });
           });
@@ -236,7 +318,18 @@ class _RescueDetailState extends State<RescueDetail> {
             children: <Widget>[
               //* IMAGE PICKER
               Container(
+                alignment: Alignment.centerLeft,
                 margin: EdgeInsets.only(top: 20),
+                child: Text(
+                  ' Ảnh mô tả',
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              SizedBox(height: 3),
+              Container(
                 height: MediaQuery.of(context).size.height * 0.15,
                 child: GridView.count(
                   shrinkWrap: true,
@@ -255,6 +348,39 @@ class _RescueDetailState extends State<RescueDetail> {
                   ),
                 ),
               ),
+              SizedBox(height: 10),
+              //* VIDEO PICKER
+              Container(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  ' Video mô tả',
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              SizedBox(height: 3),
+              widget.video == null
+                  ? Container(
+                      margin: EdgeInsets.symmetric(horizontal: 3, vertical: 10),
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Không có video mô tả',
+                        style: TextStyle(color: Colors.black, fontSize: 15),
+                      ),
+                    )
+                  : Center(
+                      child: Container(
+                        margin:
+                            EdgeInsets.symmetric(horizontal: 3, vertical: 10),
+                        width: MediaQuery.of(context).size.width,
+                        height: 250,
+                        child: VideoThumbnail(
+                          video: widget.video,
+                        ),
+                      ),
+                    ),
               SizedBox(height: 10),
               //* PHONE NUMBER
               Container(
@@ -309,9 +435,7 @@ class _RescueDetailState extends State<RescueDetail> {
                   enabled: false,
                 ),
               ),
-              SizedBox(
-                height: 10,
-              ),
+              SizedBox(height: 10),
               //* DESCRIPTION
               Container(
                 margin: EdgeInsets.only(bottom: 20),

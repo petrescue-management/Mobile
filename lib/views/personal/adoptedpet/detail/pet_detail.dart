@@ -26,6 +26,9 @@ class _PetDetailState extends State<PetDetail> {
   TextEditingController nameController = TextEditingController();
   TextEditingController genderController = TextEditingController();
   TextEditingController adoptedAtController = TextEditingController();
+  TextEditingController ageController = TextEditingController();
+  TextEditingController centerNameController = TextEditingController();
+  TextEditingController centerAddressController = TextEditingController();
 
   List<String> imgUrlList;
   List<Widget> imageSliders;
@@ -37,15 +40,27 @@ class _PetDetailState extends State<PetDetail> {
     setState(() {
       nameController.text = widget.adopted.petName;
       breedController.text = widget.adopted.petBreedName;
-      furController.text = widget.adopted.petColorName;
+      furController.text = widget.adopted.petFurColorName;
+      centerNameController.text = widget.adopted.centerName;
+      centerAddressController.text = widget.adopted.centerAddress;
 
-      // if (widget.form.pet.petGender == 1) {
-      //   genderController.text = 'Cái';
-      // } else if (widget.form.pet.petGender == 2) {
-      //   genderController.text = 'Đực';
-      // } else {
-      //   genderController.text = 'Khác';
-      // }
+      if (widget.adopted.gender == 1) {
+        genderController.text = 'Cái';
+      } else if (widget.adopted.gender == 2) {
+        genderController.text = 'Đực';
+      } else {
+        genderController.text = 'Khác';
+      }
+
+      if (widget.adopted.age == 1) {
+        ageController.text = 'Nhỏ/Trẻ';
+      } else if (widget.adopted.age == 2) {
+        ageController.text = 'Vừa/Trưởng thành';
+      } else if (widget.adopted.age == 3) {
+        ageController.text = 'Lớn/Già';
+      } else {
+        ageController.text = 'Không xác định';
+      }
 
       adoptedAtController.text = formatDateTime(widget.adopted.adoptedAt);
 
@@ -129,7 +144,7 @@ class _PetDetailState extends State<PetDetail> {
             }).toList(),
           ),
           Container(
-            height: MediaQuery.of(context).size.height * 0.56,
+            height: MediaQuery.of(context).size.height * 0.58,
             child: SizedBox(
               child: SingleChildScrollView(
                 controller: scrollController,
@@ -162,6 +177,73 @@ class _PetDetailState extends State<PetDetail> {
                           enabled: false,
                         ),
                       ),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    // age and gender
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        // age
+                        Container(
+                          width: 170,
+                          child: TextFormField(
+                            controller: ageController,
+                            decoration: InputDecoration(
+                              floatingLabelBehavior:
+                                  FloatingLabelBehavior.always,
+                              labelText: 'Tuổi',
+                              labelStyle: TextStyle(
+                                color: mainColor,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: mainColor,
+                                  width: 2,
+                                ),
+                              ),
+                              fillColor: Colors.white,
+                              filled: true,
+                              enabled: false,
+                            ),
+                          ),
+                        ),
+                        // gender
+                        Container(
+                          width: 170,
+                          child: TextFormField(
+                            controller: genderController,
+                            decoration: InputDecoration(
+                              floatingLabelBehavior:
+                                  FloatingLabelBehavior.always,
+                              labelText: 'Giới tính',
+                              labelStyle: TextStyle(
+                                color: mainColor,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: mainColor,
+                                  width: 2,
+                                ),
+                              ),
+                              fillColor: Colors.white,
+                              filled: true,
+                              enabled: false,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                     SizedBox(
                       height: 20,
@@ -262,6 +344,64 @@ class _PetDetailState extends State<PetDetail> {
                     ),
                     SizedBox(
                       height: 20,
+                    ),
+                    // center name
+                    Container(
+                      child: TextFormField(
+                        controller: centerNameController,
+                        decoration: InputDecoration(
+                          floatingLabelBehavior: FloatingLabelBehavior.always,
+                          labelText: 'Từng ở trung tâm',
+                          labelStyle: TextStyle(
+                            color: mainColor,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: mainColor,
+                              width: 2,
+                            ),
+                          ),
+                          fillColor: Colors.white,
+                          filled: true,
+                          enabled: false,
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    // center address
+                    Container(
+                      margin: EdgeInsets.only(bottom: 20),
+                      child: TextFormField(
+                        controller: adoptedAtController,
+                        decoration: InputDecoration(
+                          floatingLabelBehavior: FloatingLabelBehavior.always,
+                          labelText: 'Địa chỉ của trung tâm',
+                          labelStyle: TextStyle(
+                            color: mainColor,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: mainColor,
+                              width: 2,
+                            ),
+                          ),
+                          fillColor: Colors.white,
+                          filled: true,
+                          enabled: false,
+                        ),
+                      ),
                     ),
                   ],
                 ),

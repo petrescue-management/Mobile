@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 
 import 'package:pet_rescue_mobile/bloc/pet_bloc.dart';
+import 'package:pet_rescue_mobile/models/pet/adopted_pet_model.dart';
+import 'package:pet_rescue_mobile/models/pet/adopted_list_base_model.dart';
 
 import 'package:pet_rescue_mobile/src/style.dart';
 import 'package:pet_rescue_mobile/src/asset.dart';
-
-import 'package:pet_rescue_mobile/models/pet/adopted_pet_model.dart';
-import 'package:pet_rescue_mobile/models/pet/adopted_list_base_model.dart';
 
 import 'package:pet_rescue_mobile/views/custom_widget/custom_dialog.dart';
 import 'adopted_pet_detail.dart';

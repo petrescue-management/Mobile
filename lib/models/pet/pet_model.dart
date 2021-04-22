@@ -47,13 +47,13 @@ class PetModel {
 
   convertPetAge(int age) {
     if (age == 1) {
-      return 'Bé con';
+      return 'Nhỏ/Trẻ';
     } else if (age == 2) {
-      return 'Thiếu niên';
+      return 'Vừa/Trưởng thành';
     } else if (age == 3) {
-      return 'Trưởng thành';
+      return 'Lớn/Già';
     } else {
-      return 'Có tuổi';
+      return 'Không xác định';
     }
   }
 

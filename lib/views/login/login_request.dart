@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 
 import 'package:pet_rescue_mobile/models/pet/pet_model.dart';
-
 import 'package:pet_rescue_mobile/repository/repository.dart';
+
+import 'package:pet_rescue_mobile/src/asset.dart';
+import 'package:pet_rescue_mobile/src/style.dart';
+import 'package:pet_rescue_mobile/src/data.dart';
 
 import 'package:pet_rescue_mobile/views/adoption/card/pet_details.dart';
 import 'package:pet_rescue_mobile/views/custom_widget/custom_dialog.dart';
 import 'package:pet_rescue_mobile/views/custom_widget/custom_button.dart';
 import 'package:pet_rescue_mobile/main.dart';
-
-import 'package:pet_rescue_mobile/src/asset.dart';
-import 'package:pet_rescue_mobile/src/style.dart';
-import 'package:pet_rescue_mobile/src/data.dart';
 
 // ignore: must_be_immutable
 class LoginRequest extends StatefulWidget {
@@ -96,7 +95,7 @@ class _LoginRequestState extends State<LoginRequest> {
   Widget _signInButton() {
     return Container(
       height: MediaQuery.of(context).size.height * 0.06,
-      padding: EdgeInsets.symmetric(horizontal: 30.0),
+      padding: EdgeInsets.symmetric(horizontal: 20.0),
       child: CustomRaiseButtonIcon(
         labelText: ' Đăng nhập với Google',
         assetName: google_logo,

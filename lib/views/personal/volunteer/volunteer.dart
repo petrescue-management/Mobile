@@ -5,7 +5,7 @@ import 'package:pet_rescue_mobile/src/data.dart';
 import 'package:pet_rescue_mobile/src/asset.dart';
 import 'package:pet_rescue_mobile/src/style.dart';
 
-import 'package:pet_rescue_mobile/views/personal/volunteer/center/centerlist.dart';
+import 'package:pet_rescue_mobile/views/personal/volunteer/center/center_list.dart';
 
 class VolunteerWelcome extends StatefulWidget {
   @override

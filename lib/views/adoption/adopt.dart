@@ -1,15 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'package:pet_rescue_mobile/bloc/pet_bloc.dart';
 import 'package:pet_rescue_mobile/models/pet/pet_list_base_model.dart';
+import 'package:pet_rescue_mobile/models/pet/pet_type.dart';
 
 import 'package:pet_rescue_mobile/src/asset.dart';
 import 'package:pet_rescue_mobile/src/style.dart';
 
 import 'package:pet_rescue_mobile/views/adoption/categories/pet_cate_display.dart';
 import 'package:pet_rescue_mobile/views/custom_widget/custom_dialog.dart';
-
-import 'package:pet_rescue_mobile/bloc/pet_bloc.dart';
 
 class AdoptionPage extends StatefulWidget {
   const AdoptionPage({Key key}) : super(key: key);
@@ -110,6 +110,7 @@ class _AdoptionPageState extends State<AdoptionPage> {
               if (snapshot.hasError || snapshot.data == null) {
                 return loading(context);
               } else {
+                List<PetType> result = snapshot.data.result;
                 return Container(
                   margin: EdgeInsets.only(top: 10),
                   height: MediaQuery.of(context).size.height -
@@ -117,19 +118,18 @@ class _AdoptionPageState extends State<AdoptionPage> {
                   child: Column(
                     children: [
                       Container(
-                        height: MediaQuery.of(context).size.height * 0.08,
+                        height: MediaQuery.of(context).size.height * 0.06,
                         child: ListView.builder(
                           physics: BouncingScrollPhysics(),
                           scrollDirection: Axis.horizontal,
-                          itemCount: snapshot.data.result.length,
+                          itemCount: result.length,
                           itemBuilder: (context, index) {
-                            return petList(index, snapshot);
+                            return petList(index, result);
                           },
                         ),
                       ),
                       PetCategoryDisplay(
-                          petList:
-                              snapshot.data.result[selectedCategory].listPet),
+                          petList: result[selectedCategory].listPet),
                     ],
                   ),
                 );
@@ -143,10 +143,8 @@ class _AdoptionPageState extends State<AdoptionPage> {
 
   // pet list by name
   // ignore: missing_return
-  Widget petList(int index, AsyncSnapshot<PetListBaseModel> snapshot) {
-    var tmp = snapshot.data.result;
-
-    for (var i = index; i < tmp.length; i++) {
+  Widget petList(int index, List<PetType> resultList) {
+    for (var i = index; i < resultList.length; i++) {
       return Container(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -158,23 +156,27 @@ class _AdoptionPageState extends State<AdoptionPage> {
                 });
               },
               child: Container(
-                width: 60,
-                height: 60,
-                margin: EdgeInsets.symmetric(horizontal: 18),
+                width: 80,
+                height: 40,
+                alignment: Alignment.center,
+                margin: EdgeInsets.symmetric(horizontal: 10),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   boxShadow: customShadow,
                   border: selectedCategory == index
                       ? Border.all(
-                          color: secondaryGreen,
+                          color: mainColor,
                           width: 2,
                         )
                       : null,
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(25),
                 ),
-                child: Image.asset(
-                  tmp[i].typeName == 'Chó' ? iconDog : iconCat,
-                  scale: 1.5,
+                child: Text(
+                  resultList[i].typeName,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
                 ),
               ),
             ),

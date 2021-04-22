@@ -1,34 +1,31 @@
-import 'dart:io';
+import 'package:path/path.dart';
 import 'package:commons/commons.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
+import 'package:pet_rescue_mobile/repository/repository.dart';
+
 import 'package:pet_rescue_mobile/src/asset.dart';
 import 'package:pet_rescue_mobile/src/style.dart';
 
 import 'package:pet_rescue_mobile/views/custom_widget/custom_button.dart';
-import 'package:pet_rescue_mobile/views/custom_widget/custom_divider.dart';
-import 'package:pet_rescue_mobile/views/custom_widget/custom_field.dart';
-import 'package:pet_rescue_mobile/views/custom_widget/video/custom_video_player.dart';
-import 'package:pet_rescue_mobile/views/rescue/rescue_detail.dart';
-import 'package:pet_rescue_mobile/views/rescue/rescue_location.dart';
+import 'package:pet_rescue_mobile/views/custom_widget/custom_dialog.dart';
+import 'package:pet_rescue_mobile/main.dart';
 
 // ignore: must_be_immutable
-class Rescue extends StatefulWidget {
-  double latitude, longitude;
-  String address = '';
+class TrackingReport extends StatefulWidget {
+  String petProfileId;
 
-  Rescue({this.latitude, this.longitude, this.address});
+  TrackingReport({this.petProfileId});
 
   @override
-  _RescueState createState() => _RescueState();
+  _TrackingReportState createState() => _TrackingReportState();
 }
 
-class _RescueState extends State<Rescue> {
+class _TrackingReportState extends State<TrackingReport> {
   ScrollController scrollController = ScrollController();
 
   final GlobalKey<FormBuilderState> _fbKey = GlobalKey();
@@ -37,8 +34,7 @@ class _RescueState extends State<Rescue> {
 
   bool hasImage = false;
 
-  File video;
-  bool hasVideo = false;
+  final _repo = Repository();
 
   @override
   void initState() {
@@ -105,51 +101,12 @@ class _RescueState extends State<Rescue> {
       );
   }
 
-  Widget buildViewPickedVideo() {
-    return Stack(children: [
-      Center(
-        child: Container(
-          margin: EdgeInsets.symmetric(horizontal: 3),
-          width: MediaQuery.of(context).size.width,
-          height: 250,
-          child: video == null
-              ? Card(
-                  child: Icon(
-                    Icons.videocam,
-                    color: Colors.grey,
-                  ),
-                )
-              : VideoThumbnail(video: video),
-        ),
-      ),
-      video == null
-          ? SizedBox(height: 0)
-          : Positioned(
-              right: 5,
-              top: 5,
-              child: InkWell(
-                child: Icon(
-                  Icons.remove_circle,
-                  size: 20,
-                  color: Colors.red,
-                ),
-                onTap: () {
-                  setState(() {
-                    video = null;
-                    hasVideo = false;
-                  });
-                },
-              ),
-            ),
-    ]);
-  }
-
   pickImages() async {
     List<Object> resultList = List<Asset>();
 
     try {
       resultList = await MultiImagePicker.pickImages(
-        maxImages: 3,
+        maxImages: 6,
         enableCamera: true,
         selectedAssets: _images,
         materialOptions: MaterialOptions(
@@ -172,40 +129,83 @@ class _RescueState extends State<Rescue> {
     }
   }
 
-  captureVideo() async {
-    // ignore: deprecated_member_use
-    File vid = await ImagePicker.pickVideo(
-        source: ImageSource.camera, maxDuration: Duration(minutes: 3));
-
-    if (vid != null) {
-      setState(() {
-        video = vid;
-        hasVideo = true;
-      });
-    }
-  }
-
   _btnSubmitInformation(bool hasImage, BuildContext context) {
     if (hasImage == true) {
       return CustomButton(
-        label: 'XÁC NHẬN THÔNG TIN',
+        label: 'GỬI BÁO CÁO',
         onTap: () {
           if (_fbKey.currentState.saveAndValidate()) {
+            showDialog(
+                context: context,
+                builder: (context) => ProgressDialog(
+                      message: 'Đang gửi báo cáo...',
+                    ));
+
             final formInputs = _fbKey.currentState.value;
-            print(formInputs);
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => RescueDetail(
-                  formInput: formInputs,
-                  address: widget.address,
-                  imageList: _images,
-                  longitude: widget.longitude,
-                  latitude: widget.latitude,
-                  video: hasVideo == true ? video : null,
-                ),
-              ),
-            );
+
+            String petId = widget.petProfileId;
+            String description = formInputs['description'];
+
+            String url = '';
+            int count = 0;
+            _images.forEach((item) {
+              Asset asset = item;
+
+              _repo.getImageFileFromAssets(asset).then((result) {
+                String baseName = basename(result.path);
+                _repo.uploadTrackingImage(result, baseName).then((value) {
+                  if (value != null) {
+                    setState(() {
+                      url += '$value;';
+                      count++;
+                    });
+
+                    if (count == _images.length) {
+                      _repo
+                          .createPetTracking(petId, description, url)
+                          .then((value) {
+                        if (value != null) {
+                          successDialog(
+                            context,
+                            'Báo cáo của bạn đã được gửi tới trung tâm.',
+                            title: 'Thành công',
+                            neutralText: 'Đóng',
+                            neutralAction: () {
+                              Navigator.of(context)
+                                  .popUntil((route) => route.isFirst);
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => MyApp()));
+                            },
+                          );
+                        } else {
+                          warningDialog(
+                            context,
+                            'Không thể gửi báo cáo này.',
+                            title: '',
+                            neutralText: 'Đóng',
+                            neutralAction: () {
+                              Navigator.pop(context);
+                            },
+                          );
+                        }
+                      });
+                    }
+                  } else {
+                    warningDialog(
+                      context,
+                      'Lỗi upload hình ảnh.',
+                      title: '',
+                      neutralText: 'Đóng',
+                      neutralAction: () {
+                        Navigator.pop(context);
+                      },
+                    );
+                  }
+                });
+              });
+            });
           } else {
             warningDialog(
               context,
@@ -217,7 +217,7 @@ class _RescueState extends State<Rescue> {
       );
     } else {
       return CustomDisableButton(
-        label: 'XÁC NHẬN THÔNG TIN',
+        label: 'GỬI BÁO CÁO',
       );
     }
   }
@@ -237,7 +237,7 @@ class _RescueState extends State<Rescue> {
         resizeToAvoidBottomInset: true,
         appBar: AppBar(
           title: Text(
-            'YÊU CẦU CỨU HỘ',
+            'BÁO CÁO SAU NHẬN NUÔI',
             style: TextStyle(
               color: Colors.black,
               fontWeight: FontWeight.bold,
@@ -250,15 +250,13 @@ class _RescueState extends State<Rescue> {
             ),
             color: Colors.black,
             onPressed: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => RescueLocation(
-                    latitude: 0,
-                    longitude: 0,
-                  ),
-                ),
-              );
+              confirmationDialog(context, 'Bạn muốn hủy báo cáo?',
+                  title: '',
+                  confirm: false,
+                  neutralText: 'Không',
+                  positiveText: 'Đồng ý', positiveAction: () {
+                Navigator.pop(context);
+              });
             },
           ),
           centerTitle: true,
@@ -286,53 +284,13 @@ class _RescueState extends State<Rescue> {
               width: contextWidth,
               child: Column(
                 children: [
-                  Container(
-                    alignment: Alignment.center,
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 30),
-                      child: RichText(
-                        text: TextSpan(
-                          style: TextStyle(fontFamily: 'Philosopher'),
-                          children: [
-                            TextSpan(
-                              text: 'Địa chỉ của bạn:\n',
-                              style: TextStyle(
-                                color: mainColor,
-                                fontSize: 16,
-                                height: 2,
-                              ),
-                            ),
-                            TextSpan(
-                                text: (widget.address != null ||
-                                        widget.address != '')
-                                    ? '${widget.address}'
-                                    : 'Chưa cập nhật địa chỉ',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  height: 1.2,
-                                )),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                      top: 10,
-                      right: 30,
-                      left: 30,
-                    ),
-                    child: CustomDivider(),
-                  ),
                   FormBuilder(
                     key: _fbKey,
                     child: Expanded(
                       child: Column(
                         children: [
                           Expanded(
-                            child: _rescueForm(context),
+                            child: _trackingForm(context),
                           ),
                           Container(
                             margin: EdgeInsets.only(bottom: 10),
@@ -356,7 +314,7 @@ class _RescueState extends State<Rescue> {
     );
   }
 
-  Widget _rescueForm(BuildContext context) {
+  Widget _trackingForm(BuildContext context) {
     return Container(
       height: MediaQuery.of(context).size.height,
       child: Padding(
@@ -404,103 +362,8 @@ class _RescueState extends State<Rescue> {
                   ],
                 ),
               ),
-              //* VIDEO PICKER
-              Container(
-                margin: EdgeInsets.only(top: 20),
-                padding: EdgeInsets.all(5),
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    width: 1,
-                    color: primaryGreen,
-                  ),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          ' Video mô tả',
-                          style: TextStyle(
-                            color: primaryGreen,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        RaisedButton(
-                          child: Text("Quay video"),
-                          onPressed: () {
-                            captureVideo();
-                          },
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 3,
-                    ),
-                    buildViewPickedVideo(),
-                  ],
-                ),
-              ),
-              SizedBox(height: 20),
-              //* PHONE NUMBER
-              Container(
-                child: FormBuilderTextField(
-                  attribute: 'phoneNumber',
-                  decoration: InputDecoration(
-                    floatingLabelBehavior: FloatingLabelBehavior.always,
-                    labelText: 'Số điện thoại *',
-                    labelStyle: TextStyle(
-                      color: primaryGreen,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: primaryGreen,
-                        width: 1.5,
-                      ),
-                    ),
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: primaryGreen,
-                        width: 1.5,
-                      ),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    prefixIcon: Icon(
-                      Icons.phone,
-                      color: primaryGreen,
-                    ),
-                    fillColor: Colors.white,
-                    filled: true,
-                    counterText: '',
-                  ),
-                  validators: [
-                    FormBuilderValidators.required(
-                        errorText: 'Hãy nhập số điện thoại của bạn'),
-                  ],
-                  maxLengthEnforced: true,
-                  maxLength: 10,
-                  keyboardType: TextInputType.number,
-                ),
-              ),
-              SizedBox(height: 20),
-              //* RADIO
-              Container(
-                child: customRadioGroup(
-                  'Tình trạng của vật nuôi *',
-                  'radioPetStatus',
-                  'Bạn chưa chọn tình trạng của vật nuôi',
-                  [
-                    FormBuilderFieldOption(value: 'Bị thương'),
-                    FormBuilderFieldOption(value: 'Đi lạc'),
-                    FormBuilderFieldOption(value: 'Bị bỏ rơi'),
-                    FormBuilderFieldOption(value: 'Cho đi'),
-                  ],
-                ),
+              SizedBox(
+                height: 20,
               ),
               //* DESCRIPTION
               Container(
@@ -530,7 +393,7 @@ class _RescueState extends State<Rescue> {
                   ),
                   validators: [
                     FormBuilderValidators.required(
-                        errorText: 'Hãy thêm mô tả về tình trạng của bé.'),
+                        errorText: 'Hãy mô tả thêm về tình trạng của bé.'),
                   ],
                   maxLines: 6,
                   maxLength: 1000,

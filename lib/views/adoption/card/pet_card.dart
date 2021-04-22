@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import 'package:pet_rescue_mobile/models/pet/pet_model.dart';
+
 import 'package:pet_rescue_mobile/src/style.dart';
 
 import 'package:pet_rescue_mobile/views/adoption/card/pet_details.dart';
-
-import 'package:pet_rescue_mobile/models/pet/pet_model.dart';
 
 // ignore: must_be_immutable
 class PetCard extends StatefulWidget {
@@ -22,21 +22,10 @@ class PetCard extends StatefulWidget {
 }
 
 class _PetCardState extends State<PetCard> {
-  List<String> imgUrlList;
-
-  @override
-  void initState() {
-    super.initState();
-    setState(() {
-      imgUrlList = widget.pet.petImgUrl;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final cardHeight = MediaQuery.of(context).size.height * 0.22;
-    String imgUrl = imgUrlList.first;
 
     return GestureDetector(
       onTap: () {
@@ -130,10 +119,8 @@ class _PetCardState extends State<PetCard> {
               decoration: BoxDecoration(
                 color: Colors.white,
                 boxShadow: customShadow,
-                borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(20),
-                  bottomRight: Radius.circular(20),
-                ),
+                borderRadius: BorderRadius.all(Radius.circular(20)),
+                border: Border.all(color: mainColor, width: 1),
               ),
             ),
             // pet image
@@ -146,7 +133,7 @@ class _PetCardState extends State<PetCard> {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
                       image: DecorationImage(
-                        image: NetworkImage(imgUrl),
+                        image: NetworkImage(widget.pet.petImgUrl.first),
                         fit: BoxFit.cover,
                       ),
                     ),

@@ -1,21 +1,23 @@
 import 'dart:io';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:path/path.dart';
 import 'package:commons/commons.dart';
+import 'package:image_picker/image_picker.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:pet_rescue_mobile/bloc/account_bloc.dart';
 
 import 'package:pet_rescue_mobile/models/center/center_model.dart';
 import 'package:pet_rescue_mobile/models/user/volunteer_model.dart';
 import 'package:pet_rescue_mobile/repository/repository.dart';
+
 import 'package:pet_rescue_mobile/src/asset.dart';
 import 'package:pet_rescue_mobile/src/style.dart';
+
 import 'package:pet_rescue_mobile/views/custom_widget/custom_button.dart';
 import 'package:pet_rescue_mobile/views/custom_widget/custom_dialog.dart';
 import 'package:pet_rescue_mobile/views/custom_widget/custom_divider.dart';
 import 'package:pet_rescue_mobile/views/custom_widget/custom_field.dart';
-
 import '../../../main.dart';
 
 // ignore: must_be_immutable
@@ -35,11 +37,24 @@ class _VolunteerFormState extends State<VolunteerForm> {
 
   final GlobalKey<FormBuilderState> _fbKey = GlobalKey();
 
+  DatabaseReference _dbReference;
+
   final _repo = Repository();
 
   File _image;
 
   bool hasImage = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _dbReference = FirebaseDatabase.instance
+        .reference()
+        .child('manager')
+        .child('${widget.center.centerId}')
+        .child('Notification');
+  }
 
   _imgFromGallery() async {
     // ignore: deprecated_member_use
@@ -141,20 +156,84 @@ class _VolunteerFormState extends State<VolunteerForm> {
                 String baseName = basename(_image.path);
                 if (baseName != null) {
                   _repo.uploadVolunteer(_image, baseName).then((value) {
-                    setState(() {
-                      url = value;
-                      user.imgUrl = url;
+                    if (value != null) {
+                      setState(() {
+                        url = value;
+                        user.imgUrl = url;
 
-                      accountBloc.regisVolunteer(user);
-                      successDialog(context,
-                          'Đơn đăng ký của bạn đã được gửi đến ${widget.center.centerName.trim()}. Trung tâm sẽ xem xét và phản hồi cho bạn qua email ${user.email}. Xin cảm ơn.',
-                          title: 'Thành công', neutralAction: () {
-                        Navigator.of(context)
-                            .popUntil((route) => route.isFirst);
-                        Navigator.pushReplacement(context,
-                            MaterialPageRoute(builder: (context) => MyApp()));
+                        _repo.registrationVolunteer(user).then((value) {
+                          if (value == 'Existed') {
+                            warningDialog(
+                              context,
+                              'Email ${formInputs['email']} đã được đăng ký làm tình nguyện viên.',
+                              title: '',
+                              neutralText: 'Đóng',
+                              neutralAction: () {
+                                Navigator.pop(context);
+                              },
+                            );
+                          } else if (value == null) {
+                            warningDialog(
+                              context,
+                              'Không thể đăng ký làm tình nguyện viên.',
+                              title: '',
+                              neutralText: 'Đóng',
+                              neutralAction: () {
+                                Navigator.pop(context);
+                              },
+                            );
+                          } else {
+                            var currentDate = DateTime.now();
+                            String currentDay = (currentDate.day < 10
+                                ? '0${currentDate.day}'
+                                : '${currentDate.day}');
+                            String currentMonth = (currentDate.month < 10
+                                ? '0${currentDate.month}'
+                                : '${currentDate.month}');
+                            String currentHour = (currentDate.hour < 10
+                                ? '0${currentDate.hour}'
+                                : '${currentDate.hour}');
+                            String currentMinute = (currentDate.minute < 10
+                                ? '0${currentDate.minute}'
+                                : '${currentDate.minute}');
+                            String currentSecond = (currentDate.second < 10
+                                ? '0${currentDate.second}'
+                                : '${currentDate.second}');
+                            var notiDate =
+                                '${currentDate.year}-$currentMonth-$currentDay $currentHour:$currentMinute:$currentSecond';
+
+                            Map<String, dynamic> notification = {
+                              'date': notiDate,
+                              'isCheck': false,
+                              'type': 3,
+                            };
+
+                            _dbReference.child(value).set(notification);
+
+                            successDialog(context,
+                                'Đơn đăng ký của bạn đã được gửi đến ${widget.center.centerName.trim()}. Trung tâm sẽ xem xét và phản hồi cho bạn qua email ${user.email}. Xin cảm ơn.',
+                                title: 'Thành công', neutralAction: () {
+                              Navigator.of(context)
+                                  .popUntil((route) => route.isFirst);
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => MyApp()));
+                            });
+                          }
+                        });
                       });
-                    });
+                    } else {
+                      warningDialog(
+                        context,
+                        'Lỗi upload hình ảnh.',
+                        title: '',
+                        neutralText: 'Đóng',
+                        neutralAction: () {
+                          Navigator.pop(context);
+                        },
+                      );
+                    }
                   });
                 }
               },
@@ -366,7 +445,11 @@ class _VolunteerFormState extends State<VolunteerForm> {
                   ),
                   validators: [
                     FormBuilderValidators.required(
-                        errorText: 'Hãy nhập email của bạn.'),
+                      errorText: 'Hãy nhập email của bạn.',
+                    ),
+                    FormBuilderValidators.email(
+                      errorText: 'Email không hợp lệ.',
+                    ),
                   ],
                   maxLength: 100,
                 ),
@@ -459,7 +542,7 @@ class _VolunteerFormState extends State<VolunteerForm> {
               ),
               //* PHONE NUMBER
               Container(
-                child: FormBuilderPhoneField(
+                child: FormBuilderTextField(
                   attribute: 'phoneNumber',
                   decoration: InputDecoration(
                     floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -489,13 +572,12 @@ class _VolunteerFormState extends State<VolunteerForm> {
                     filled: true,
                     counterText: '',
                   ),
-                  defaultSelectedCountryIsoCode: 'vn',
                   validators: [
                     FormBuilderValidators.required(
                         errorText: 'Hãy nhập số điện thoại của bạn'),
                   ],
                   maxLengthEnforced: true,
-                  maxLength: 9,
+                  maxLength: 10,
                   keyboardType: TextInputType.number,
                 ),
               ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:pet_rescue_mobile/src/style.dart';
+
 import 'package:pet_rescue_mobile/views/personal/progress/finder_form/finder_list.dart';
 import 'package:pet_rescue_mobile/views/personal/progress/adopt_registration/adoption_regis_list.dart';
 

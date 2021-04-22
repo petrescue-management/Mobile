@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
+import 'package:pet_rescue_mobile/models/pet/pet_model.dart';
+
 import 'package:pet_rescue_mobile/src/data.dart';
 import 'package:pet_rescue_mobile/src/asset.dart';
 import 'package:pet_rescue_mobile/src/style.dart';
-
-import 'package:pet_rescue_mobile/models/pet/pet_model.dart';
 
 import 'package:pet_rescue_mobile/views/adoption/form/adoption_form.dart';
 import 'package:pet_rescue_mobile/views/custom_widget/custom_divider.dart';
