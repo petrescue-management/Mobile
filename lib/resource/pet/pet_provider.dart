@@ -9,6 +9,7 @@ import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 import 'package:pet_rescue_mobile/models/pet/adopted_list_base_model.dart';
+import 'package:pet_rescue_mobile/models/pet/pet_fur_color.dart';
 import 'package:pet_rescue_mobile/models/pet/pet_list_base_model.dart';
 import 'package:pet_rescue_mobile/models/pet/pet_tracking_model.dart';
 import 'package:pet_rescue_mobile/src/api_url.dart';
@@ -25,6 +26,23 @@ class PetProvider {
 
     if (response.statusCode == 200) {
       return PetListBaseModel.fromJson(json.decode(response.body));
+    } else {
+      print('Failed to load post ${response.statusCode}');
+    }
+    return null;
+  }
+
+  Future<FurColorBaseModel> getPetFurColorList() async {
+    final response = await http.get(
+      ApiUrl.getFurColorList,
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json; charset=UTF-8",
+      },
+    );
+
+    if (response.statusCode == 200) {
+      return FurColorBaseModel.fromJson(json.decode(response.body));
     } else {
       print('Failed to load post ${response.statusCode}');
     }

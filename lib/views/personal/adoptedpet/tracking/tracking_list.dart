@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:carousel_slider/carousel_options.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 import 'package:pet_rescue_mobile/models/pet/pet_tracking_model.dart';
 
@@ -27,12 +29,12 @@ class _TrackingListState extends State<TrackingList> {
   void initState() {
     super.initState();
 
-    // setState(() {
-    //   trackingList = widget.resultList;
+    setState(() {
+      trackingList = widget.resultList;
 
-    //   trackingList.sort((a, b) =>
-    //       DateTime.parse(b.adoptedAt).compareTo(DateTime.parse(a.adoptedAt)));
-    // });
+      trackingList.sort((a, b) =>
+          DateTime.parse(b.insertedAt).compareTo(DateTime.parse(a.insertedAt)));
+    });
   }
 
   @override
@@ -109,6 +111,8 @@ class _TrackingListState extends State<TrackingList> {
                     ),
                   )
                 : Container(
+                    margin: EdgeInsets.only(
+                        right: 20, left: 20, top: 20, bottom: 10),
                     child: ListView.builder(
                       physics: BouncingScrollPhysics(),
                       scrollDirection: Axis.vertical,
@@ -138,56 +142,212 @@ class TrackingCard extends StatefulWidget {
 }
 
 class _TrackingCard extends State<TrackingCard> {
+  TextEditingController descriptionController = TextEditingController();
+  TextEditingController insertedAtController = TextEditingController();
+
   String insertedAt;
+  List<String> imgUrlList;
+  List<Widget> imageSliders;
+  int _current = 0;
 
   @override
   void initState() {
     super.initState();
     setState(() {
       insertedAt = formatDateTime(widget.tracking.insertedAt);
+      descriptionController.text = widget.tracking.description;
+      insertedAtController.text = insertedAt;
+
+      imgUrlList = widget.tracking.adoptionReportTrackingImgUrl;
+
+      imageSliders = imgUrlList
+          .map(
+            (item) => Container(
+              child: Container(
+                margin: EdgeInsets.all(5.0),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                  child: Stack(
+                    children: <Widget>[
+                      Image.network(item, fit: BoxFit.cover, width: 1000.0),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          )
+          .toList();
+    });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      imgUrlList.forEach((imageUrl) {
+        precacheImage(NetworkImage(imageUrl), context);
+      });
     });
   }
 
   formatDateTime(String date) {
     DateTime tmp = DateTime.parse(date);
-    String result = '${tmp.day}/${tmp.month}/${tmp.year} ${tmp.hour}:${tmp.minute}';
+    String result =
+        '${tmp.day}/${tmp.month}/${tmp.year} - ${tmp.hour}:${tmp.minute}';
     return result;
+  }
+
+  showReportDetail(context) {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return Center(
+          child: Material(
+            type: MaterialType.transparency,
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.white,
+              ),
+              padding: EdgeInsets.all(10),
+              width: MediaQuery.of(context).size.width * 0.8,
+              height: 450,
+              child: SizedBox(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    CarouselSlider(
+                      items: imageSliders,
+                      options: CarouselOptions(
+                          enableInfiniteScroll: false,
+                          enlargeCenterPage: true,
+                          aspectRatio: 2.0,
+                          onPageChanged: (index, reason) {
+                            setState(() {
+                              _current = index;
+                            });
+                          }),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: imgUrlList.map((url) {
+                        int index = imgUrlList.indexOf(url);
+                        return Container(
+                          width: 8.0,
+                          height: 8.0,
+                          margin: EdgeInsets.symmetric(
+                              vertical: 10.0, horizontal: 2.0),
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: _current == index
+                                  ? Color.fromRGBO(0, 0, 0, 0.9)
+                                  : Color.fromRGBO(0, 0, 0, 0.4)),
+                        );
+                      }).toList(),
+                    ),
+                    // description
+                    Container(
+                      child: TextFormField(
+                        controller: descriptionController,
+                        decoration: InputDecoration(
+                          labelText: 'Mô tả',
+                          labelStyle: TextStyle(
+                            color: mainColor,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          floatingLabelBehavior: FloatingLabelBehavior.always,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: mainColor,
+                              width: 2,
+                            ),
+                          ),
+                          fillColor: Colors.white,
+                          filled: true,
+                        ),
+                        enabled: false,
+                        maxLines: 3,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    // inserted at
+                    Container(
+                      child: TextFormField(
+                        controller: insertedAtController,
+                        decoration: InputDecoration(
+                          labelText: 'Ngày tạo báo cáo',
+                          labelStyle: TextStyle(
+                            color: mainColor,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          floatingLabelBehavior: FloatingLabelBehavior.always,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: mainColor,
+                              width: 2,
+                            ),
+                          ),
+                          fillColor: Colors.white,
+                          filled: true,
+                        ),
+                        enabled: false,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(right: 20, left: 20, top: 15, bottom: 5),
-      height: MediaQuery.of(context).size.height * 0.06,
-      child: Stack(
-        children: [
-          Container(
-            child: Row(
-              children: [
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: 15, vertical: 12),
-                  child: Text(
-                    'Ngày báo cáo: $insertedAt',
-                    overflow: TextOverflow.ellipsis,
-                    softWrap: false,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
+    return GestureDetector(
+      onTap: () {
+        showReportDetail(context);
+      },
+      child: Container(
+        height: MediaQuery.of(context).size.height * 0.1,
+        child: Stack(
+          children: [
+            Container(
+              child: Row(
+                children: [
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                    child: Text(
+                      'Ngày báo cáo: $insertedAt',
+                      overflow: TextOverflow.ellipsis,
+                      softWrap: false,
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
+                ],
+              ),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.all(Radius.circular(18)),
+                border: Border.all(
+                  color: mainColor,
+                  width: 1,
                 ),
-              ],
-            ),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.all(Radius.circular(18)),
-              border: Border.all(
-                color: mainColor,
-                width: 1,
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

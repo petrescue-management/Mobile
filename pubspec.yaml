@@ -23,6 +23,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -45,6 +47,7 @@ dependencies:
   flutter_form_builder: ^3.12.0
   flutter_local_notifications: ^1.4.4+1
   
+  cached_network_image: ^2.0.0
   image_picker: ^0.6.7+2
   multi_image_picker: ^4.6.7
   video_player: ^0.10.11+2
@@ -114,10 +117,10 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-    - family: Philosopher
+    - family: SamsungSans
       fonts:
-        - asset: assets/fonts/Philosopher.ttf
-        - asset: assets/fonts/Philosopher Bold.ttf
+        - asset: assets/fonts/samsung/SamsungSans-Regular.ttf
+        - asset: assets/fonts/samsung/SamsungSans-Bold.ttf
           weight: 700
     - family: Salsa
       fonts:

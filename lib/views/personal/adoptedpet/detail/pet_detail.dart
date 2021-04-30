@@ -134,7 +134,7 @@ class _PetDetailState extends State<PetDetail> {
               return Container(
                 width: 8.0,
                 height: 8.0,
-                margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
+                margin: EdgeInsets.symmetric(horizontal: 2.0),
                 decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: _current == index
@@ -379,7 +379,7 @@ class _PetDetailState extends State<PetDetail> {
                     Container(
                       margin: EdgeInsets.only(bottom: 20),
                       child: TextFormField(
-                        controller: adoptedAtController,
+                        controller: centerAddressController,
                         decoration: InputDecoration(
                           floatingLabelBehavior: FloatingLabelBehavior.always,
                           labelText: 'Địa chỉ của trung tâm',

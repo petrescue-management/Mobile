@@ -1,6 +1,6 @@
 import 'dart:io';
+import 'dart:ui';
 import 'package:intl/intl.dart';
-import 'package:intl/date_symbol_data_local.dart';
 import 'package:path/path.dart';
 import 'package:commons/commons.dart';
 import 'package:image_picker/image_picker.dart';
@@ -118,7 +118,6 @@ class _ProfileDetailsState extends State<ProfileDetails> {
 
   @override
   Widget build(BuildContext context) {
-    initializeDateFormatting('vi_VN');
     return GestureDetector(
       onTap: () {
         FocusScopeNode currentFocus = FocusScope.of(context);
@@ -228,7 +227,7 @@ class _ProfileDetailsState extends State<ProfileDetails> {
         confirmationDialog(context, 'Bạn muốn lưu thông tin chỉnh sửa?',
             title: '',
             confirm: false,
-            negativeText: 'Không',
+            neutralText: 'Không',
             positiveText: 'Có', positiveAction: () {
           showDialog(
               context: context,
@@ -279,7 +278,8 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                   _repo.updateUserDetails(tmpUser).then((value) {
                     if (value != null) {
                       successDialog(context, 'Đã cập nhật thông tin cá nhân',
-                          title: 'Thành công', neutralAction: () {
+                          title: 'Thành công',
+                          neutralText: 'Quay về trang chủ', neutralAction: () {
                         _repo.getUserDetails();
                         Navigator.of(context)
                             .popUntil((route) => route.isFirst);

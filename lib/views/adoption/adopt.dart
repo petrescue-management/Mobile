@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:pet_rescue_mobile/bloc/pet_bloc.dart';
+import 'package:pet_rescue_mobile/repository/repository.dart';
 import 'package:pet_rescue_mobile/models/pet/pet_list_base_model.dart';
 import 'package:pet_rescue_mobile/models/pet/pet_type.dart';
 
@@ -25,10 +26,34 @@ class _AdoptionPageState extends State<AdoptionPage> {
 
   int selectedCategory = 0;
 
+  final _repo = Repository();
+
+  String filterFurColor = '';
+  String filterAge = '';
+  List<String> petFurColorList = [];
+  List<String> petAgeList = [
+    'Nhỏ/Trẻ',
+    'Vừa/Trưởng thành',
+    'Lớn/Già',
+    'Không xác định'
+  ];
+
   @override
   void initState() {
     super.initState();
     petBloc.getListByType();
+    _repo.getPetFurColorList().then((value) {
+      if (value != null) {
+        List<String> tmpResult = [];
+        value.result.forEach((element) {
+          tmpResult.add(element.petFurColorName);
+        });
+
+        setState(() {
+          petFurColorList = tmpResult;
+        });
+      }
+    });
   }
 
   @override
@@ -47,46 +72,11 @@ class _AdoptionPageState extends State<AdoptionPage> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(
-            Icons.chevron_left,
-            size: 35,
-          ),
+          icon: Icon(Icons.chevron_left, size: 35),
           color: Colors.black,
           onPressed: () {
             Navigator.of(context).pop();
           },
-        ),
-        actions: [
-          Builder(
-            builder: (context) => IconButton(
-              icon: Icon(Icons.filter_alt_outlined),
-              color: Colors.black,
-              onPressed: () {
-                Scaffold.of(context).openEndDrawer();
-              },
-            ),
-          ),
-        ],
-      ),
-      endDrawer: Drawer(
-        child: ListView(
-          // Important: Remove any padding from the ListView.
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            ListTile(
-              title: Text('Item 1'),
-              onTap: () {
-                // Update the state of the app.
-                // ...
-              },
-            ),
-            ListTile(
-              title: Text('Item 2'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-          ],
         ),
       ),
       body: Stack(
@@ -110,7 +100,11 @@ class _AdoptionPageState extends State<AdoptionPage> {
               if (snapshot.hasError || snapshot.data == null) {
                 return loading(context);
               } else {
-                List<PetType> result = snapshot.data.result;
+                snapshot.data.result.forEach((element) {
+                  element.listPet.sort((a, b) => DateTime.parse(b.insertedAt)
+                      .compareTo(DateTime.parse(a.insertedAt)));
+                });
+
                 return Container(
                   margin: EdgeInsets.only(top: 10),
                   height: MediaQuery.of(context).size.height -
@@ -122,14 +116,15 @@ class _AdoptionPageState extends State<AdoptionPage> {
                         child: ListView.builder(
                           physics: BouncingScrollPhysics(),
                           scrollDirection: Axis.horizontal,
-                          itemCount: result.length,
+                          itemCount: snapshot.data.result.length,
                           itemBuilder: (context, index) {
-                            return petList(index, result);
+                            return petList(index, snapshot.data.result);
                           },
                         ),
                       ),
                       PetCategoryDisplay(
-                          petList: result[selectedCategory].listPet),
+                          petList:
+                              snapshot.data.result[selectedCategory].listPet),
                     ],
                   ),
                 );

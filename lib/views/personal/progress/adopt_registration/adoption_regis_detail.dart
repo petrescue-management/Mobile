@@ -66,7 +66,7 @@ class _AdoptFormDetailsState extends State<AdoptFormDetails> {
       labelColor: Colors.black,
       labelStyle: TextStyle(
         fontSize: 16,
-        fontFamily: 'Philosopher',
+        fontFamily: 'SamsungSans',
         fontWeight: FontWeight.bold,
       ),
       indicatorColor: mainColor,

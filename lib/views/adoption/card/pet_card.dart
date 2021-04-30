@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:pet_rescue_mobile/models/pet/pet_model.dart';
 
@@ -70,7 +71,7 @@ class _PetCardState extends State<PetCard> {
                                 child: Text(
                                   widget.pet.petName,
                                   style: TextStyle(
-                                    fontSize: 15,
+                                    fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -93,7 +94,7 @@ class _PetCardState extends State<PetCard> {
                                     ? "null"
                                     : widget.pet.petBreedName,
                                 style: TextStyle(
-                                  fontSize: 12,
+                                  fontSize: 14,
                                   color: fadedBlack,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -104,7 +105,7 @@ class _PetCardState extends State<PetCard> {
                               Text(
                                 widget.pet.petAge,
                                 style: TextStyle(
-                                  fontSize: 12,
+                                  fontSize: 14,
                                   color: fadedBlack,
                                 ),
                               ),
@@ -133,7 +134,7 @@ class _PetCardState extends State<PetCard> {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
                       image: DecorationImage(
-                        image: NetworkImage(widget.pet.petImgUrl.first),
+                        image: CachedNetworkImageProvider(widget.pet.petImgUrl.first),
                         fit: BoxFit.cover,
                       ),
                     ),

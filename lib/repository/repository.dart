@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 
 import 'package:pet_rescue_mobile/models/pet/adopted_list_base_model.dart';
+import 'package:pet_rescue_mobile/models/pet/pet_fur_color.dart';
 import 'package:pet_rescue_mobile/models/pet/pet_list_base_model.dart';
 import 'package:pet_rescue_mobile/models/pet/pet_tracking_model.dart';
 import 'package:pet_rescue_mobile/models/center/center_base_model.dart';
@@ -61,11 +62,8 @@ class Repository {
   // pet
   Future<PetListBaseModel> getPetListByType() => petProvider.getPetListByType();
 
-  Future<File> getImageFileFromAssets(Asset asset) =>
-      petProvider.getImageFileFromAssets(asset);
-
-  Future<String> uploadRescueImage(File image, String uid) =>
-      petProvider.uploadRescueImage(image, uid);
+  Future<FurColorBaseModel> getPetFurColorList() =>
+      petProvider.getPetFurColorList();
 
   Future<bool> getRescueImage(String imgUrl) =>
       petProvider.getRescueImage(imgUrl);
@@ -73,10 +71,8 @@ class Repository {
   Future<AdoptedListBaseModel> getAdoptedPetList() =>
       petProvider.getAdoptedPetList();
 
-  Future<String> uploadRescueVideo(File video, String uid) =>
-      petProvider.uploadRescueVideo(video, uid);
-
-  Future<bool> createPetTracking(String petProfileId, String description, String imgUrl) =>
+  Future<bool> createPetTracking(
+          String petProfileId, String description, String imgUrl) =>
       petProvider.createPetTracking(petProfileId, description, imgUrl);
 
   Future<String> uploadTrackingImage(File image, String uid) =>
@@ -86,11 +82,19 @@ class Repository {
       petProvider.getAdoptionTrackingList(petProfileId);
 
   // form
-  Future<bool> createRescueRequest(
-          RescueReport rescueReport, String videoUrl) =>
-      formProvider.createRescueRequest(rescueReport, videoUrl);
+  Future<File> getImageFileFromAssets(Asset asset) =>
+      petProvider.getImageFileFromAssets(asset);
 
-  Future<bool> checkExistAdoptionRegistrationForm(String petProfileId) =>
+  Future<String> uploadRescueImage(File image, String uid) =>
+      petProvider.uploadRescueImage(image, uid);
+
+  Future<String> uploadRescueVideo(File video, String uid) =>
+      petProvider.uploadRescueVideo(video, uid);
+
+  Future<bool> createRescueRequest(RescueReport rescueReport) =>
+      formProvider.createRescueRequest(rescueReport);
+
+  Future<String> checkExistAdoptionRegistrationForm(String petProfileId) =>
       formProvider.checkExistAdoptionRegistrationForm(petProfileId);
 
   Future<String> createAdoptionRegistrationForm(AdoptForm adoptForm) =>
@@ -99,8 +103,15 @@ class Repository {
   Future<FinderFormBaseModel> getFinderFormList() =>
       formProvider.getFinderFormList();
 
+  Future<FinderForm> getFinderFormById(String finderId) =>
+      formProvider.getFinderFormById(finderId);
+
   Future<AdoptionRegisFormBaseModel> getAdoptionRegistrationList() =>
       formProvider.getAdoptionRegisFormList();
+
+  Future<AdoptionRegisForm> getAdoptRegistrationFormById(
+          String adoptionRegistrationId) =>
+      formProvider.getAdoptRegistrationFormById(adoptionRegistrationId);
 
   Future<bool> cancelFinderForm(String finderFormId, String reason) =>
       formProvider.cancelFinderForm(finderFormId, reason);

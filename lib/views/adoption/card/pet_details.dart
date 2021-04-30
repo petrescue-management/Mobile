@@ -186,10 +186,10 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                 .checkExistAdoptionRegistrationForm(
                                     widget.pet.petProfileId)
                                 .then((value) {
-                              if (value != null) {
+                              if (value == null || value == 'true') {
                                 warningDialog(
                                   context,
-                                  "Bạn đã đăng ký nhận nuôi bé thú cưng này. Hãy kiểm tra lại đơn đăng ký của bạn mục 'Yêu cầu của tôi'.",
+                                  "Bạn đã đăng ký nhận nuôi bé thú cưng này. Hãy kiểm tra lại đơn đăng ký của bạn ở mục 'Yêu cầu của tôi'.",
                                   title: '',
                                   neutralText: 'Đóng',
                                   neutralAction: () {

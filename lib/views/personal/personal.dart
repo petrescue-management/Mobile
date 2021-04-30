@@ -10,7 +10,6 @@ import 'package:pet_rescue_mobile/src/style.dart';
 
 import 'package:pet_rescue_mobile/main.dart';
 import 'package:pet_rescue_mobile/views/custom_widget/custom_dialog.dart';
-import 'package:pet_rescue_mobile/views/login/policy.dart';
 import 'package:pet_rescue_mobile/views/personal/adoptedpet/adopted_pet.dart';
 import 'package:pet_rescue_mobile/views/personal/config_menu.dart';
 import 'package:pet_rescue_mobile/views/personal/profile/profile_details.dart';
@@ -218,19 +217,6 @@ class _PersonalPageState extends State<PersonalPage> {
                       neutralText: 'Đóng',
                     );
                   }
-                },
-              ),
-              ConfigMenu(
-                text: 'Điều khoản',
-                icon: Icons.policy,
-                press: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return PolicyPage();
-                      },
-                    ),
-                  );
                 },
               ),
               ConfigMenu(

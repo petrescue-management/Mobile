@@ -1,3 +1,4 @@
+import 'package:commons/commons.dart';
 import 'package:flutter/material.dart';
 
 import 'package:pet_rescue_mobile/models/pet/pet_model.dart';
@@ -5,7 +6,6 @@ import 'package:pet_rescue_mobile/repository/repository.dart';
 
 import 'package:pet_rescue_mobile/src/asset.dart';
 import 'package:pet_rescue_mobile/src/style.dart';
-import 'package:pet_rescue_mobile/src/data.dart';
 
 import 'package:pet_rescue_mobile/views/adoption/card/pet_details.dart';
 import 'package:pet_rescue_mobile/views/custom_widget/custom_dialog.dart';
@@ -69,12 +69,6 @@ class _LoginRequestState extends State<LoginRequest> {
                       SizedBox(
                         height: 20,
                       ),
-                      Container(
-                        padding: EdgeInsets.symmetric(horizontal: 25),
-                        child: SizedBox(
-                          child: loginNotice(context),
-                        ),
-                      ),
                     ],
                   ),
                 ),
@@ -103,28 +97,33 @@ class _LoginRequestState extends State<LoginRequest> {
           showDialog(context: context, builder: (context) => GifDialog());
 
           _repo.signIn().then(
-                (value) => {
-                  if (value == null || value.isEmpty)
-                    loading(context)
-                  else if (value != null && widget.pet != null)
-                    {
-                      Navigator.of(context).popUntil((route) => route.isFirst),
-                      Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (context) => MyApp())),
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  DetailsScreen(pet: widget.pet))),
-                    }
-                  else
-                    {
-                      Navigator.of(context).popUntil((route) => route.isFirst),
-                      Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (context) => MyApp())),
-                    }
-                },
-              );
+            (value) {
+              if (value == null || value.isEmpty) {
+                _repo.signOut();
+                warningDialog(
+                  context,
+                  'Lỗi đăng nhập hệ thống.',
+                  title: '',
+                  neutralText: 'Đóng',
+                  neutralAction: () {
+                    Navigator.pop(context);
+                  },
+                );
+              } else if (value != null && widget.pet != null) {
+                Navigator.of(context).popUntil((route) => route.isFirst);
+                Navigator.pushReplacement(
+                    context, MaterialPageRoute(builder: (context) => MyApp()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => DetailsScreen(pet: widget.pet)));
+              } else {
+                Navigator.of(context).popUntil((route) => route.isFirst);
+                Navigator.pushReplacement(
+                    context, MaterialPageRoute(builder: (context) => MyApp()));
+              }
+            },
+          );
         },
       ),
     );

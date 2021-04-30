@@ -21,12 +21,14 @@ class ApiUrl {
       'https://petrescueapi.azurewebsites.net/api/create-adoption-report-tracking';
   static String getAdoptionTrackingList =
       'https://petrescueapi.azurewebsites.net/api/get-list-adoption-report-tracking-by-userid?petProfileId=';
-      
+
   // form
   static String createRescueRequest =
       'https://petrescueapi.azurewebsites.net/api/create-finder-form';
   static String getFinderForm =
       'https://petrescueapi.azurewebsites.net/api/get-list-finder-form-by-userid';
+  static String getFinderFormById =
+      'https://petrescueapi.azurewebsites.net/api/get-finder-form-by-id/';
   static String cancelFinderForm =
       'https://petrescueapi.azurewebsites.net/api/cancel-finder-form';
   static String isExistAdoptRegistrationForm =
@@ -35,6 +37,8 @@ class ApiUrl {
       'https://petrescueapi.azurewebsites.net/api/create-adoption-registration-form';
   static String getAdoptRegistrationForm =
       'https://petrescueapi.azurewebsites.net/api/get-list-adoption-form-by-userID';
+  static String getAdoptRegistrationFormById =
+      'https://petrescueapi.azurewebsites.net/api/get-adoption-registration-form-by-id/';
   static String cancelAdoptRegistrationForm =
       'https://petrescueapi.azurewebsites.net/api/cancel-adoption-registration-form';
 }

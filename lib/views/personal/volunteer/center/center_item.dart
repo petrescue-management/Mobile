@@ -6,7 +6,6 @@ import 'package:pet_rescue_mobile/src/style.dart';
 
 import 'package:pet_rescue_mobile/views/personal/volunteer/volunteer_registration_form.dart';
 
-
 // ignore: must_be_immutable
 class CenterItem extends StatelessWidget {
   CenterModel center;
@@ -100,114 +99,115 @@ class CenterItem extends StatelessWidget {
 
   showCenterDetail(context) {
     return showDialog(
-        context: context,
-        builder: (context) {
-          return Center(
-            child: Material(
-              type: MaterialType.transparency,
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.white,
-                ),
-                padding: EdgeInsets.all(15),
-                width: MediaQuery.of(context).size.width * 0.8,
-                height: 530,
-                child: SizedBox(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: Image.network(
-                          center.imageUrl,
-                          width: 250,
-                          height: 250,
-                        ),
+      context: context,
+      builder: (context) {
+        return Center(
+          child: Material(
+            type: MaterialType.transparency,
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.white,
+              ),
+              padding: EdgeInsets.all(15),
+              width: MediaQuery.of(context).size.width * 0.8,
+              height: 530,
+              child: SizedBox(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image.network(
+                        center.imageUrl,
+                        width: 250,
+                        height: 250,
                       ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        center.centerName.trim(),
-                        style: TextStyle(
-                            fontSize: 20,
-                            color: darkBlue,
-                            fontWeight: FontWeight.bold,
-                            decoration: TextDecoration.underline),
-                        textAlign: TextAlign.center,
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        center.address.trim(),
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.grey[800],
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      center.centerName.trim(),
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: darkBlue,
                           fontWeight: FontWeight.bold,
+                          decoration: TextDecoration.underline),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      center.address.trim(),
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey[800],
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    RichText(
+                      textAlign: TextAlign.center,
+                      text: TextSpan(
+                        style: TextStyle(
+                            fontSize: 17,
+                            color: Colors.grey[800],
+                            fontFamily: 'SamsungSans'),
+                        children: [
+                          TextSpan(
+                              text: 'Thông tin liên lạc\n',
+                              style: TextStyle(
+                                  decoration: TextDecoration.underline)),
+                          TextSpan(
+                            text: 'Số điện thoại: ${center.phone} \n',
+                          ),
+                          TextSpan(
+                            text: 'Email: ${center.email} \n',
+                          ),
+                        ],
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => VolunteerForm(
+                              center: center,
+                            ),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        height: 45,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: primaryGreen,
+                          borderRadius: BorderRadius.circular(15),
                         ),
-                        textAlign: TextAlign.center,
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      RichText(
-                        textAlign: TextAlign.center,
-                        text: TextSpan(
+                        child: Text(
+                          'ĐĂNG KÝ',
                           style: TextStyle(
-                              fontSize: 17,
-                              color: Colors.grey[800],
-                              fontFamily: 'Philosopher'),
-                          children: [
-                            TextSpan(
-                                text: 'Thông tin liên lạc\n',
-                                style: TextStyle(
-                                    decoration: TextDecoration.underline)),
-                            TextSpan(
-                              text: 'Số điện thoại: ${center.phone} \n',
-                            ),
-                            TextSpan(
-                              text: 'Email: ${center.email} \n',
-                            ),
-                          ],
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => VolunteerForm(
-                                center: center,
-                              ),
-                            ),
-                          );
-                        },
-                        child: Container(
-                          height: 45,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            color: primaryGreen,
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          child: Text(
-                            'ĐĂNG KÝ',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
                           ),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),
-          );
-        });
+          ),
+        );
+      },
+    );
   }
 }

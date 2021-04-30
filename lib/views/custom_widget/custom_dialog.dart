@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pet_rescue_mobile/src/asset.dart';
+import 'package:pet_rescue_mobile/src/style.dart';
 
 // ignore: must_be_immutable
 class ProgressDialog extends StatelessWidget {
@@ -81,7 +82,9 @@ Widget loading(BuildContext context) {
         decoration: BoxDecoration(
           shape: BoxShape.rectangle,
         ),
-        child: CircularProgressIndicator(),
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(mainColor),
+        ),
       ),
     ),
   );

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:intl/intl.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:path/path.dart';
 import 'package:commons/commons.dart';
@@ -45,6 +46,11 @@ class _VolunteerFormState extends State<VolunteerForm> {
 
   bool hasImage = false;
 
+  TextEditingController lastNameController = TextEditingController();
+  TextEditingController firstNameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController phoneNumberController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -54,6 +60,15 @@ class _VolunteerFormState extends State<VolunteerForm> {
         .child('manager')
         .child('${widget.center.centerId}')
         .child('Notification');
+
+    _repo.getUserDetails().then((value) {
+      setState(() {
+        lastNameController.text = value.lastName;
+        firstNameController.text = value.firstName;
+        emailController.text = value.email;
+        phoneNumberController.text = value.phone;
+      });
+    });
   }
 
   _imgFromGallery() async {
@@ -119,125 +134,139 @@ class _VolunteerFormState extends State<VolunteerForm> {
         label: 'GỬI ĐƠN ĐĂNG KÝ',
         onTap: () {
           if (_fbKey.currentState.saveAndValidate()) {
-            confirmationDialog(
-              context,
-              'Bạn muốn gửi đơn đăng ký tình nguyện viên?',
-              title: '',
-              confirm: false,
-              negativeText: 'Không',
-              positiveText: 'Có',
-              positiveAction: () {
-                showDialog(
-                    context: context,
-                    builder: (context) =>
-                        ProgressDialog(message: 'Đang gửi...'));
+            final formInputs = _fbKey.currentState.value;
+            print(formInputs);
 
-                final formInputs = _fbKey.currentState.value;
-                print(formInputs);
+            int ageVal = DateTime.now().year -
+                DateTime.parse(formInputs['dob'].toString()).year;
+            if (ageVal < 20) {
+              warningDialog(
+                context,
+                'Bạn chưa đạt độ tuổi yêu cầu (từ 20 tuổi trở lên).',
+                title: '',
+                neutralText: 'Đóng',
+              );
+            } else {
+              confirmationDialog(
+                context,
+                'Gửi đơn đăng ký tình nguyện viên?',
+                title: '',
+                confirm: false,
+                neutralText: 'Không',
+                positiveText: 'Có',
+                positiveAction: () {
+                  showDialog(
+                      context: context,
+                      builder: (context) =>
+                          ProgressDialog(message: 'Đang gửi...'));
 
-                VolunteerModel user = new VolunteerModel();
-                if (formInputs['radioGender'] == 'Nữ') {
-                  user.gender = 1;
-                } else if (formInputs['radioGender'] == 'Nam') {
-                  user.gender = 2;
-                } else {
-                  user.gender = 3;
-                }
+                  VolunteerModel user = new VolunteerModel();
+                  if (formInputs['radioGender'] == 'Nữ') {
+                    user.gender = 1;
+                  } else if (formInputs['radioGender'] == 'Nam') {
+                    user.gender = 2;
+                  } else {
+                    user.gender = 3;
+                  }
 
-                user.firstName = formInputs['firstName'];
-                user.lastName = formInputs['lastName'];
-                user.dob = formInputs['dob'].toString();
-                user.phone = formInputs['phoneNumber'];
-                user.email = formInputs['email'];
+                  user.firstName = formInputs['firstName'];
+                  user.lastName = formInputs['lastName'];
 
-                user.centerId = widget.center.centerId;
+                  user.dob = formInputs['dob'].toString();
+                  user.phone = formInputs['phoneNumber'];
+                  user.email = formInputs['email'];
 
-                String url = '';
-                String baseName = basename(_image.path);
-                if (baseName != null) {
-                  _repo.uploadVolunteer(_image, baseName).then((value) {
-                    if (value != null) {
-                      setState(() {
-                        url = value;
-                        user.imgUrl = url;
+                  user.centerId = widget.center.centerId;
 
-                        _repo.registrationVolunteer(user).then((value) {
-                          if (value == 'Existed') {
-                            warningDialog(
-                              context,
-                              'Email ${formInputs['email']} đã được đăng ký làm tình nguyện viên.',
-                              title: '',
-                              neutralText: 'Đóng',
-                              neutralAction: () {
-                                Navigator.pop(context);
-                              },
-                            );
-                          } else if (value == null) {
-                            warningDialog(
-                              context,
-                              'Không thể đăng ký làm tình nguyện viên.',
-                              title: '',
-                              neutralText: 'Đóng',
-                              neutralAction: () {
-                                Navigator.pop(context);
-                              },
-                            );
-                          } else {
-                            var currentDate = DateTime.now();
-                            String currentDay = (currentDate.day < 10
-                                ? '0${currentDate.day}'
-                                : '${currentDate.day}');
-                            String currentMonth = (currentDate.month < 10
-                                ? '0${currentDate.month}'
-                                : '${currentDate.month}');
-                            String currentHour = (currentDate.hour < 10
-                                ? '0${currentDate.hour}'
-                                : '${currentDate.hour}');
-                            String currentMinute = (currentDate.minute < 10
-                                ? '0${currentDate.minute}'
-                                : '${currentDate.minute}');
-                            String currentSecond = (currentDate.second < 10
-                                ? '0${currentDate.second}'
-                                : '${currentDate.second}');
-                            var notiDate =
-                                '${currentDate.year}-$currentMonth-$currentDay $currentHour:$currentMinute:$currentSecond';
+                  String url = '';
+                  String baseName = basename(_image.path);
+                  if (baseName != null) {
+                    _repo.uploadVolunteer(_image, baseName).then((value) {
+                      if (value != null) {
+                        setState(() {
+                          url = value;
+                          user.imgUrl = url;
 
-                            Map<String, dynamic> notification = {
-                              'date': notiDate,
-                              'isCheck': false,
-                              'type': 3,
-                            };
+                          _repo.registrationVolunteer(user).then((value) {
+                            if (value == 'Existed') {
+                              warningDialog(
+                                context,
+                                'Email ${formInputs['email']} đã được đăng ký làm tình nguyện viên.',
+                                title: '',
+                                neutralText: 'Đóng',
+                                neutralAction: () {
+                                  Navigator.pop(context);
+                                },
+                              );
+                            } else if (value == null) {
+                              warningDialog(
+                                context,
+                                'Không thể đăng ký làm tình nguyện viên.',
+                                title: '',
+                                neutralText: 'Đóng',
+                                neutralAction: () {
+                                  Navigator.pop(context);
+                                },
+                              );
+                            } else {
+                              var currentDate = DateTime.now();
+                              String currentDay = (currentDate.day < 10
+                                  ? '0${currentDate.day}'
+                                  : '${currentDate.day}');
+                              String currentMonth = (currentDate.month < 10
+                                  ? '0${currentDate.month}'
+                                  : '${currentDate.month}');
+                              String currentHour = (currentDate.hour < 10
+                                  ? '0${currentDate.hour}'
+                                  : '${currentDate.hour}');
+                              String currentMinute = (currentDate.minute < 10
+                                  ? '0${currentDate.minute}'
+                                  : '${currentDate.minute}');
+                              String currentSecond = (currentDate.second < 10
+                                  ? '0${currentDate.second}'
+                                  : '${currentDate.second}');
+                              var notiDate =
+                                  '${currentDate.year}-$currentMonth-$currentDay $currentHour:$currentMinute:$currentSecond';
 
-                            _dbReference.child(value).set(notification);
+                              Map<String, dynamic> notification = {
+                                'date': notiDate,
+                                'isCheck': false,
+                                'type': 3,
+                              };
 
-                            successDialog(context,
-                                'Đơn đăng ký của bạn đã được gửi đến ${widget.center.centerName.trim()}. Trung tâm sẽ xem xét và phản hồi cho bạn qua email ${user.email}. Xin cảm ơn.',
-                                title: 'Thành công', neutralAction: () {
-                              Navigator.of(context)
-                                  .popUntil((route) => route.isFirst);
-                              Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => MyApp()));
-                            });
-                          }
+                              _dbReference.child(value).set(notification);
+
+                              successDialog(context,
+                                  'Đơn đăng ký của bạn đã được gửi đến ${widget.center.centerName.trim()}. Trung tâm sẽ xem xét và phản hồi cho bạn qua email ${user.email}. Xin cảm ơn.',
+                                  title: 'Thành công',
+                                  neutralText: 'Quay về trang chủ',
+                                  neutralAction: () {
+                                Navigator.of(context)
+                                    .popUntil((route) => route.isFirst);
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => MyApp()));
+                              });
+                            }
+                          });
                         });
-                      });
-                    } else {
-                      warningDialog(
-                        context,
-                        'Lỗi upload hình ảnh.',
-                        title: '',
-                        neutralText: 'Đóng',
-                        neutralAction: () {
-                          Navigator.pop(context);
-                        },
-                      );
-                    }
-                  });
-                }
-              },
-            );
+                      } else {
+                        warningDialog(
+                          context,
+                          'Lỗi upload hình ảnh.',
+                          title: '',
+                          neutralText: 'Đóng',
+                          neutralAction: () {
+                            Navigator.pop(context);
+                          },
+                        );
+                      }
+                    });
+                  }
+                },
+              );
+            }
           } else {
             warningDialog(
               context,
@@ -418,13 +447,18 @@ class _VolunteerFormState extends State<VolunteerForm> {
                 margin: EdgeInsets.only(top: 20),
                 child: FormBuilderTextField(
                   attribute: 'email',
+                  controller: emailController,
                   decoration: InputDecoration(
                     labelText: 'Email*',
                     labelStyle: TextStyle(
                       color: primaryGreen,
                       fontWeight: FontWeight.bold,
                     ),
-                    hintText: '',
+                    helperText: 'Ví dụ: rescueme@gmail.com',
+                    helperStyle: TextStyle(
+                      color: primaryGreen,
+                      fontStyle: FontStyle.italic,
+                    ),
                     floatingLabelBehavior: FloatingLabelBehavior.always,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -466,6 +500,7 @@ class _VolunteerFormState extends State<VolunteerForm> {
                     width: 160,
                     child: FormBuilderTextField(
                       attribute: 'lastName',
+                      controller: lastNameController,
                       decoration: InputDecoration(
                         labelText: 'Họ*',
                         labelStyle: TextStyle(
@@ -503,6 +538,7 @@ class _VolunteerFormState extends State<VolunteerForm> {
                     width: 160,
                     child: FormBuilderTextField(
                       attribute: 'firstName',
+                      controller: firstNameController,
                       decoration: InputDecoration(
                         labelText: 'Tên*',
                         labelStyle: TextStyle(
@@ -544,6 +580,7 @@ class _VolunteerFormState extends State<VolunteerForm> {
               Container(
                 child: FormBuilderTextField(
                   attribute: 'phoneNumber',
+                  controller: phoneNumberController,
                   decoration: InputDecoration(
                     floatingLabelBehavior: FloatingLabelBehavior.always,
                     labelText: 'Số điện thoại*',
@@ -609,6 +646,11 @@ class _VolunteerFormState extends State<VolunteerForm> {
                       fontWeight: FontWeight.bold,
                     ),
                     hintText: '',
+                    helperText: 'Bạn phải từ 20 tuổi trở lên',
+                    helperStyle: TextStyle(
+                      color: primaryGreen,
+                      fontStyle: FontStyle.italic,
+                    ),
                     floatingLabelBehavior: FloatingLabelBehavior.always,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),

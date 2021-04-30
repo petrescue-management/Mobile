@@ -145,7 +145,7 @@ class _VolunteerWelcomeState extends State<VolunteerWelcome> {
               text: TextSpan(
                 style: TextStyle(
                   fontSize: 17,
-                  fontFamily: 'Philosopher',
+                  fontFamily: 'SamsungSans',
                 ),
                 children: [
                   TextSpan(
