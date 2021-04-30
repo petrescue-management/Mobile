@@ -64,7 +64,7 @@ class _ProgressReportPageState extends State<ProgressReportPage> {
       labelColor: Colors.black,
       labelStyle: TextStyle(
         fontSize: 16,
-        fontFamily: 'Philosopher',
+        fontFamily: 'SamsungSans',
         fontWeight: FontWeight.bold,
       ),
       indicatorColor: mainColor,

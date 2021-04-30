@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:geolocator/geolocator.dart';
 
 import 'package:pet_rescue_mobile/resource/location/assistant.dart';
@@ -35,9 +35,6 @@ class _FinderCard extends State<FinderCard> {
   void initState() {
     super.initState();
     setState(() {
-      imgUrlList = widget.finder.finderImageUrl;
-      firstUrl = imgUrlList.first;
-
       status = getFinderFormStatus(widget.finder.finderFormStatus);
 
       finderDate = formatDateTime(widget.finder.finderDate);
@@ -79,8 +76,6 @@ class _FinderCard extends State<FinderCard> {
     finderPosition = Position(latitude: latitude, longitude: longitude);
 
     address = await Assistant.searchCoordinateAddress(finderPosition, context);
-
-    print('This is user Address: ' + address);
 
     setState(() {
       finderAddress = address;
@@ -134,7 +129,8 @@ class _FinderCard extends State<FinderCard> {
                             bottomLeft: Radius.circular(18),
                           ),
                           image: DecorationImage(
-                            image: NetworkImage(firstUrl),
+                            image: CachedNetworkImageProvider(
+                                widget.finder.finderImageUrl.elementAt(0)),
                             fit: BoxFit.cover,
                           ),
                         ),

@@ -71,7 +71,6 @@ class FirebaseSignIn {
     sharedPreferences.remove('userId');
     sharedPreferences.remove('avatar');
     sharedPreferences.remove('fullname');
-    // sharedPreferences.remove('role');
 
     print("User Signed Out");
   }

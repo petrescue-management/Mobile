@@ -7,7 +7,11 @@ import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:pet_rescue_mobile/src/asset.dart';
 import 'package:pet_rescue_mobile/src/style.dart';
 
+import 'package:pet_rescue_mobile/repository/repository.dart';
+
 import 'package:pet_rescue_mobile/views/custom_widget/custom_dialog.dart';
+import 'package:pet_rescue_mobile/views/personal/progress/finder_form/finder_detail.dart';
+import 'package:pet_rescue_mobile/views/personal/progress/adopt_registration/adoption_regis_detail.dart';
 
 // ignore: must_be_immutable
 class NotificationsPage extends StatefulWidget {
@@ -23,6 +27,8 @@ class _NotificationsPageState extends State<NotificationsPage> {
   Query _ref;
 
   String userId;
+
+  final _repo = Repository();
 
   @override
   void initState() {
@@ -91,7 +97,6 @@ class _NotificationsPageState extends State<NotificationsPage> {
                       } else {
                         String notiKey = snapshot.key;
                         Map notification = snapshot.value;
-                        print(snapshot.value);
                         return _buildItem(notification, notiKey);
                       }
                     },
@@ -121,77 +126,116 @@ class _NotificationsPageState extends State<NotificationsPage> {
     }
   }
 
-  Widget _buildItem(Map notification, String notificationKey) {
+  Widget _buildItem(Map notification, String notiKey) {
     String typeIcon = getNotificationTypeIcon(notification['type']);
     var notiDate = formatDateTime(notification['date']);
+    int type = notification['type'];
 
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-      padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-      height: 120,
-      decoration: BoxDecoration(
-        color: Colors.grey[50],
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: backgroundColor,
-          width: 1,
+    return GestureDetector(
+      onTap: () {
+        showDialog(
+              context: context,
+              builder: (context) => ProgressDialog(message: 'Đang tải...'));
+
+        if (type == 1) {
+          _repo.getAdoptRegistrationFormById(notiKey).then((value) {
+            if (value != null) {
+              Navigator.pop(context);
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) {
+                    return AdoptFormDetails(
+                      form: value,
+                    );
+                  },
+                ),
+              );
+            }
+          });
+        } else {
+          _repo.getFinderFormById(notiKey).then((value) {
+            if (value != null) {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => FinderCardDetail(
+                    finder: value,
+                  ),
+                ),
+              );
+            }
+          });
+        }
+      },
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+        padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+        height: 125,
+        decoration: BoxDecoration(
+          color: Colors.grey[50],
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: backgroundColor,
+            width: 1,
+          ),
         ),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            SizedBox(
-              width: 10,
-            ),
-            Container(
-              width: 80,
-              height: 80,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: mainColor,
-                  width: 1.5,
-                ),
-                image: DecorationImage(
-                  image: AssetImage(typeIcon),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              SizedBox(
+                width: 10,
+              ),
+              Container(
+                width: 80,
+                height: 80,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: mainColor,
+                    width: 1.5,
+                  ),
+                  image: DecorationImage(
+                    image: AssetImage(typeIcon),
+                  ),
                 ),
               ),
-            ),
-            SizedBox(
-              width: 15,
-            ),
-            Expanded(
-              child: Container(
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        notification['body'],
-                        style: TextStyle(
-                          fontSize: 15,
-                          color: Colors.black,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Text(
-                        notiDate,
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: mainColor,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ]),
+              SizedBox(
+                width: 15,
               ),
-            ),
-          ]),
-        ],
+              Expanded(
+                child: Container(
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          notification['body'],
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.black,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Text(
+                          notiDate,
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: mainColor,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ]),
+                ),
+              ),
+            ]),
+          ],
+        ),
       ),
     );
   }

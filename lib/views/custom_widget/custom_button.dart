@@ -104,3 +104,36 @@ class CustomRaiseButtonIcon extends StatelessWidget {
     );
   }
 }
+
+
+// ignore: must_be_immutable
+class CustomCancelButton extends StatelessWidget {
+  var onTap;
+  String label;
+
+  CustomCancelButton({this.onTap, this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 50,
+        padding: EdgeInsets.symmetric(horizontal: 50),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: Colors.red[900],
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+      ),
+    );
+  }
+}

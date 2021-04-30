@@ -30,6 +30,10 @@ class _AdoptFormRegistrationPageState extends State<AdoptFormRegistrationPage> {
   int _currentStep = 0;
 
   final GlobalKey<FormBuilderState> _fbKey = GlobalKey();
+  TextEditingController lastNameController = TextEditingController();
+  TextEditingController firstNameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController phoneNumberController = TextEditingController();
 
   ScrollController scrollController = ScrollController();
 
@@ -46,6 +50,15 @@ class _AdoptFormRegistrationPageState extends State<AdoptFormRegistrationPage> {
         .child('manager')
         .child('${widget.pet.centerId}')
         .child('Notification');
+
+    _repo.getUserDetails().then((value) {
+      setState(() {
+        lastNameController.text = value.lastName;
+        firstNameController.text = value.firstName;
+        emailController.text = value.email;
+        phoneNumberController.text = value.phone;
+      });
+    });
   }
 
   Future<bool> _confirmPop() {
@@ -130,7 +143,7 @@ class _AdoptFormRegistrationPageState extends State<AdoptFormRegistrationPage> {
                             child: Theme(
                               data: ThemeData(
                                 primaryColor: primaryGreen,
-                                fontFamily: 'Philosopher',
+                                fontFamily: 'SamsungSans',
                               ),
                               child: Stepper(
                                 steps: _stepper(),
@@ -143,24 +156,56 @@ class _AdoptFormRegistrationPageState extends State<AdoptFormRegistrationPage> {
                                 onStepContinue: () {
                                   setState(() {
                                     if (_fbKey.currentState.saveAndValidate()) {
-                                      if (this._currentStep <
-                                          this._stepper().length - 1) {
-                                        this._currentStep =
-                                            this._currentStep + 1;
+                                      final formInputs =
+                                          _fbKey.currentState.value;
+                                      print(formInputs);
+
+                                      int ageVal = DateTime.now().year -
+                                          DateTime.parse(
+                                                  formInputs['dob'].toString())
+                                              .year;
+                                      if (ageVal < 20) {
+                                        warningDialog(
+                                          context,
+                                          'Bạn chưa đạt độ tuổi yêu cầu (từ 20 tuổi trở lên).',
+                                          title: '',
+                                          neutralText: 'Đóng',
+                                        );
                                       } else {
-                                        _currentStep = 0;
+                                        if (this._currentStep <
+                                            this._stepper().length - 1) {
+                                          this._currentStep =
+                                              this._currentStep + 1;
+                                        } else {
+                                          return;
+                                        }
                                       }
                                     }
                                   });
                                 },
                                 onStepCancel: () {
-                                  setState(() {
-                                    if (this._currentStep > 0) {
-                                      this._currentStep = this._currentStep - 1;
-                                    } else {
-                                      this._currentStep = 0;
-                                    }
-                                  });
+                                  return;
+                                },
+                                controlsBuilder: (context,
+                                    {onStepCancel, onStepContinue}) {
+                                  if (_currentStep == 0) {
+                                    return InkWell(
+                                      onTap: onStepContinue,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          Icon(
+                                            Icons.arrow_forward_ios,
+                                            color: primaryGreen,
+                                            size: 30,
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  } else {
+                                    return Container();
+                                  }
                                 },
                               ),
                             ),
@@ -199,7 +244,7 @@ class _AdoptFormRegistrationPageState extends State<AdoptFormRegistrationPage> {
               context, 'Bạn chắc chắn muốn gửi đơn đăng ký nhận nuôi?',
               title: '',
               confirm: false,
-              negativeText: 'Không',
+              neutralText: 'Không',
               positiveText: 'Có', positiveAction: () async {
             showDialog(
                 context: context,
@@ -312,6 +357,7 @@ class _AdoptFormRegistrationPageState extends State<AdoptFormRegistrationPage> {
                         MaterialPageRoute(builder: (context) => MyApp()));
                   },
                   title: "Thành công",
+                  neutralText: 'Quay về trang chủ',
                 );
               } else {
                 warningDialog(
@@ -330,9 +376,7 @@ class _AdoptFormRegistrationPageState extends State<AdoptFormRegistrationPage> {
             context,
             'Bạn chưa điền đầy đủ thông tin.\nXin hãy kiểm tra lại.',
             title: '',
-            neutralAction: () {
-              Navigator.pop(context);
-            },
+            neutralText: 'Đóng',
           );
         }
       },
@@ -355,6 +399,7 @@ class _AdoptFormRegistrationPageState extends State<AdoptFormRegistrationPage> {
                   width: 160,
                   child: FormBuilderTextField(
                     attribute: 'lastName',
+                    controller: lastNameController,
                     decoration: InputDecoration(
                       labelText: 'Họ*',
                       labelStyle: TextStyle(
@@ -393,6 +438,7 @@ class _AdoptFormRegistrationPageState extends State<AdoptFormRegistrationPage> {
                   width: 160,
                   child: FormBuilderTextField(
                     attribute: 'firstName',
+                    controller: firstNameController,
                     decoration: InputDecoration(
                       labelText: 'Tên*',
                       labelStyle: TextStyle(
@@ -441,6 +487,11 @@ class _AdoptFormRegistrationPageState extends State<AdoptFormRegistrationPage> {
                     color: primaryGreen,
                     fontWeight: FontWeight.bold,
                   ),
+                  helperText: 'Bạn phải từ 20 tuổi trở lên',
+                  helperStyle: TextStyle(
+                    color: primaryGreen,
+                    fontStyle: FontStyle.italic,
+                  ),
                   floatingLabelBehavior: FloatingLabelBehavior.always,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -470,6 +521,7 @@ class _AdoptFormRegistrationPageState extends State<AdoptFormRegistrationPage> {
             Container(
               child: FormBuilderTextField(
                 attribute: 'phone',
+                controller: phoneNumberController,
                 decoration: InputDecoration(
                   floatingLabelBehavior: FloatingLabelBehavior.always,
                   labelText: 'Số điện thoại*',
@@ -513,13 +565,18 @@ class _AdoptFormRegistrationPageState extends State<AdoptFormRegistrationPage> {
             Container(
               child: FormBuilderTextField(
                 attribute: 'email',
+                controller: emailController,
                 decoration: InputDecoration(
                   labelText: 'Email*',
                   labelStyle: TextStyle(
                     color: primaryGreen,
                     fontWeight: FontWeight.bold,
                   ),
-                  hintText: '',
+                  helperText: 'Ví dụ: rescueme@gmail.com',
+                  helperStyle: TextStyle(
+                    color: primaryGreen,
+                    fontStyle: FontStyle.italic,
+                  ),
                   floatingLabelBehavior: FloatingLabelBehavior.always,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -672,7 +729,7 @@ class _AdoptFormRegistrationPageState extends State<AdoptFormRegistrationPage> {
             ),
             //* childAge
             customRadioGroup(
-              'Có trẻ em hay không?*',
+              'Độ tuổi của trẻ (Nếu nhà bạn không có trẻ em, hãy chọn "Không có")*',
               'childAge',
               'Chưa trả lời',
               [

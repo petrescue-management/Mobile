@@ -60,55 +60,11 @@ class _AdoptionAgreementState extends State<AdoptionAgreement> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  // pet short detail
-                  Container(
-                    margin: EdgeInsets.only(top: 20, bottom: 10),
-                    padding: EdgeInsets.only(top: 5, bottom: 5),
-                    height: MediaQuery.of(context).size.height * 0.16,
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 150,
-                          height: 150,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(color: mainColor, width: 2),
-                            image: DecorationImage(
-                              image: NetworkImage(firstUrl),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(top: 20, left: 20),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                widget.pet.petName,
-                                style: TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.bold),
-                              ),
-                              SizedBox(height: 20),
-                              Text(
-                                'Tuổi: ' + widget.pet.petAge,
-                                style: TextStyle(fontSize: 16),
-                              ),
-                              Text(
-                                'Giống: ' + widget.pet.petBreedName,
-                                style: TextStyle(fontSize: 16),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  CustomDivider(),
+                  SizedBox(height: 50,),
                   // conditions
                   Container(
                     margin: EdgeInsets.only(top: 5),
-                    height: MediaQuery.of(context).size.height * 0.6,
+                    height: MediaQuery.of(context).size.height * 0.72,
                     child: SizedBox(
                       child: SingleChildScrollView(
                         controller: scrollController,
@@ -119,6 +75,7 @@ class _AdoptionAgreementState extends State<AdoptionAgreement> {
                     ),
                   ),
                   // accept terms
+                  CustomDivider(),
                   FormBuilder(
                     key: _fbKey,
                     child: Expanded(
@@ -216,7 +173,7 @@ class _AdoptionAgreementState extends State<AdoptionAgreement> {
               text: TextSpan(
                 style: TextStyle(
                   fontSize: 17,
-                  fontFamily: 'Philosopher',
+                  fontFamily: 'SamsungSans',
                 ),
                 children: [
                   TextSpan(

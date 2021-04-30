@@ -129,7 +129,7 @@ class _RegisterDetailState extends State<RegisterDetail> {
 
   _btnSubmitInformation(context) {
     if (widget.form.adoptionRegistrationStatus == 1) {
-      return CustomButton(
+      return CustomCancelButton(
         label: 'HỦY ĐĂNG KÝ',
         onTap: () {
           showDialog(
@@ -212,10 +212,10 @@ class _RegisterDetailState extends State<RegisterDetail> {
                                   );
                                 } else {
                                   confirmationDialog(context,
-                                      'Bạn có chắc chắn muốn hủy đơn đăng ký này?',
+                                      'Bạn chắc chắn muốn hủy đơn đăng ký?',
                                       title: '',
                                       confirm: false,
-                                      negativeText: 'Không',
+                                      neutralText: 'Không',
                                       positiveText: 'Có', positiveAction: () {
                                     showDialog(
                                         context: context,
@@ -230,7 +230,7 @@ class _RegisterDetailState extends State<RegisterDetail> {
                                       if (value != null) {
                                         successDialog(
                                           context,
-                                          'Đơn đăng ký nhận nuôi bé ${widget.form.pet.petName} đã bị hủy.',
+                                          'Đơn đăng ký nhận nuôi ${widget.form.pet.petName} đã hủy.',
                                           title: 'Đã hủy',
                                           neutralText: 'Đóng',
                                           neutralAction: () {

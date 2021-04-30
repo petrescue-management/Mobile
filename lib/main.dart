@@ -2,6 +2,7 @@ import 'package:provider/provider.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -22,7 +23,15 @@ void main() => runApp(
       ChangeNotifierProvider(
         create: (context) => AppData(),
         child: MaterialApp(
-          theme: ThemeData(fontFamily: 'Philosopher'),
+          localizationsDelegates: [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+          ],
+          supportedLocales: [
+            const Locale.fromSubtags(languageCode: 'vi'),
+          ],
+          locale: const Locale('vi'),
+          theme: ThemeData(fontFamily: 'SamsungSans'),
           initialRoute: '/',
           debugShowCheckedModeBanner: false,
           routes: {

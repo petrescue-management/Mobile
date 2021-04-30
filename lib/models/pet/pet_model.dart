@@ -49,9 +49,9 @@ class PetModel {
     if (age == 1) {
       return 'Nhỏ/Trẻ';
     } else if (age == 2) {
-      return 'Vừa/Trưởng thành';
+      return 'Trưởng thành';
     } else if (age == 3) {
-      return 'Lớn/Già';
+      return 'Già';
     } else {
       return 'Không xác định';
     }

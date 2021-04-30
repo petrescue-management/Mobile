@@ -16,6 +16,8 @@ import 'package:pet_rescue_mobile/views/adoption/adopt.dart';
 import 'package:pet_rescue_mobile/views/login/login_request.dart';
 import 'package:pet_rescue_mobile/views/custom_widget/custom_button.dart';
 
+import 'package:pet_rescue_mobile/main.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({Key key}) : super(key: key);
 
@@ -35,6 +37,23 @@ class _HomePageState extends State<HomePage> {
       });
     });
     super.initState();
+
+    _repo.getUserDetails().then((value) {
+      if (value == null) {
+        infoDialog(
+          context,
+          'Phiên đăng nhập của bạn đã hết.',
+          title: 'Thông báo',
+          neutralText: 'Đăng xuất',
+          neutralAction: () {
+            _repo.signOut();
+            Navigator.of(context).popUntil((route) => route.isFirst);
+            Navigator.pushReplacement(
+                context, MaterialPageRoute(builder: (context) => MyApp()));
+          },
+        );
+      }
+    });
   }
 
   @override

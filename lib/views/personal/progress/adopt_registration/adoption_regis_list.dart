@@ -60,9 +60,7 @@ class _AdoptionRegistrationFormListState
               ),
             );
           } else {
-            List<AdoptionRegisForm> resultList = snapshot.data.result;
-
-            resultList.sort((a, b) => DateTime.parse(b.insertedAt)
+            snapshot.data.result.sort((a, b) => DateTime.parse(b.insertedAt)
                 .compareTo(DateTime.parse(a.insertedAt)));
 
             return Container(
@@ -70,10 +68,9 @@ class _AdoptionRegistrationFormListState
                 physics: BouncingScrollPhysics(),
                 scrollDirection: Axis.vertical,
                 controller: scrollController,
-                itemCount: resultList.length,
+                itemCount: snapshot.data.result.length,
                 itemBuilder: (context, index) {
-                  AdoptionRegisForm result = resultList[index];
-                  return AdoptionRegistrationFormCard(form: result);
+                  return AdoptionRegistrationFormCard(form: snapshot.data.result[index]);
                 },
               ),
             );

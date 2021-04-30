@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:pet_rescue_mobile/models/registrationform/adopt_regis_form.dart';
 
@@ -19,23 +20,9 @@ class AdoptionRegistrationFormCard extends StatefulWidget {
 
 class _AdoptionRegistrationFormCard
     extends State<AdoptionRegistrationFormCard> {
-  List<String> imgUrlList;
-  String firstUrl;
-  String status;
-
-  String insertedAt;
-
   @override
   void initState() {
     super.initState();
-    setState(() {
-      imgUrlList = widget.form.pet.petImgUrl;
-      firstUrl = imgUrlList.elementAt(0);
-
-      status = getFormStatus(widget.form.adoptionRegistrationStatus);
-
-      insertedAt = formatDateTime(widget.form.insertedAt);
-    });
   }
 
   formatDateTime(String date) {
@@ -91,7 +78,8 @@ class _AdoptionRegistrationFormCard
                         bottomLeft: Radius.circular(18),
                       ),
                       image: DecorationImage(
-                        image: NetworkImage(firstUrl),
+                        image: CachedNetworkImageProvider(
+                            widget.form.pet.petImgUrl.elementAt(0)),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -120,17 +108,23 @@ class _AdoptionRegistrationFormCard
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Ngày đăng ký: $insertedAt',
+                                  'Ngày đăng ký: ${formatDateTime(widget.form.insertedAt)}',
                                   style: TextStyle(
                                     fontSize: 13,
                                     color: fadedBlack,
                                   ),
                                 ),
                                 Text(
-                                  status,
+                                  getFormStatus(
+                                      widget.form.adoptionRegistrationStatus),
                                   style: TextStyle(
                                     fontSize: 13,
-                                    color: (widget.form.adoptionRegistrationStatus != 4 && widget.form.adoptionRegistrationStatus != 3)
+                                    color: (widget.form
+                                                    .adoptionRegistrationStatus !=
+                                                4 &&
+                                            widget.form
+                                                    .adoptionRegistrationStatus !=
+                                                3)
                                         ? Colors.green
                                         : Colors.red,
                                     fontStyle: FontStyle.italic,

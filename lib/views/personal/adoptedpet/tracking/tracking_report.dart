@@ -169,7 +169,7 @@ class _TrackingReportState extends State<TrackingReport> {
                             context,
                             'Báo cáo của bạn đã được gửi tới trung tâm.',
                             title: 'Thành công',
-                            neutralText: 'Đóng',
+                            neutralText: 'Quay về trang chủ',
                             neutralAction: () {
                               Navigator.of(context)
                                   .popUntil((route) => route.isFirst);

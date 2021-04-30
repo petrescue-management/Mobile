@@ -9,6 +9,7 @@ class FinderForm {
   String phone;
   double lat;
   double lng;
+  String canceledReason;
 
   FinderForm(form) {
     this.finderFormId = form['finderFormId'];
@@ -21,6 +22,7 @@ class FinderForm {
     this.phone = form['phone'];
     this.lat = form['lat'];
     this.lng = form['lng'];
+    this.canceledReason = form['canceledReason'];
   }
 
   List getImgUrlList(String imgUrl) {

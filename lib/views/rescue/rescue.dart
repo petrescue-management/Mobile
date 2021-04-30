@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:commons/commons.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +35,7 @@ class _RescueState extends State<Rescue> {
   final GlobalKey<FormBuilderState> _fbKey = GlobalKey();
 
   List<Asset> _images = List<Asset>();
-
+  int limitImg;
   bool hasImage = false;
 
   File video;
@@ -43,6 +44,23 @@ class _RescueState extends State<Rescue> {
   @override
   void initState() {
     super.initState();
+
+    getlitmitImgForMember();
+  }
+
+  getlitmitImgForMember() async {
+    await FirebaseDatabase.instance
+        .reference()
+        .child('config')
+        .child('limitImgForMember')
+        .once()
+        .then((DataSnapshot snapshot) {
+      int result = snapshot.value;
+
+      setState(() {
+        limitImg = result;
+      });
+    });
   }
 
   Widget buildViewPickedImages() {
@@ -149,7 +167,7 @@ class _RescueState extends State<Rescue> {
 
     try {
       resultList = await MultiImagePicker.pickImages(
-        maxImages: 3,
+        maxImages: limitImg,
         enableCamera: true,
         selectedAssets: _images,
         materialOptions: MaterialOptions(
@@ -175,7 +193,7 @@ class _RescueState extends State<Rescue> {
   captureVideo() async {
     // ignore: deprecated_member_use
     File vid = await ImagePicker.pickVideo(
-        source: ImageSource.camera, maxDuration: Duration(minutes: 3));
+        source: ImageSource.camera, maxDuration: Duration(minutes: 1));
 
     if (vid != null) {
       setState(() {
@@ -292,7 +310,7 @@ class _RescueState extends State<Rescue> {
                       padding: EdgeInsets.symmetric(horizontal: 30),
                       child: RichText(
                         text: TextSpan(
-                          style: TextStyle(fontFamily: 'Philosopher'),
+                          style: TextStyle(fontFamily: 'SamsungSans'),
                           children: [
                             TextSpan(
                               text: 'Địa chỉ của bạn:\n',
@@ -382,7 +400,7 @@ class _RescueState extends State<Rescue> {
                     Row(
                       children: [
                         Text(
-                          ' Ảnh mô tả*',
+                          ' Ảnh mô tả *',
                           style: TextStyle(
                             color: Colors.red,
                             fontWeight: FontWeight.bold,
@@ -392,6 +410,9 @@ class _RescueState extends State<Rescue> {
                           width: 10,
                         ),
                         RaisedButton(
+                          color: Colors.blue[400],
+                          textColor: Colors.white,
+                          splashColor: Colors.grey,
                           child: Text("Chọn ảnh"),
                           onPressed: pickImages,
                         ),
@@ -432,6 +453,9 @@ class _RescueState extends State<Rescue> {
                         ),
                         RaisedButton(
                           child: Text("Quay video"),
+                          color: Colors.blue[400],
+                          textColor: Colors.white,
+                          splashColor: Colors.grey,
                           onPressed: () {
                             captureVideo();
                           },
@@ -481,6 +505,8 @@ class _RescueState extends State<Rescue> {
                   validators: [
                     FormBuilderValidators.required(
                         errorText: 'Hãy nhập số điện thoại của bạn'),
+                    FormBuilderValidators.minLength(10,
+                        errorText: 'Số điện thoại của bạn chưa đúng'),
                   ],
                   maxLengthEnforced: true,
                   maxLength: 10,
@@ -495,7 +521,7 @@ class _RescueState extends State<Rescue> {
                   'radioPetStatus',
                   'Bạn chưa chọn tình trạng của vật nuôi',
                   [
-                    FormBuilderFieldOption(value: 'Bị thương'),
+                    FormBuilderFieldOption(value: 'Bị thương',),
                     FormBuilderFieldOption(value: 'Đi lạc'),
                     FormBuilderFieldOption(value: 'Bị bỏ rơi'),
                     FormBuilderFieldOption(value: 'Cho đi'),

@@ -47,15 +47,10 @@ class _AdoptedPetState extends State<AdoptedPet> {
       body: Stack(
         children: [
           Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage(adopted),
-                fit: BoxFit.cover,
-              ),
-            ),
+            decoration: BoxDecoration(color: backgroundColor),
           ),
           Container(
-            decoration: BoxDecoration(color: Colors.white.withOpacity(0.65)),
+            decoration: BoxDecoration(color: Colors.white.withOpacity(0.8)),
           ),
           Container(
             child: StreamBuilder(
@@ -86,20 +81,19 @@ class _AdoptedPetState extends State<AdoptedPet> {
                     ),
                   );
                 } else {
-                  List<AdoptedPetModel> resultList = snapshot.data.result;
-
-                  resultList.sort((a, b) => DateTime.parse(b.adoptedAt)
-                      .compareTo(DateTime.parse(a.adoptedAt)));
+                  snapshot.data.result.sort((a, b) =>
+                      DateTime.parse(b.adoptedAt)
+                          .compareTo(DateTime.parse(a.adoptedAt)));
 
                   return Container(
                     child: ListView.builder(
                       physics: BouncingScrollPhysics(),
                       scrollDirection: Axis.vertical,
                       controller: scrollController,
-                      itemCount: resultList.length,
+                      itemCount: snapshot.data.result.length,
                       itemBuilder: (context, index) {
-                        AdoptedPetModel result = resultList[index];
-                        return AdoptedCard(adopted: result);
+                        return AdoptedCard(
+                            adopted: snapshot.data.result[index]);
                       },
                     ),
                   );
@@ -124,23 +118,9 @@ class AdoptedCard extends StatefulWidget {
 }
 
 class _AdoptedCard extends State<AdoptedCard> {
-  List<String> imgUrlList;
-  String firstUrl;
-  String status;
-
-  String finderAddress = '';
-
-  String adoptedAt;
-
   @override
   void initState() {
     super.initState();
-    setState(() {
-      imgUrlList = widget.adopted.petImgUrl;
-      firstUrl = imgUrlList.elementAt(0);
-
-      adoptedAt = formatDateTime(widget.adopted.adoptedAt);
-    });
   }
 
   formatDateTime(String date) {
@@ -180,7 +160,8 @@ class _AdoptedCard extends State<AdoptedCard> {
                         bottomLeft: Radius.circular(18),
                       ),
                       image: DecorationImage(
-                        image: NetworkImage(firstUrl),
+                        image:
+                            NetworkImage(widget.adopted.petImgUrl.elementAt(0)),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -219,7 +200,7 @@ class _AdoptedCard extends State<AdoptedCard> {
                                   height: 5,
                                 ),
                                 Text(
-                                  'Ngày nhận nuôi: $adoptedAt',
+                                  'Ngày nhận nuôi: ${formatDateTime(widget.adopted.adoptedAt)}',
                                   style: TextStyle(
                                     fontSize: 13,
                                     color: fadedBlack,

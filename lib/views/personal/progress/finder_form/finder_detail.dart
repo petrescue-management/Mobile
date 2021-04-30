@@ -2,7 +2,9 @@ import 'package:commons/commons.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 
+import 'package:pet_rescue_mobile/resource/location/assistant.dart';
 import 'package:pet_rescue_mobile/repository/repository.dart';
 import 'package:pet_rescue_mobile/models/registrationform/finder_form.dart';
 
@@ -33,9 +35,13 @@ class FinderCardDetail extends StatefulWidget {
 class _FinderCardDetailState extends State<FinderCardDetail> {
   ScrollController scrollController = ScrollController();
   TextEditingController reasonController = TextEditingController();
+  TextEditingController addressController = TextEditingController();
+
   final _repo = Repository();
 
   String petAttribute;
+
+  Position finderPosition;
 
   getPetAttribute(int petAttribute) {
     if (petAttribute == 1)
@@ -53,6 +59,23 @@ class _FinderCardDetailState extends State<FinderCardDetail> {
     super.initState();
     setState(() {
       petAttribute = getPetAttribute(widget.finder.petAttribute);
+    });
+
+    locateUserAddressPosition();
+  }
+
+  locateUserAddressPosition() async {
+    String address = '';
+
+    finderPosition =
+        Position(latitude: widget.finder.lat, longitude: widget.finder.lng);
+
+    address = await Assistant.searchCoordinateAddress(finderPosition, context);
+
+    print('This is user Address: ' + address);
+
+    setState(() {
+      widget.address = address;
     });
   }
 
@@ -112,7 +135,7 @@ class _FinderCardDetailState extends State<FinderCardDetail> {
                     padding: EdgeInsets.symmetric(horizontal: 30),
                     child: RichText(
                       text: TextSpan(
-                        style: TextStyle(fontFamily: 'Philosopher'),
+                        style: TextStyle(fontFamily: 'SamsungSans'),
                         children: [
                           TextSpan(
                             text: 'Địa chỉ của bạn:\n',
@@ -126,7 +149,7 @@ class _FinderCardDetailState extends State<FinderCardDetail> {
                               text: (widget.address != null ||
                                       widget.address != '')
                                   ? '${widget.address}'
-                                  : 'Chưa cập nhật địa chỉ',
+                                  : '',
                               style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 20,
@@ -172,7 +195,7 @@ class _FinderCardDetailState extends State<FinderCardDetail> {
 
   _btnSubmitFinderForm(context) {
     if (widget.finder.finderFormStatus == 1) {
-      return CustomButton(
+      return CustomCancelButton(
         label: 'HỦY YÊU CẦU',
         onTap: () {
           showDialog(
@@ -226,7 +249,7 @@ class _FinderCardDetailState extends State<FinderCardDetail> {
                                   ),
                                   counterText: '',
                                   hintText:
-                                      'Hãy nhập lí do bạn hủy yêu cầu cứu hộ...'),
+                                      'Hãy nhập lí do bạn hủy yêu cầu...'),
                               maxLength: 1000,
                             )),
                         Row(
@@ -246,7 +269,7 @@ class _FinderCardDetailState extends State<FinderCardDetail> {
                                     reasonController.text == '') {
                                   warningDialog(
                                     context,
-                                    'Xin hãy nhập lí do bạn hủy yêu cầu này.',
+                                    'Xin hãy nhập lí do hủy yêu cầu.',
                                     title: '',
                                     neutralText: 'Đóng',
                                     neutralAction: () {
@@ -254,11 +277,11 @@ class _FinderCardDetailState extends State<FinderCardDetail> {
                                     },
                                   );
                                 } else {
-                                  confirmationDialog(context,
-                                      'Bạn có chắc chắn muốn hủy yêu cầu cứu hộ này?',
+                                  confirmationDialog(
+                                      context, 'Hủy yêu cầu cứu hộ?',
                                       title: '',
                                       confirm: false,
-                                      negativeText: 'Không',
+                                      neutralText: 'Không',
                                       positiveText: 'Có', positiveAction: () {
                                     showDialog(
                                         context: context,
@@ -273,7 +296,7 @@ class _FinderCardDetailState extends State<FinderCardDetail> {
                                       if (value != null) {
                                         successDialog(
                                           context,
-                                          'Yêu cầu cứu hộ đã bị hủy',
+                                          'Yêu cầu cứu hộ đã bị hủy.',
                                           title: 'Đã hủy',
                                           neutralText: 'Đóng',
                                           neutralAction: () {
@@ -468,7 +491,6 @@ class _FinderCardDetailState extends State<FinderCardDetail> {
               ),
               //* DESCRIPTION
               Container(
-                margin: EdgeInsets.only(bottom: 20),
                 child: TextFormField(
                   decoration: InputDecoration(
                     labelText: 'Mô tả thêm',
@@ -496,6 +518,41 @@ class _FinderCardDetailState extends State<FinderCardDetail> {
                   maxLines: 5,
                 ),
               ),
+              SizedBox(
+                height: 10,
+              ),
+              //* CANCEL REASON
+              widget.finder.finderFormStatus == 5
+                  ? Container(
+                      margin: EdgeInsets.only(bottom: 20),
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                          floatingLabelBehavior: FloatingLabelBehavior.always,
+                          labelText: 'Lí do hủy',
+                          labelStyle: TextStyle(
+                            color: mainColor,
+                          ),
+                          hintText: widget.finder.canceledReason == null ||
+                                  widget.finder.canceledReason == ''
+                              ? ''
+                              : widget.finder.canceledReason,
+                          hintStyle: TextStyle(
+                            color: Colors.black,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          prefixIcon: Icon(
+                            Icons.pets,
+                            color: mainColor,
+                          ),
+                          fillColor: Colors.white,
+                          filled: true,
+                        ),
+                        enabled: false,
+                      ),
+                    )
+                  : Container(),
             ],
           ),
         ),

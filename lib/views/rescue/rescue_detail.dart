@@ -4,6 +4,7 @@ import 'package:commons/commons.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 import 'package:pet_rescue_mobile/repository/repository.dart';
@@ -165,140 +166,140 @@ class _RescueDetailState extends State<RescueDetail> {
       label: 'GỬI YÊU CẦU',
       onTap: () {
         if (_fbKey.currentState.saveAndValidate()) {
-          confirmationDialog(context, 'Bạn muốn gửi yêu cầu cứu hộ?',
-              title: '',
-              confirm: false,
-              negativeText: 'Không',
-              positiveText: 'Có', positiveAction: () {
-            showDialog(
-                context: context,
-                builder: (context) => ProgressDialog(message: 'Đang gửi...'));
+          showDialog(
+              context: context,
+              builder: (context) => ProgressDialog(message: 'Đang gửi...'));
 
-            RescueReport tmpReport = new RescueReport();
-            tmpReport.finderDescription = widget.formInput['description'];
-            tmpReport.latitude = widget.latitude;
-            tmpReport.longitude = widget.longitude;
-            tmpReport.phone = widget.formInput['phoneNumber'];
+          RescueReport tmpReport = new RescueReport();
+          tmpReport.finderDescription = widget.formInput['description'];
+          tmpReport.latitude = widget.latitude;
+          tmpReport.longitude = widget.longitude;
+          tmpReport.phone = widget.formInput['phoneNumber'];
 
-            if (widget.formInput['radioPetStatus'] == 'Đi lạc')
-              tmpReport.petAttribute = PetAttribute.Lost.index + 1;
-            else if (widget.formInput['radioPetStatus'] == 'Bị bỏ rơi')
-              tmpReport.petAttribute = PetAttribute.Abandoned.index + 1;
-            else if (widget.formInput['radioPetStatus'] == 'Bị thương')
-              tmpReport.petAttribute = PetAttribute.Injured.index + 1;
-            else
-              tmpReport.petAttribute = PetAttribute.Giveaway.index + 1;
+          if (widget.formInput['radioPetStatus'] == 'Đi lạc')
+            tmpReport.petAttribute = PetAttribute.Lost.index + 1;
+          else if (widget.formInput['radioPetStatus'] == 'Bị bỏ rơi')
+            tmpReport.petAttribute = PetAttribute.Abandoned.index + 1;
+          else if (widget.formInput['radioPetStatus'] == 'Bị thương')
+            tmpReport.petAttribute = PetAttribute.Injured.index + 1;
+          else
+            tmpReport.petAttribute = PetAttribute.Giveaway.index + 1;
 
-            String url = '';
-            int count = 0;
-            widget.imageList.forEach((item) {
-              Asset asset = item;
+          String url = '';
+          int count = 0;
+          widget.imageList.forEach((item) {
+            Asset asset = item;
 
-              _repo.getImageFileFromAssets(asset).then((result) {
-                String baseName = basename(result.path);
-                _repo.uploadRescueImage(result, baseName).then((value) {
-                  if (value != null) {
-                    setState(() {
-                      url += '$value;';
-                      count++;
-                    });
+            _repo.getImageFileFromAssets(asset).then((result) {
+              String baseName = basename(result.path);
+              _repo.uploadRescueImage(result, baseName).then((value) {
+                if (value != null) {
+                  setState(() {
+                    url += '$value;';
+                    count++;
+                  });
 
-                    if (count == widget.imageList.length) {
-                      tmpReport.finderFormImgUrl = url;
+                  if (count == widget.imageList.length) {
+                    tmpReport.finderFormImgUrl = url;
 
-                      if (widget.video == null) {
-                        _repo.createRescueRequest(tmpReport, '').then((value) {
-                          if (value != null) {
-                            successDialog(
-                              context,
-                              'Yêu cầu của bạn đã được gửi tới các trung tâm cứu hộ.',
-                              title: 'Thành công',
-                              neutralText: 'Đóng',
-                              neutralAction: () {
-                                Navigator.of(context)
-                                    .popUntil((route) => route.isFirst);
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => MyApp(),
-                                  ),
-                                );
-                              },
-                            );
-                          } else {
-                            warningDialog(
-                              context,
-                              'Không thể gửi yêu cầu cứu hộ.',
-                              title: '',
-                              neutralText: 'Đóng',
-                              neutralAction: () {
-                                Navigator.pop(context);
-                              },
-                            );
-                          }
-                        });
-                      } else {
-                        String vidBaseName = basename(widget.video.path);
-                        _repo
-                            .uploadRescueVideo(widget.video, vidBaseName)
-                            .then((value) {
-                          if (value != null) {
-                            _repo.createRescueRequest(tmpReport, value).then((value) {
-                              if (value != null) {
-                                successDialog(
-                                  context,
-                                  'Yêu cầu của bạn đã được gửi tới các trung tâm cứu hộ.',
-                                  title: 'Thành công',
-                                  neutralText: 'Đóng',
-                                  neutralAction: () {
-                                    Navigator.of(context)
-                                        .popUntil((route) => route.isFirst);
-                                    Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => MyApp(),
-                                      ),
-                                    );
-                                  },
-                                );
-                              } else {
-                                warningDialog(
-                                  context,
-                                  'Không thể gửi yêu cầu cứu hộ.',
-                                  title: '',
-                                  neutralText: 'Đóng',
-                                  neutralAction: () {
-                                    Navigator.pop(context);
-                                  },
-                                );
-                              }
-                            });
-                          } else {
-                            warningDialog(
-                              context,
-                              'Lỗi upload video.',
-                              title: '',
-                              neutralText: 'Đóng',
-                              neutralAction: () {
-                                Navigator.pop(context);
-                              },
-                            );
-                          }
-                        });
-                      }
+                    if (widget.video == null) {
+                      setState(() {
+                        tmpReport.finderFormVideoUrl = '';
+                      });
+                      _repo.createRescueRequest(tmpReport).then((value) {
+                        if (value != null) {
+                          successDialog(
+                            context,
+                            'Yêu cầu của bạn đã được gửi tới các trung tâm cứu hộ.',
+                            title: 'Thành công',
+                            neutralText: 'Quay về trang chủ',
+                            neutralAction: () {
+                              Navigator.of(context)
+                                  .popUntil((route) => route.isFirst);
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => MyApp(),
+                                ),
+                              );
+                            },
+                          );
+                        } else {
+                          warningDialog(
+                            context,
+                            'Không thể gửi yêu cầu cứu hộ.',
+                            title: '',
+                            neutralText: 'Đóng',
+                            neutralAction: () {
+                              Navigator.pop(context);
+                            },
+                          );
+                        }
+                      });
+                    } else {
+                      String vidBaseName = basename(widget.video.path);
+                      _repo
+                          .uploadRescueVideo(widget.video, vidBaseName)
+                          .then((value) {
+                        if (value != null) {
+                          setState(() {
+                            tmpReport.finderFormVideoUrl = value;
+                          });
+                          _repo.createRescueRequest(tmpReport).then((value) {
+                            if (value != null) {
+                              successDialog(
+                                context,
+                                'Yêu cầu của bạn đã được gửi tới các trung tâm cứu hộ.',
+                                title: 'Thành công',
+                                neutralText: 'Đóng',
+                                neutralAction: () {
+                                  Navigator.of(context)
+                                      .popUntil((route) => route.isFirst);
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => MyApp(),
+                                    ),
+                                  );
+                                },
+                              );
+                            } else {
+                              warningDialog(
+                                context,
+                                'Không thể gửi yêu cầu cứu hộ.',
+                                title: '',
+                                neutralText: 'Đóng',
+                                neutralAction: () {
+                                  Navigator.pop(context);
+                                },
+                              );
+                            }
+                          });
+                        } else {
+                          warningDialog(
+                            context,
+                            'Lỗi upload video.',
+                            title: '',
+                            neutralText: 'Đóng',
+                            neutralAction: () {
+                              Navigator.pop(context);
+                            },
+                          );
+                        }
+                      });
                     }
-                  } else {
-                    warningDialog(
-                      context,
-                      'Lỗi upload hình ảnh.',
-                      title: '',
-                      neutralText: 'Đóng',
-                      neutralAction: () {
-                        Navigator.pop(context);
-                      },
-                    );
                   }
-                });
+                } else {
+                  warningDialog(
+                    context,
+                    'Lỗi upload hình ảnh.',
+                    title: '',
+                    neutralText: 'Đóng',
+                    neutralAction: () {
+                      Navigator.pop(context);
+                    },
+                  );
+                }
               });
             });
           });
@@ -482,7 +483,7 @@ class _RescueDetailState extends State<RescueDetail> {
                 ),
                 label: RichText(
                   text: TextSpan(
-                    style: TextStyle(fontSize: 16, fontFamily: 'Philosopher'),
+                    style: TextStyle(fontSize: 16, fontFamily: 'SamsungSans'),
                     children: [
                       TextSpan(
                         text: '* ',
@@ -493,11 +494,17 @@ class _RescueDetailState extends State<RescueDetail> {
                         style: TextStyle(color: Colors.black),
                       ),
                       TextSpan(
-                        text: 'Điều khoản và Điều kiện ',
-                        style: TextStyle(color: Colors.blue),
-                      ),
+                          text: 'Điều khoản và Điều kiện ',
+                          style: TextStyle(color: Colors.blue),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) =>
+                                      buildPolicyDialog(context));
+                            }),
                       TextSpan(
-                        text: 'của tổ chức. ',
+                        text: 'của hệ thống. ',
                         style: TextStyle(color: Colors.black),
                       ),
                     ],
@@ -512,6 +519,54 @@ class _RescueDetailState extends State<RescueDetail> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  buildPolicyDialog(context) {
+    return AlertDialog(
+      title: const Text(
+        'Điều khoản',
+        style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+      ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          _buildAboutText(),
+        ],
+      ),
+      actions: <Widget>[
+        FlatButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          textColor: mainColor,
+          child: Text(
+            'Đã hiểu',
+            style: TextStyle(fontSize: 16),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAboutText() {
+    return RichText(
+      text: TextSpan(
+        text: 'Khi gửi yêu cầu cứu hộ, bạn cần lưu ý các điều sau đây:\n\n',
+        style: TextStyle(color: Colors.black87, fontSize: 18, height: 1.3),
+        children: <TextSpan>[
+          TextSpan(
+              text:
+                  '- Sau khi nhấn gửi, yêu cầu sẽ được thông báo đến tình nguyện viên thuộc 2 trung tâm gần nhất.\n'),
+          TextSpan(
+              text:
+                  '- Trong trường hợp sau một khoảng thời gian nhất định, nếu không có tình nguyện viên nào thuộc 2 trung tâm đó nhận yêu cầu, chúng tôi sẽ tiếp tục gửi thông báo cho tất cả tình nguyện viên.\n'),
+          TextSpan(
+              text:
+                  '- Sau 24 giờ, nếu yêu cầu của bạn vẫn chưa được xử lý, yêu cầu sẽ tự động hủy.'),
+        ],
       ),
     );
   }
