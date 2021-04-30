@@ -78,7 +78,7 @@ class _RescueLocationState extends State<RescueLocation> {
 
     CameraPosition cameraPosition = new CameraPosition(
       target: latLngPosition,
-      zoom: 20,
+      zoom: 18,
     );
 
     newGoogleMapController.animateCamera(
@@ -212,6 +212,12 @@ class _RescueLocationState extends State<RescueLocation> {
           zoomControlsEnabled: true,
           markers: _markers,
           onMapCreated: (GoogleMapController controller) {
+            showDialog(
+                context: context,
+                builder: (context) => ProgressDialog(
+                      message: 'Đang tải...',
+                    ));
+
             _controllerGoogleMap.complete(controller);
             newGoogleMapController = controller;
 
@@ -221,6 +227,8 @@ class _RescueLocationState extends State<RescueLocation> {
             });
 
             locatePosition();
+
+            Navigator.pop(context);
           },
         ),
         // tile for predictions
