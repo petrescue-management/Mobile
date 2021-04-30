@@ -209,6 +209,19 @@ class _VolunteerFormState extends State<VolunteerForm> {
                                 },
                               );
                             } else {
+                              successDialog(context,
+                                  'Đơn đăng ký của bạn đã được gửi đến ${widget.center.centerName.trim()}. Trung tâm sẽ xem xét và phản hồi cho bạn qua email ${user.email}. Xin cảm ơn.',
+                                  title: 'Thành công',
+                                  neutralText: 'Quay về trang chủ',
+                                  neutralAction: () {
+                                Navigator.of(context)
+                                    .popUntil((route) => route.isFirst);
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => MyApp()));
+                              });
+
                               var currentDate = DateTime.now();
                               String currentDay = (currentDate.day < 10
                                   ? '0${currentDate.day}'
@@ -235,19 +248,6 @@ class _VolunteerFormState extends State<VolunteerForm> {
                               };
 
                               _dbReference.child(value).set(notification);
-
-                              successDialog(context,
-                                  'Đơn đăng ký của bạn đã được gửi đến ${widget.center.centerName.trim()}. Trung tâm sẽ xem xét và phản hồi cho bạn qua email ${user.email}. Xin cảm ơn.',
-                                  title: 'Thành công',
-                                  neutralText: 'Quay về trang chủ',
-                                  neutralAction: () {
-                                Navigator.of(context)
-                                    .popUntil((route) => route.isFirst);
-                                Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => MyApp()));
-                              });
                             }
                           });
                         });

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:pet_rescue_mobile/bloc/pet_bloc.dart';
 import 'package:pet_rescue_mobile/models/pet/adopted_pet_model.dart';
@@ -161,7 +162,7 @@ class _AdoptedCard extends State<AdoptedCard> {
                       ),
                       image: DecorationImage(
                         image:
-                            NetworkImage(widget.adopted.petImgUrl.elementAt(0)),
+                            CachedNetworkImageProvider(widget.adopted.petImgUrl.elementAt(0)),
                         fit: BoxFit.cover,
                       ),
                     ),
