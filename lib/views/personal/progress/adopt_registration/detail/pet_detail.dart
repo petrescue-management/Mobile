@@ -29,7 +29,6 @@ class _PetDetailsState extends State<PetDetails> {
   TextEditingController centerNameController = TextEditingController();
   TextEditingController centerAddressController = TextEditingController();
   TextEditingController insertedAtController = TextEditingController();
-
   List<String> imgUrlList;
   List<Widget> imageSliders;
   int _current = 0;
@@ -92,6 +91,22 @@ class _PetDetailsState extends State<PetDetails> {
     return result;
   }
 
+  getFormStatus(int status) {
+    String result = '';
+
+    if (status == 1) {
+      result = 'Đang chờ xử lý';
+    } else if (status == 2) {
+      result = 'Đã được chấp nhận';
+    } else if (status == 3) {
+      result = 'Đã bị từ chối';
+    } else {
+      result = 'Đã hủy';
+    }
+
+    return result;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -121,6 +136,45 @@ class _PetDetailsState extends State<PetDetails> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // status
+          Container(
+            margin: EdgeInsets.only(top: 5, bottom: 5),
+            child: TextFormField(
+              decoration: InputDecoration(
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+                labelText: 'Trạng thái yêu cầu',
+                labelStyle: TextStyle(
+                  color: mainColor,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: mainColor,
+                    width: 2,
+                  ),
+                ),
+                hintText: getFormStatus(
+                                widget.form.adoptionRegistrationStatus) ==
+                            null ||
+                        getFormStatus(widget.form.adoptionRegistrationStatus) ==
+                            ''
+                    ? ''
+                    : getFormStatus(widget.form.adoptionRegistrationStatus),
+                hintStyle: TextStyle(
+                  color: widget.form.adoptionRegistrationStatus != 3 && widget.form.adoptionRegistrationStatus != 4
+                      ? Colors.green
+                      : Colors.red,
+                ),
+                fillColor: Colors.white,
+                filled: true,
+                enabled: false,
+              ),
+            ),
+          ),
           // image
           CarouselSlider(
             items: imageSliders,
@@ -141,7 +195,7 @@ class _PetDetailsState extends State<PetDetails> {
               return Container(
                 width: 8.0,
                 height: 8.0,
-                margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
+                margin: EdgeInsets.symmetric(vertical: 5.0, horizontal: 2.0),
                 decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: _current == index
@@ -151,7 +205,7 @@ class _PetDetailsState extends State<PetDetails> {
             }).toList(),
           ),
           Container(
-            height: MediaQuery.of(context).size.height * 0.56,
+            height: MediaQuery.of(context).size.height * 0.5,
             child: SizedBox(
               child: SingleChildScrollView(
                 controller: scrollController,
@@ -159,7 +213,7 @@ class _PetDetailsState extends State<PetDetails> {
                   children: [
                     // name
                     Container(
-                      margin: EdgeInsets.only(top: 20),
+                      margin: EdgeInsets.only(top: 10),
                       child: TextFormField(
                         controller: nameController,
                         decoration: InputDecoration(
@@ -415,7 +469,7 @@ class _PetDetailsState extends State<PetDetails> {
                     ),
                     // description
                     Container(
-                      margin: EdgeInsets.only(bottom: 20),
+                      margin: EdgeInsets.only(bottom: 10),
                       child: TextFormField(
                         controller: descriptionController,
                         decoration: InputDecoration(
