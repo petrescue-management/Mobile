@@ -233,164 +233,170 @@ class _AdoptFormRegistrationPageState extends State<AdoptFormRegistrationPage> {
   }
 
   _btnSubmitAdoptForm(context) {
-    return CustomButton(
-      label: 'Gửi yêu cầu',
-      onTap: () {
-        if (_fbKey.currentState.saveAndValidate()) {
-          final formInputs = _fbKey.currentState.value;
-          print(formInputs);
+    if (_currentStep == 0) {
+      return Container();
+    } else {
+      return CustomButton(
+        label: 'Gửi yêu cầu',
+        onTap: () {
+          if (_fbKey.currentState.saveAndValidate()) {
+            final formInputs = _fbKey.currentState.value;
+            print(formInputs);
 
-          if (formInputs['haveChildren'] == 'Không có' &&
-              formInputs['childAge'] != 'Không có') {
+            if (formInputs['haveChildren'] == 'Không có' &&
+                formInputs['childAge'] != 'Không có') {
+              warningDialog(
+                context,
+                "Hãy chọn 'Độ tuổi' là 'Không có' nếu nhà bạn không có trẻ em.",
+                title: '',
+                neutralText: 'Đã hiểu',
+              );
+            } else {
+              confirmationDialog(
+                  context, 'Bạn chắc chắn muốn gửi đơn đăng ký nhận nuôi?',
+                  title: '',
+                  confirm: false,
+                  neutralText: 'Không',
+                  positiveText: 'Có', positiveAction: () async {
+                showDialog(
+                    context: context,
+                    builder: (context) =>
+                        ProgressDialog(message: 'Đang gửi...'));
+
+                AdoptForm adopt = new AdoptForm();
+                adopt.petProfileId = widget.pet.petProfileId;
+                adopt.userName =
+                    '${formInputs['lastName']} ${formInputs['firstName']}';
+                adopt.phone = formInputs['phone'];
+                adopt.email = formInputs['email'];
+                adopt.job = formInputs['job'];
+                adopt.dob = formInputs['dob'].toString();
+                adopt.address = formInputs['address'];
+
+                if (formInputs['houseType'] == 'Nhà riêng') {
+                  adopt.houseType = 1;
+                } else if (formInputs['houseType'] == 'Chung cư') {
+                  adopt.houseType = 2;
+                } else if (formInputs['houseType'] == 'Nhà trọ') {
+                  adopt.houseType = 3;
+                } else if (formInputs['houseType'] ==
+                    'Nhà của bạn hoặc người thân') {
+                  adopt.houseType = 4;
+                } else {
+                  adopt.houseType = 5;
+                }
+
+                if (formInputs['frequencyAtHome'] == 'Chỉ về ngủ') {
+                  adopt.frequencyAtHome = 1;
+                } else if (formInputs['frequencyAtHome'] == 'Đi làm - Về nhà') {
+                  adopt.frequencyAtHome = 2;
+                } else if (formInputs['frequencyAtHome'] == 'Thường đi vắng') {
+                  adopt.frequencyAtHome = 3;
+                } else {
+                  adopt.frequencyAtHome = 4;
+                }
+
+                if (formInputs['haveChildren'] == 'Có') {
+                  adopt.haveChildren = true;
+                } else {
+                  adopt.haveChildren = false;
+                }
+
+                if (formInputs['childAge'] == 'Dưới 5 tuổi') {
+                  adopt.childAge = 1;
+                } else if (formInputs['childAge'] == 'Dưới 10 tuổi') {
+                  adopt.childAge = 2;
+                } else if (formInputs['childAge'] == 'Dưới 15 tuổi') {
+                  adopt.childAge = 3;
+                } else {
+                  adopt.childAge = 4;
+                }
+
+                if (formInputs['beViolentTendencies'] == 'Có') {
+                  adopt.beViolentTendencies = true;
+                } else {
+                  adopt.beViolentTendencies = false;
+                }
+
+                if (formInputs['haveAgreement'] == 'Có') {
+                  adopt.haveAgreement = true;
+                } else {
+                  adopt.haveAgreement = false;
+                }
+
+                if (formInputs['havePet'] == 'Đã từng nuôi') {
+                  adopt.havePet = 1;
+                } else if (formInputs['havePet'] == 'Chưa từng nuôi') {
+                  adopt.havePet = 2;
+                } else {
+                  adopt.havePet = 3;
+                }
+
+                _repo.createAdoptionRegistrationForm(adopt).then((value) {
+                  if (value != null) {
+                    successDialog(
+                      context,
+                      'Đơn đăng ký nhận nuôi của bạn đã được gửi đến trung tâm cứu hộ!',
+                      neutralAction: () {
+                        Navigator.of(context)
+                            .popUntil((route) => route.isFirst);
+                        Navigator.pushReplacement(context,
+                            MaterialPageRoute(builder: (context) => MyApp()));
+                      },
+                      title: "Thành công",
+                      neutralText: 'Quay về trang chủ',
+                    );
+
+                    var currentDate = DateTime.now();
+                    String currentDay = (currentDate.day < 10
+                        ? '0${currentDate.day}'
+                        : '${currentDate.day}');
+                    String currentMonth = (currentDate.month < 10
+                        ? '0${currentDate.month}'
+                        : '${currentDate.month}');
+                    String currentHour = (currentDate.hour < 10
+                        ? '0${currentDate.hour}'
+                        : '${currentDate.hour}');
+                    String currentMinute = (currentDate.minute < 10
+                        ? '0${currentDate.minute}'
+                        : '${currentDate.minute}');
+                    String currentSecond = (currentDate.second < 10
+                        ? '0${currentDate.second}'
+                        : '${currentDate.second}');
+                    var notiDate =
+                        '${currentDate.year}-$currentMonth-$currentDay $currentHour:$currentMinute:$currentSecond';
+
+                    Map<String, dynamic> notification = {
+                      'date': notiDate,
+                      'isCheck': false,
+                      'type': 1,
+                    };
+
+                    _dbReference.child(value).set(notification);
+                  } else {
+                    warningDialog(
+                      context,
+                      'Lỗi hệ thống',
+                      title: '',
+                      neutralAction: () {
+                        Navigator.pop(context);
+                      },
+                    );
+                  }
+                });
+              });
+            }
+          } else {
             warningDialog(
               context,
-              "Hãy chọn 'Độ tuổi' là 'Không có' nếu nhà bạn không có trẻ em.",
+              'Bạn chưa điền đầy đủ thông tin.\nXin hãy kiểm tra lại.',
               title: '',
-              neutralText: 'Đã hiểu',
+              neutralText: 'Đóng',
             );
-          } else {
-            confirmationDialog(
-                context, 'Bạn chắc chắn muốn gửi đơn đăng ký nhận nuôi?',
-                title: '',
-                confirm: false,
-                neutralText: 'Không',
-                positiveText: 'Có', positiveAction: () async {
-              showDialog(
-                  context: context,
-                  builder: (context) => ProgressDialog(message: 'Đang gửi...'));
-
-              AdoptForm adopt = new AdoptForm();
-              adopt.petProfileId = widget.pet.petProfileId;
-              adopt.userName =
-                  '${formInputs['lastName']} ${formInputs['firstName']}';
-              adopt.phone = formInputs['phone'];
-              adopt.email = formInputs['email'];
-              adopt.job = formInputs['job'];
-              adopt.dob = formInputs['dob'].toString();
-              adopt.address = formInputs['address'];
-
-              if (formInputs['houseType'] == 'Nhà riêng') {
-                adopt.houseType = 1;
-              } else if (formInputs['houseType'] == 'Chung cư') {
-                adopt.houseType = 2;
-              } else if (formInputs['houseType'] == 'Nhà trọ') {
-                adopt.houseType = 3;
-              } else if (formInputs['houseType'] ==
-                  'Nhà của bạn hoặc người thân') {
-                adopt.houseType = 4;
-              } else {
-                adopt.houseType = 5;
-              }
-
-              if (formInputs['frequencyAtHome'] == 'Chỉ về ngủ') {
-                adopt.frequencyAtHome = 1;
-              } else if (formInputs['frequencyAtHome'] == 'Đi làm - Về nhà') {
-                adopt.frequencyAtHome = 2;
-              } else if (formInputs['frequencyAtHome'] == 'Thường đi vắng') {
-                adopt.frequencyAtHome = 3;
-              } else {
-                adopt.frequencyAtHome = 4;
-              }
-
-              if (formInputs['haveChildren'] == 'Có') {
-                adopt.haveChildren = true;
-              } else {
-                adopt.haveChildren = false;
-              }
-
-              if (formInputs['childAge'] == 'Dưới 5 tuổi') {
-                adopt.childAge = 1;
-              } else if (formInputs['childAge'] == 'Dưới 10 tuổi') {
-                adopt.childAge = 2;
-              } else if (formInputs['childAge'] == 'Dưới 15 tuổi') {
-                adopt.childAge = 3;
-              } else {
-                adopt.childAge = 4;
-              }
-
-              if (formInputs['beViolentTendencies'] == 'Có') {
-                adopt.beViolentTendencies = true;
-              } else {
-                adopt.beViolentTendencies = false;
-              }
-
-              if (formInputs['haveAgreement'] == 'Có') {
-                adopt.haveAgreement = true;
-              } else {
-                adopt.haveAgreement = false;
-              }
-
-              if (formInputs['havePet'] == 'Đã từng nuôi') {
-                adopt.havePet = 1;
-              } else if (formInputs['havePet'] == 'Chưa từng nuôi') {
-                adopt.havePet = 2;
-              } else {
-                adopt.havePet = 3;
-              }
-
-              _repo.createAdoptionRegistrationForm(adopt).then((value) {
-                if (value != null) {
-                  successDialog(
-                    context,
-                    'Đơn đăng ký nhận nuôi của bạn đã được gửi đến trung tâm cứu hộ!',
-                    neutralAction: () {
-                      Navigator.of(context).popUntil((route) => route.isFirst);
-                      Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (context) => MyApp()));
-                    },
-                    title: "Thành công",
-                    neutralText: 'Quay về trang chủ',
-                  );
-
-                  var currentDate = DateTime.now();
-                  String currentDay = (currentDate.day < 10
-                      ? '0${currentDate.day}'
-                      : '${currentDate.day}');
-                  String currentMonth = (currentDate.month < 10
-                      ? '0${currentDate.month}'
-                      : '${currentDate.month}');
-                  String currentHour = (currentDate.hour < 10
-                      ? '0${currentDate.hour}'
-                      : '${currentDate.hour}');
-                  String currentMinute = (currentDate.minute < 10
-                      ? '0${currentDate.minute}'
-                      : '${currentDate.minute}');
-                  String currentSecond = (currentDate.second < 10
-                      ? '0${currentDate.second}'
-                      : '${currentDate.second}');
-                  var notiDate =
-                      '${currentDate.year}-$currentMonth-$currentDay $currentHour:$currentMinute:$currentSecond';
-
-                  Map<String, dynamic> notification = {
-                    'date': notiDate,
-                    'isCheck': false,
-                    'type': 1,
-                  };
-
-                  _dbReference.child(value).set(notification);
-                } else {
-                  warningDialog(
-                    context,
-                    'Lỗi hệ thống',
-                    title: '',
-                    neutralAction: () {
-                      Navigator.pop(context);
-                    },
-                  );
-                }
-              });
-            });
           }
-        } else {
-          warningDialog(
-            context,
-            'Bạn chưa điền đầy đủ thông tin.\nXin hãy kiểm tra lại.',
-            title: '',
-            neutralText: 'Đóng',
-          );
-        }
-      },
-    );
+        },
+      );
+    }
   }
 
   List<Step> _stepper() {

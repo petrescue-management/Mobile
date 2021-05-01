@@ -134,8 +134,8 @@ class _NotificationsPageState extends State<NotificationsPage> {
     return GestureDetector(
       onTap: () {
         showDialog(
-              context: context,
-              builder: (context) => ProgressDialog(message: 'Đang tải...'));
+            context: context,
+            builder: (context) => ProgressDialog(message: 'Đang tải...'));
 
         if (type == 1) {
           _repo.getAdoptRegistrationFormById(notiKey).then((value) {
@@ -183,57 +183,60 @@ class _NotificationsPageState extends State<NotificationsPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              SizedBox(
-                width: 10,
-              ),
-              Container(
-                width: 80,
-                height: 80,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: mainColor,
-                    width: 1.5,
-                  ),
-                  image: DecorationImage(
-                    image: AssetImage(typeIcon),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: 10,
+                ),
+                Container(
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: mainColor,
+                      width: 1.5,
+                    ),
+                    image: DecorationImage(
+                      image: AssetImage(typeIcon),
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(
-                width: 15,
-              ),
-              Expanded(
-                child: Container(
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          notification['body'],
-                          style: TextStyle(
-                            fontSize: 15,
-                            color: Colors.black,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Text(
-                          notiDate,
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: mainColor,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ]),
+                SizedBox(
+                  width: 10,
                 ),
-              ),
-            ]),
+                Expanded(
+                  child: Container(
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            notification['body'],
+                            style: TextStyle(
+                              fontSize: 15,
+                              color: Colors.black,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Text(
+                            notiDate,
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: mainColor,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ]),
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ),

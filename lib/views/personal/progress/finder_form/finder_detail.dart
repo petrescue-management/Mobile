@@ -79,6 +79,24 @@ class _FinderCardDetailState extends State<FinderCardDetail> {
     });
   }
 
+  getFinderFormStatus(int status) {
+    String result = '';
+
+    if (status == 1) {
+      result = 'Đang chờ xử lý';
+    } else if (status == 2) {
+      result = 'Đang cứu hộ';
+    } else if (status == 3) {
+      result = 'Đã đến nơi';
+    } else if (status == 4) {
+      result = 'Cứu hộ thành công';
+    } else {
+      result = 'Bị hủy';
+    }
+
+    return result;
+  }
+
   @override
   Widget build(BuildContext context) {
     var contextHeight = MediaQuery.of(context).size.height;
@@ -521,6 +539,44 @@ class _FinderCardDetailState extends State<FinderCardDetail> {
               SizedBox(
                 height: 10,
               ),
+              //* STATUS
+              Container(
+                child: TextFormField(
+                  decoration: InputDecoration(
+                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                    labelText: 'Trạng thái yêu cầu',
+                    labelStyle: TextStyle(
+                      color: mainColor,
+                    ),
+                    hintText: getFinderFormStatus(
+                                    widget.finder.finderFormStatus) ==
+                                null ||
+                            getFinderFormStatus(
+                                    widget.finder.finderFormStatus) ==
+                                ''
+                        ? ''
+                        : getFinderFormStatus(widget.finder.finderFormStatus),
+                    hintStyle: TextStyle(
+                      color: widget.finder.finderFormStatus != 5
+                          ? Colors.green
+                          : Colors.red,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    prefixIcon: Icon(
+                      Icons.rule_outlined,
+                      color: mainColor,
+                    ),
+                    fillColor: Colors.white,
+                    filled: true,
+                  ),
+                  enabled: false,
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
               //* CANCEL REASON
               widget.finder.finderFormStatus == 5
                   ? Container(
@@ -537,13 +593,13 @@ class _FinderCardDetailState extends State<FinderCardDetail> {
                               ? ''
                               : widget.finder.canceledReason,
                           hintStyle: TextStyle(
-                            color: Colors.black,
+                            color: Colors.red,
                           ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
                           prefixIcon: Icon(
-                            Icons.pets,
+                            Icons.cancel,
                             color: mainColor,
                           ),
                           fillColor: Colors.white,
