@@ -389,10 +389,48 @@ class _FinderCardDetailState extends State<FinderCardDetail> {
           controller: scrollController,
           child: Column(
             children: <Widget>[
+              //* STATUS
+              Container(
+                 margin: EdgeInsets.only(top: 10),
+                child: TextFormField(
+                  decoration: InputDecoration(
+                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                    labelText: 'Trạng thái yêu cầu',
+                    labelStyle: TextStyle(
+                      color: mainColor,
+                    ),
+                    hintText: getFinderFormStatus(
+                                    widget.finder.finderFormStatus) ==
+                                null ||
+                            getFinderFormStatus(
+                                    widget.finder.finderFormStatus) ==
+                                ''
+                        ? ''
+                        : getFinderFormStatus(widget.finder.finderFormStatus),
+                    hintStyle: TextStyle(
+                      color: widget.finder.finderFormStatus != 5
+                          ? Colors.green
+                          : Colors.red,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    prefixIcon: Icon(
+                      Icons.rule_outlined,
+                      color: mainColor,
+                    ),
+                    fillColor: Colors.white,
+                    filled: true,
+                  ),
+                  enabled: false,
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
               //* IMAGE PICKER
               Container(
                 alignment: Alignment.centerLeft,
-                margin: EdgeInsets.only(top: 20),
                 child: Text(
                   ' Ảnh mô tả',
                   style: TextStyle(
@@ -539,44 +577,6 @@ class _FinderCardDetailState extends State<FinderCardDetail> {
               SizedBox(
                 height: 10,
               ),
-              //* STATUS
-              Container(
-                child: TextFormField(
-                  decoration: InputDecoration(
-                    floatingLabelBehavior: FloatingLabelBehavior.always,
-                    labelText: 'Trạng thái yêu cầu',
-                    labelStyle: TextStyle(
-                      color: mainColor,
-                    ),
-                    hintText: getFinderFormStatus(
-                                    widget.finder.finderFormStatus) ==
-                                null ||
-                            getFinderFormStatus(
-                                    widget.finder.finderFormStatus) ==
-                                ''
-                        ? ''
-                        : getFinderFormStatus(widget.finder.finderFormStatus),
-                    hintStyle: TextStyle(
-                      color: widget.finder.finderFormStatus != 5
-                          ? Colors.green
-                          : Colors.red,
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    prefixIcon: Icon(
-                      Icons.rule_outlined,
-                      color: mainColor,
-                    ),
-                    fillColor: Colors.white,
-                    filled: true,
-                  ),
-                  enabled: false,
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
               //* CANCEL REASON
               widget.finder.finderFormStatus == 5
                   ? Container(
@@ -605,6 +605,7 @@ class _FinderCardDetailState extends State<FinderCardDetail> {
                           fillColor: Colors.white,
                           filled: true,
                         ),
+                        maxLines: 3,
                         enabled: false,
                       ),
                     )
