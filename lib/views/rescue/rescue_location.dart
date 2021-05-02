@@ -62,15 +62,12 @@ class _RescueLocationState extends State<RescueLocation> {
     Position position = await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.best,
     );
-    print('position: $position');
 
     if (widget.latitude == 0 && widget.longitude == 0) {
       currentPosition = position;
-      print('current position: $currentPosition');
     } else {
       currentPosition =
           Position(latitude: widget.latitude, longitude: widget.longitude);
-      print('find position $currentPosition');
     }
 
     LatLng latLngPosition =
@@ -217,7 +214,7 @@ class _RescueLocationState extends State<RescueLocation> {
 
             setState(() {
               bottomPaddingMap = contextHeight * 0.15;
-              topPaddingMap = contextHeight * 0.65;
+              topPaddingMap = 60.0;
             });
 
             locatePosition();
@@ -252,7 +249,8 @@ class _RescueLocationState extends State<RescueLocation> {
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(0.0),
+                borderRadius: BorderRadius.circular(10.0),
+                border: Border.all(color: mainColor, width: 1.5),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black54,
@@ -273,7 +271,7 @@ class _RescueLocationState extends State<RescueLocation> {
                     hintText: 'Tìm kiếm...',
                     border: InputBorder.none,
                     isDense: true,
-                    prefixIcon: Icon(Icons.search),
+                    prefixIcon: Icon(Icons.search, color: Colors.blueAccent),
                   ),
                 ),
               ),
