@@ -101,8 +101,7 @@ class _AdoptionPageState extends State<AdoptionPage> {
                 return loading(context);
               } else {
                 snapshot.data.result.forEach((element) {
-                  element.listPet.sort((a, b) => DateTime.parse(b.insertedAt)
-                      .compareTo(DateTime.parse(a.insertedAt)));
+                  element.listPet.sort((a, b) => a.petName.compareTo(b.petName));
                 });
 
                 return Container(
