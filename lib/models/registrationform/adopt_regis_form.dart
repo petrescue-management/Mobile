@@ -2,7 +2,7 @@ import 'package:pet_rescue_mobile/models/pet/pet_model.dart';
 
 class AdoptionRegisForm {
   String adoptionRegistrationId;
-  int adoptionRegistrationStatus;
+  int adoptionRegistrationFormStatus;
   String insertedAt;
   //user info
   String userName;
@@ -21,7 +21,7 @@ class AdoptionRegisForm {
 
   AdoptionRegisForm(form) {
     this.adoptionRegistrationId = form['adoptionRegistrationId'];
-    this.adoptionRegistrationStatus = form['adoptionRegistrationStatus'];
+    this.adoptionRegistrationFormStatus = form['adoptionRegistrationFormStatus'];
     this.insertedAt = form['insertedAt'];
     this.userName = form['userName'];
     this.phone = form['phone'];

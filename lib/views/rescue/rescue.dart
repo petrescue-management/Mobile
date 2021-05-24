@@ -2,11 +2,11 @@ import 'dart:io';
 import 'package:commons/commons.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
-import 'package:firebase_database/firebase_database.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:pet_rescue_mobile/repository/repository.dart';
 
 import 'package:pet_rescue_mobile/src/asset.dart';
 import 'package:pet_rescue_mobile/src/style.dart';
@@ -32,6 +32,8 @@ class Rescue extends StatefulWidget {
 class _RescueState extends State<Rescue> {
   ScrollController scrollController = ScrollController();
 
+  final _repo = Repository();
+
   final GlobalKey<FormBuilderState> _fbKey = GlobalKey();
 
   List<Asset> _images = List<Asset>();
@@ -43,24 +45,20 @@ class _RescueState extends State<Rescue> {
 
   @override
   void initState() {
-    super.initState();
-
-    getlitmitImgForMember();
-  }
-
-  getlitmitImgForMember() async {
-    await FirebaseDatabase.instance
-        .reference()
-        .child('config')
-        .child('limitImgForMember')
-        .once()
-        .then((DataSnapshot snapshot) {
-      int result = snapshot.value;
-
-      setState(() {
-        limitImg = result;
-      });
+    _repo.getNumberOfImage().then((value) {
+      if (value != null) {
+        print('not null: ${value.imageForFinder}');
+        setState(() {
+          limitImg = value.imageForFinder;
+        });
+      } else {
+        setState(() {
+          limitImg = 3;
+        });
+      }
     });
+
+    super.initState();
   }
 
   Widget buildViewPickedImages() {
@@ -521,7 +519,9 @@ class _RescueState extends State<Rescue> {
                   'radioPetStatus',
                   'Bạn chưa chọn tình trạng của vật nuôi',
                   [
-                    FormBuilderFieldOption(value: 'Bị thương',),
+                    FormBuilderFieldOption(
+                      value: 'Bị thương',
+                    ),
                     FormBuilderFieldOption(value: 'Đi lạc'),
                     FormBuilderFieldOption(value: 'Bị bỏ rơi'),
                     FormBuilderFieldOption(value: 'Cho đi'),

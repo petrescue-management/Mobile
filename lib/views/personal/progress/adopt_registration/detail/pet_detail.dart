@@ -158,14 +158,14 @@ class _PetDetailsState extends State<PetDetails> {
                   ),
                 ),
                 hintText: getFormStatus(
-                                widget.form.adoptionRegistrationStatus) ==
+                                widget.form.adoptionRegistrationFormStatus) ==
                             null ||
-                        getFormStatus(widget.form.adoptionRegistrationStatus) ==
+                        getFormStatus(widget.form.adoptionRegistrationFormStatus) ==
                             ''
                     ? ''
-                    : getFormStatus(widget.form.adoptionRegistrationStatus),
+                    : getFormStatus(widget.form.adoptionRegistrationFormStatus),
                 hintStyle: TextStyle(
-                  color: widget.form.adoptionRegistrationStatus != 3 && widget.form.adoptionRegistrationStatus != 4
+                  color: widget.form.adoptionRegistrationFormStatus != 3 && widget.form.adoptionRegistrationFormStatus != 4
                       ? Colors.green
                       : Colors.red,
                 ),

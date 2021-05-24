@@ -7,7 +7,6 @@ class VolunteerModel {
   String phone;
   String imgUrl;
   String dob;
-  String centerId;
 
   VolunteerModel({
     this.email,
@@ -18,11 +17,9 @@ class VolunteerModel {
     this.phone,
     this.imgUrl,
     this.dob,
-    this.centerId,
   });
 
   factory VolunteerModel.fromJson(Map<dynamic, dynamic> json) {
-    print(json['dob']);
     return VolunteerModel(
       email: json['email'],
       id: json['id'],
@@ -32,7 +29,6 @@ class VolunteerModel {
       phone: json['phone'],
       imgUrl: json['imageUrl'],
       dob: json['dob'],
-      centerId: json['centerId'],
     );
   }
 

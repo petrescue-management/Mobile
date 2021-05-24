@@ -13,7 +13,7 @@ class FinderForm {
 
   FinderForm(form) {
     this.finderFormId = form['finderFormId'];
-    this.finderDescription = form['finderDescription'];
+    this.finderDescription = form['description'];
     this.finderImageUrl = getImgUrlList(form['finderImageUrl']);
     this.finderFormVidUrl = form['finderFormVidUrl'];
     this.finderDate = form['finderDate'];

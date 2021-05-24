@@ -1,44 +1,44 @@
 class ApiUrl {
+  static String apiUrl = 'https://petrescuecapston.azurewebsites.net';
+
   // user
-  static String getJWT = 'https://petrescueapi.azurewebsites.net/jwt?';
-  static String getUserDetail =
-      'https://petrescueapi.azurewebsites.net/api/users';
-  static String updateUserDetail =
-      'https://petrescueapi.azurewebsites.net/api/users/update-profile';
+  static String getJWT = '$apiUrl/jwt?';
+  static String getUserDetail = '$apiUrl/api/users';
+  static String updateUserDetail = '$apiUrl/api/users/update-profile';
   static String createVolunteerRegistrationFrom =
-      'https://petrescueapi.azurewebsites.net/api/create-volunteer-registration-form';
-  static String getCenterList =
-      'https://petrescueapi.azurewebsites.net/api/get-list-all-center';
+      '$apiUrl/api/volunteer-registration-forms/create-volunteer-registration-form';
 
   // pet
   static String getPetListByType =
-      'https://petrescueapi.azurewebsites.net/api/get-pet-by-typename';
+      '$apiUrl/api/pet-profiles/get-pet-by-typename';
   static String getFurColorList =
-      'https://petrescueapi.azurewebsites.net/api/get-all-pet-fur_colors';
+      '$apiUrl/api/pet-profiles/get-all-pet-fur_colors';
   static String getAdoptedPet =
-      'https://petrescueapi.azurewebsites.net/api/get-adoption-by-userId';
+      '$apiUrl/api/pet-profiles/get-adoption-by-userid';
   static String createAdoptionReport =
-      'https://petrescueapi.azurewebsites.net/api/create-adoption-report-tracking';
+      '$apiUrl/api/adoption-report-trackings/create-adoption-report-tracking';
   static String getAdoptionTrackingList =
-      'https://petrescueapi.azurewebsites.net/api/get-list-adoption-report-tracking-by-userid?petProfileId=';
+      '$apiUrl/api/adoption-report-trackings/get-list-adoption-report-tracking-by-userid?petProfileId=';
 
   // form
+  static String getSystemParameters =
+      '$apiUrl/api/config/get-system-parameters';
   static String createRescueRequest =
-      'https://petrescueapi.azurewebsites.net/api/create-finder-form';
+      '$apiUrl/api/finder-forms/create-finder-form';
   static String getFinderForm =
-      'https://petrescueapi.azurewebsites.net/api/get-list-finder-form-by-userid';
+      '$apiUrl/api/finder-forms/get-list-finder-form-by-userid';
   static String getFinderFormById =
-      'https://petrescueapi.azurewebsites.net/api/get-finder-form-by-id/';
+      '$apiUrl/api/finder-forms/get-finder-form-by-id/';
   static String cancelFinderForm =
-      'https://petrescueapi.azurewebsites.net/api/cancel-finder-form';
+      '$apiUrl/api/finder-forms/cancel-finder-form';
   static String isExistAdoptRegistrationForm =
-      'https://petrescueapi.azurewebsites.net/api/check-exist-form?petProfileId=';
+      '$apiUrl/api/adoption-registration-forms/check-exist-form?petProfileId=';
   static String createAdoptRegistrationForm =
-      'https://petrescueapi.azurewebsites.net/api/create-adoption-registration-form';
+      '$apiUrl/api/adoption-registration-forms/create-adoption-registration-form';
   static String getAdoptRegistrationForm =
-      'https://petrescueapi.azurewebsites.net/api/get-list-adoption-form-by-userID';
+      '$apiUrl/api/adoption-registration-forms/get-list-adoption-form-by-userid';
   static String getAdoptRegistrationFormById =
-      'https://petrescueapi.azurewebsites.net/api/get-adoption-registration-form-by-id/';
+      '$apiUrl/api/adoption-registration-forms/get-adoption-registration-form-by-id/';
   static String cancelAdoptRegistrationForm =
-      'https://petrescueapi.azurewebsites.net/api/cancel-adoption-registration-form';
+      '$apiUrl/api/adoption-registration-forms/cancel-adoption-registration-form';
 }

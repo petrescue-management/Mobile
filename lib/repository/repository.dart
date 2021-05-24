@@ -10,11 +10,11 @@ import 'package:pet_rescue_mobile/models/pet/adopted_list_base_model.dart';
 import 'package:pet_rescue_mobile/models/pet/pet_fur_color.dart';
 import 'package:pet_rescue_mobile/models/pet/pet_list_base_model.dart';
 import 'package:pet_rescue_mobile/models/pet/pet_tracking_model.dart';
-import 'package:pet_rescue_mobile/models/center/center_base_model.dart';
 import 'package:pet_rescue_mobile/models/registrationform/finder_form.dart';
 import 'package:pet_rescue_mobile/models/registrationform/adopt_regis_form.dart';
 import 'package:pet_rescue_mobile/models/registrationform/adopt_form_model.dart';
 import 'package:pet_rescue_mobile/models/registrationform/rescue_report_model.dart';
+import 'package:pet_rescue_mobile/models/system_config.dart';
 import 'package:pet_rescue_mobile/models/user/volunteer_model.dart';
 import 'package:pet_rescue_mobile/models/user/user_model.dart';
 
@@ -22,14 +22,12 @@ import 'package:pet_rescue_mobile/resource/form/form_provider.dart';
 import 'package:pet_rescue_mobile/resource/account/sign_in.dart';
 import 'package:pet_rescue_mobile/resource/account/account_provider.dart';
 import 'package:pet_rescue_mobile/resource/pet/pet_provider.dart';
-import 'package:pet_rescue_mobile/resource/center/center_provider.dart';
 
 class Repository {
   final accountProvider = AccountProvider();
   final firebaseProvider = FirebaseSignIn();
   final petProvider = PetProvider();
   final formProvider = FormProvider();
-  final centerProvider = CenterProvider();
 
   // user
   Future<String> signIn() => firebaseProvider.signInWithGoogle();
@@ -55,9 +53,6 @@ class Repository {
 
   Future<String> uploadVolunteer(File image, String uid) =>
       firebaseProvider.uploadVolunteer(image, uid);
-
-  // center
-  Future<CenterBaseModel> getCenterList() => centerProvider.getCenterList();
 
   // pet
   Future<PetListBaseModel> getPetListByType() => petProvider.getPetListByType();
@@ -90,6 +85,8 @@ class Repository {
 
   Future<String> uploadRescueVideo(File video, String uid) =>
       petProvider.uploadRescueVideo(video, uid);
+
+  Future<ConfigModel> getNumberOfImage() => formProvider.getNumberOfImage();
 
   Future<bool> createRescueRequest(RescueReport rescueReport) =>
       formProvider.createRescueRequest(rescueReport);

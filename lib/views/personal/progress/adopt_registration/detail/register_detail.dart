@@ -128,7 +128,7 @@ class _RegisterDetailState extends State<RegisterDetail> {
   }
 
   _btnSubmitInformation(context) {
-    if (widget.form.adoptionRegistrationStatus == 1) {
+    if (widget.form.adoptionRegistrationFormStatus == 1) {
       return CustomCancelButton(
         label: 'HỦY ĐĂNG KÝ',
         onTap: () {
@@ -286,7 +286,7 @@ class _RegisterDetailState extends State<RegisterDetail> {
               });
         },
       );
-    } else if (widget.form.adoptionRegistrationStatus == 2) {
+    } else if (widget.form.adoptionRegistrationFormStatus == 2) {
       return CustomDisableButton(
         label: 'HỦY ĐĂNG KÝ',
       );

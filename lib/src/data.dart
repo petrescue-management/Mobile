@@ -10,7 +10,7 @@ final List<String> imgList = [
   'https://cdn.corporate.walmart.com/dims4/WMT/6cb59be/2147483647/strip/true/crop/2000x1304+0+13/resize/920x600!/quality/90/?url=https%3A%2F%2Fcdn.corporate.walmart.com%2Fd7%2F66%2Fad4a88bd4a09bfffe44b1f604ecf%2Fwalmart-pet-care-lead-image.jpg',
 ];
 
-final String mapKey = 'AIzaSyAZ4pja68qoa62hCzFdlmAu30iAb_CgmTk';
+final String mapKey = 'AIzaSyAyiEJnwWdbIPsfLYkwkzlweA4j4RdTxC0';
 
 final List<Widget> isNotLoggedInPages = [
   HomePage(key: PageStorageKey('HomePage')),

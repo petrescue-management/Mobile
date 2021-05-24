@@ -4,11 +4,32 @@ import 'package:commons/commons.dart';
 import 'package:http/http.dart' as http;
 import 'package:pet_rescue_mobile/models/registrationform/finder_form.dart';
 import 'package:pet_rescue_mobile/models/registrationform/adopt_regis_form.dart';
+import 'package:pet_rescue_mobile/models/system_config.dart';
 import 'package:pet_rescue_mobile/src/api_url.dart';
 import 'package:pet_rescue_mobile/models/registrationform/adopt_form_model.dart';
 import 'package:pet_rescue_mobile/models/registrationform/rescue_report_model.dart';
 
 class FormProvider {
+  Future<ConfigModel> getNumberOfImage() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    var jwtToken = sharedPreferences.getString('token');
+
+    final response = await http.get(
+      ApiUrl.getSystemParameters,
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer ' + jwtToken,
+      },
+    );
+
+    if (response.statusCode == 200) {
+      return ConfigModel.fromJson(json.decode(response.body));
+    } else {
+      print('Failed to load post ${response.statusCode}');
+    }
+    return null;
+  }
+
   Future<bool> createRescueRequest(RescueReport rescueReport) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     var jwtToken = sharedPreferences.getString('token');

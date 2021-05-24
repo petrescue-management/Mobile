@@ -182,7 +182,7 @@ class _AdoptionAgreementState extends State<AdoptionAgreement> {
                   ),
                   TextSpan(
                     text:
-                        'Tôi đồng ý với các điều khoản mà tổ thức đưa ra.',
+                        'Tôi đồng ý với các điều khoản mà tổ chức đưa ra.',
                     style: TextStyle(
                       color: Colors.black,
                       fontStyle: FontStyle.italic,
