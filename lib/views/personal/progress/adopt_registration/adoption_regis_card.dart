@@ -27,7 +27,9 @@ class _AdoptionRegistrationFormCard
 
   formatDateTime(String date) {
     DateTime tmp = DateTime.parse(date);
-    String result = '${tmp.day}/${tmp.month}/${tmp.year}';
+    String day = (tmp.day < 10 ? '0${tmp.day}' : '${tmp.day}');
+    String month = (tmp.month < 10 ? '0${tmp.month}' : '${tmp.month}');
+    String result = '$day/$month/${tmp.year}';
     return result;
   }
 
@@ -116,14 +118,14 @@ class _AdoptionRegistrationFormCard
                                 ),
                                 Text(
                                   getFormStatus(
-                                      widget.form.adoptionRegistrationStatus),
+                                      widget.form.adoptionRegistrationFormStatus),
                                   style: TextStyle(
                                     fontSize: 13,
                                     color: (widget.form
-                                                    .adoptionRegistrationStatus !=
+                                                    .adoptionRegistrationFormStatus !=
                                                 4 &&
                                             widget.form
-                                                    .adoptionRegistrationStatus !=
+                                                    .adoptionRegistrationFormStatus !=
                                                 3)
                                         ? Colors.green
                                         : Colors.red,

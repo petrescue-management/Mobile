@@ -104,7 +104,6 @@ class AccountProvider {
     resBody['phone'] = user.phone;
     resBody['gender'] = user.gender;
     resBody['email'] = user.email;
-    resBody['centerId'] = user.centerId;
     resBody['imageUrl'] = user.imgUrl;
 
     String str = json.encode(resBody);

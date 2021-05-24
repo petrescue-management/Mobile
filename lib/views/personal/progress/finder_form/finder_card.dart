@@ -23,32 +23,21 @@ class FinderCard extends StatefulWidget {
 class _FinderCard extends State<FinderCard> {
   List<String> imgUrlList;
   String firstUrl;
-  String status;
-
-  String finderDate;
-
-  double latitude, longitude;
+  
   Position finderPosition;
   String finderAddress = '';
 
   @override
   void initState() {
     super.initState();
-    setState(() {
-      status = getFinderFormStatus(widget.finder.finderFormStatus);
-
-      finderDate = formatDateTime(widget.finder.finderDate);
-
-      latitude = widget.finder.lat;
-      longitude = widget.finder.lng;
-    });
-
     locateUserAddressPosition();
   }
 
   formatDateTime(String date) {
     DateTime tmp = DateTime.parse(date);
-    String result = '${tmp.day}/${tmp.month}/${tmp.year}';
+    String day = (tmp.day < 10 ? '0${tmp.day}' : '${tmp.day}');
+    String month = (tmp.month < 10 ? '0${tmp.month}' : '${tmp.month}');
+    String result = '$day/$month/${tmp.year}';
     return result;
   }
 
@@ -73,7 +62,7 @@ class _FinderCard extends State<FinderCard> {
   locateUserAddressPosition() async {
     String address = '';
 
-    finderPosition = Position(latitude: latitude, longitude: longitude);
+    finderPosition = Position(latitude: widget.finder.lat, longitude: widget.finder.lng);
 
     address = await Assistant.searchCoordinateAddress(finderPosition, context);
 
@@ -161,14 +150,14 @@ class _FinderCard extends State<FinderCard> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Ngày gửi yêu cầu: $finderDate',
+                                  'Ngày gửi yêu cầu: ${formatDateTime(widget.finder.finderDate)}',
                                   style: TextStyle(
                                     fontSize: 13,
                                     color: fadedBlack,
                                   ),
                                 ),
                                 Text(
-                                  status,
+                                  getFinderFormStatus(widget.finder.finderFormStatus),
                                   style: TextStyle(
                                     fontSize: 13,
                                     fontStyle: FontStyle.italic,

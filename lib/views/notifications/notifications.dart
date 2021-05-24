@@ -109,10 +109,11 @@ class _NotificationsPageState extends State<NotificationsPage> {
 
   formatDateTime(String date) {
     DateTime tmp = DateTime.parse(date);
-    String tmpDay = (tmp.day < 10 ? '0${tmp.day}' : '${tmp.day}');
-    String tmpMonth = (tmp.month < 10 ? '0${tmp.month}' : '${tmp.month}');
-    String tmpMinute = (tmp.minute < 10 ? '0${tmp.minute}' : '${tmp.minute}');
-    String result = '$tmpDay/$tmpMonth/${tmp.year}  ${tmp.hour}:$tmpMinute';
+    String day = (tmp.day < 10 ? '0${tmp.day}' : '${tmp.day}');
+    String month = (tmp.month < 10 ? '0${tmp.month}' : '${tmp.month}');
+    String hour = (tmp.hour < 10 ? '0${tmp.hour}' : '${tmp.hour}');
+    String minute = (tmp.minute < 10 ? '0${tmp.minute}' : '${tmp.minute}');
+    String result = '$day/$month/${tmp.year}  $hour:$minute';
     return result;
   }
 

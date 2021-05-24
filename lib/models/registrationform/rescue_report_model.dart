@@ -21,7 +21,7 @@ class RescueReport {
       finderFormImgUrl: json['finderFormImgUrl'],
       finderFormVideoUrl: json['finderFormVideoUrl'],
       petAttribute: json['petAttribute'],
-      finderDescription: json['finderDescription'],
+      finderDescription: json['description'],
       latitude: json['lat'],
       longitude: json['lng'],
       phone: json['phone'],

@@ -8,7 +8,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
-import 'package:pet_rescue_mobile/models/center/center_model.dart';
 import 'package:pet_rescue_mobile/models/user/volunteer_model.dart';
 import 'package:pet_rescue_mobile/repository/repository.dart';
 
@@ -21,14 +20,7 @@ import 'package:pet_rescue_mobile/views/custom_widget/custom_divider.dart';
 import 'package:pet_rescue_mobile/views/custom_widget/custom_field.dart';
 import '../../../main.dart';
 
-// ignore: must_be_immutable
 class VolunteerForm extends StatefulWidget {
-  CenterModel center;
-
-  VolunteerForm({
-    this.center,
-  });
-
   @override
   _VolunteerFormState createState() => _VolunteerFormState();
 }
@@ -57,8 +49,7 @@ class _VolunteerFormState extends State<VolunteerForm> {
 
     _dbReference = FirebaseDatabase.instance
         .reference()
-        .child('manager')
-        .child('${widget.center.centerId}')
+        .child('sys_admin')
         .child('Notification');
 
     _repo.getUserDetails().then((value) {
@@ -176,8 +167,6 @@ class _VolunteerFormState extends State<VolunteerForm> {
                   user.phone = formInputs['phoneNumber'];
                   user.email = formInputs['email'];
 
-                  user.centerId = widget.center.centerId;
-
                   String url = '';
                   String baseName = basename(_image.path);
                   if (baseName != null) {
@@ -210,7 +199,7 @@ class _VolunteerFormState extends State<VolunteerForm> {
                               );
                             } else {
                               successDialog(context,
-                                  'Đơn đăng ký của bạn đã được gửi đến ${widget.center.centerName.trim()}. Trung tâm sẽ xem xét và phản hồi cho bạn qua email ${user.email}. Xin cảm ơn.',
+                                  'Đơn đăng ký của bạn đã được gửi đến quản lý của hệ thống. Chúng tôi sẽ xem xét và phản hồi cho bạn qua email ${user.email}. Xin cảm ơn.',
                                   title: 'Thành công',
                                   neutralText: 'Quay về trang chủ',
                                   neutralAction: () {
@@ -244,7 +233,7 @@ class _VolunteerFormState extends State<VolunteerForm> {
                               Map<String, dynamic> notification = {
                                 'date': notiDate,
                                 'isCheck': false,
-                                'type': 3,
+                                'type': 2,
                               };
 
                               _dbReference.child(value).set(notification);
